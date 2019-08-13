@@ -18,7 +18,7 @@ Add additional notes about how to deploy this on a live system
 
 * Python 3.7.4
 
-## Authors
+## Contributors
 
 * Thong Nguyen 
 * Joseph Jindrich
