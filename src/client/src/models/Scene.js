@@ -20,7 +20,7 @@ const Scene = {
     const list = JSON.parse(localStorage.getItem('scene-list'))
 
     // add new scene object
-    list.push({id: list.length+1})
+    list.push({id: list.length+1, captions: []})
     localStorage.setItem('scene-list', JSON.stringify(list))
   }
 }
