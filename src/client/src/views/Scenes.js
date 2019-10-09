@@ -14,10 +14,8 @@ module.exports = {
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes().map(function(scene) {
 	console.log('scene object', scene)
-	return m(m.route.Link, {
-	  class: 'scene-list-item',
-	  href: `/edit-scene/${scene.id}`,
-	  captions: scene.captions,
+	return m('a.scene-list-item', {onclick: function() {
+	  m.route.set(`/edit-scene/${scene.id}`, {captions: scene.captions})}
 	}, `Scene ${scene.id}`)
       }))
     ])
