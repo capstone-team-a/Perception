@@ -2,12 +2,21 @@
 
 const m = require('mithril')
 
+const Scene = require('../models/Scene.js')
+
 module.exports = {
   view: function(vnode) {
     return m('', [
       m('h1', `Scene ${vnode.attrs.id}`),
-      m('h2', 'List of captions')
-      // TODO: map over list of captions to produce list of links to edit caption page
+      m('h2', 'List of captions'),
+      m('.scene-list', Scene.getScenes().map(function(scene) {
+        return m(m.route.Link, {
+          class: 'scene-list-item',
+          href: `/edit-scene/${scene.id}`,
+          captions: scene.captions,
+        }, `Scene ${scene.id}`)
+      }))
     ])
   }
 }
+
