@@ -2,19 +2,17 @@
 
 const m = require('mithril')
 
-const Scene = require('../models/Scene.js')
-
 module.exports = {
   view: function(vnode) {
+    console.log('vnode:', vnode)
     return m('', [
       m('h1', `Scene ${vnode.attrs.id}`),
       m('h2', 'List of captions'),
-      m('.scene-list', Scene.getScenes().map(function(scene) {
+      m('.caption-list', vnode.attrs.captions.map(function(caption) {
         return m(m.route.Link, {
-          class: 'scene-list-item',
-          href: `/edit-scene/${scene.id}`,
-          captions: scene.captions,
-        }, `Scene ${scene.id}`)
+          class: 'caption-list-item',
+          href: `/edit-caption/${caption.id}`,
+        }, `Caption ${caption.id}`)
       }))
     ])
   }

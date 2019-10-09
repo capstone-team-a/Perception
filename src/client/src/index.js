@@ -12,6 +12,7 @@ Scene.initialize()
 const Start = require('./views/Start')
 const Scenes = require('./views/Scenes')
 const SceneForm = require('./views/SceneForm')
+const CaptionForm = require('./views/CaptionForm')
 
 // define routes, and map routes (urls) to views
 
@@ -21,6 +22,11 @@ m.route(document.body, '/start', {
   '/edit-scene/:id': {
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
+    }
+  },
+  '/edit-caption/:id': {
+    render: function(vnode) {
+      return m(CaptionForm, vnode.attrs)
     }
   }
 })
