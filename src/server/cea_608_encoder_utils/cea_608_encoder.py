@@ -67,11 +67,8 @@ def create_byte_pairs(caption_string: str) -> list:
         if letter in basic_north_american_char_set:
             character_hex_value = basic_north_american_char_set[letter]
             if check_parity(character_hex_value) == 0:
-                masked_hex_value = add_parity_to_byte(character_hex_value)
-                byte_list.append(hex(masked_hex_value))
-            else:
-                byte_list.append(hex(character_hex_value))
+                character_hex_value = add_parity_to_byte(character_hex_value)
+            byte_list.append(hex(character_hex_value))
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
-
