@@ -94,5 +94,5 @@ basic_north_american_char_set = {
     '÷': 0x7c,
     'Ñ': 0x7d,
     'ñ': 0x7e,
-    'solid_block': 0x7f
+    '█': 0x7f
 }
