@@ -1,6 +1,5 @@
-
 basic_north_american_char_set = {
-    'space': 0x20,
+    ' ': 0x20,
     '!': 0x21,
     '\"': 0x22,
     '#': 0x23,
