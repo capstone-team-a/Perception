@@ -4,17 +4,17 @@ from src.server.character_sets.basic_na_char_set import basic_north_american_cha
 BYTE_PARITY_MASK = 0x80
 
 
-def get_bit_count(integer: int) -> int:
-    """Get the number of bits in an integer
+def check_parity(integer: int) -> int:
+    """Check the bit parity of the input
 
     :param integer:
     :return: -1 for odd numbers of bits, 0 for even number
     """
-    count = 0
+    parity = 0
     while integer:
-        integer &= integer -1
-        count += 1
-    return count
+        parity = ~parity
+        integer = integer & (integer - 1)
+    return parity
 
 
 def add_parity_to_byte(integer: int) -> int:
@@ -57,19 +57,21 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
 
 
 def create_byte_pairs(caption_string: str) -> list:
+    """Generates a list of byte pairs given a caption string
+
+    :param caption_string:
+    :return: list of byte pairs
+    """
     byte_list = []
     for letter in caption_string:
         if letter in basic_north_american_char_set:
             character_hex_value = basic_north_american_char_set[letter]
-            if get_bit_count(character_hex_value) & 1 != -1:
+            if check_parity(character_hex_value) == 0:
                 masked_hex_value = add_parity_to_byte(character_hex_value)
                 byte_list.append(hex(masked_hex_value))
+            else:
+                byte_list.append(hex(character_hex_value))
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    print(byte_pairs)
     return byte_pairs
 
-
-caption = 'HUCKLEBERRY FINNEGAN!!!!!@@@@'
-
-create_byte_pairs(caption)

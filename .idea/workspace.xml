@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5bc2065f-ab60-44b2-93cf-0d80e288a1d8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/server/cea_608_encoder_utils/cea_608_encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/cea_608_encoder_utils/cea_608_encoder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/character_sets/basic_na_char_set.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/character_sets/basic_na_char_set.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,12 +21,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="8254" />
+          <entry key="py" value="9330" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="8254" />
+          <entry key="Python" value="9330" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -61,8 +62,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/server/character_sets/basic_na_char_set.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="5" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
+            <state relative-caret-position="450">
+              <caret line="97" selection-start-line="97" selection-end-line="97" />
             </state>
           </provider>
         </entry>
@@ -70,11 +71,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/server/cea_608_encoder_utils/cea_608_encoder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+            <state relative-caret-position="270">
+              <caret line="72" column="65" selection-start-line="72" selection-start-column="65" selection-end-line="72" selection-end-column="65" />
               <folding>
-                <marker date="1571103893059" expanded="true" signature="1125:1373" ph="..." />
-                <marker date="1571103893059" expanded="true" signature="1443:2016" ph="..." />
+                <marker date="1571104720922" expanded="true" signature="1172:1420" ph="..." />
+                <marker date="1571104720922" expanded="true" signature="1619:2369" ph="..." />
               </folding>
             </state>
           </provider>
@@ -290,18 +291,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server/character_sets/basic_na_char_set.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="5" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
+        <state relative-caret-position="450">
+          <caret line="97" selection-start-line="97" selection-end-line="97" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server/cea_608_encoder_utils/cea_608_encoder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+        <state relative-caret-position="270">
+          <caret line="72" column="65" selection-start-line="72" selection-start-column="65" selection-end-line="72" selection-end-column="65" />
           <folding>
-            <marker date="1571103893059" expanded="true" signature="1125:1373" ph="..." />
-            <marker date="1571103893059" expanded="true" signature="1443:2016" ph="..." />
+            <marker date="1571104720922" expanded="true" signature="1172:1420" ph="..." />
+            <marker date="1571104720922" expanded="true" signature="1619:2369" ph="..." />
           </folding>
         </state>
       </provider>
