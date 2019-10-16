@@ -13,3 +13,7 @@
   padding: 8px 15px;
   text-decoration: none;
 }
+
+.delete-scene-button {
+  margin-left: 2em;
+}
