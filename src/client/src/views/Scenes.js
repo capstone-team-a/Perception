@@ -23,8 +23,10 @@ module.exports = {
                 })
               }
             }, `Scene ${scene.id}`),
+            // when maping the scenes the delete button is included.
             m('button.delete-scene-button', {
               onclick: function() {
+                //ask the user for confirmation.
                 if (confirm("Are you sure?")) {
                   Scene.deleteScene(scene.id)
                 }
