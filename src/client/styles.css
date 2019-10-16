@@ -5,7 +5,7 @@
 }
 
 .scene-list-item, .caption-list-item {
-  background: #fafafa;
+  background: #fafafa; /* light grey */
   border: 1px solid #ddd;
   color: #333;
   display: block;
@@ -15,11 +15,11 @@
 }
 
 .scene-list-item:hover, .caption-list-item:hover {
-  background: #cccccc;
+  background: #cccccc; /* slightly darker grey to emphasize selection */
 }
 
-.scene-list-item a, caption-list-item a {
-  color: #0000EE;
+.scene-list-item a, .caption-list-item a {
+  color: #0000EE; /* blue color for links */
   text-decoration: underline;
 }
 
