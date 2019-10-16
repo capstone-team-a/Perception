@@ -14,6 +14,19 @@
   text-decoration: none;
 }
 
+.scene-list-item:hover, .caption-list-item:hover {
+  background: #cccccc;
+}
+
+.scene-list-item a, caption-list-item a {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
 .delete-scene-button {
   margin-left: 2em;
 }
