@@ -15,22 +15,21 @@ module.exports = {
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
-          return m('a.scene-list-item', {
-            onclick: function() {
-              m.route.set(`/edit-scene/${scene.id}`, {
-                captions: scene.captions
-              })
-            }
-          }, `Scene ${scene.id}`)
-        })),
-        m('.scene-list', Scene.getScenes()
-          .map(function(scene) {
-            return m('a.scene-list-item', {
-              onclick: function() {
-                Scene.deleteScene(scene.id)
+	  return m('div.scene-list-item', [
+	    m('a', {
+	      onclick: function() {
+		m.route.set(`/edit-scene/${scene.id}`, {
+		  captions: scene.captions
+		})
               }
-            }, `Delete Scene ${scene.id}`)
-          })),
+            }, `Scene ${scene.id}`),
+	    m('button.delete-scene-button', {
+	      onclick: function() {
+		Scene.deleteScene(scene.id)
+	      }
+	    }, 'Delete')
+	  ])
+        })),
           
       m('button.delete-all-scenes', {
         onclick: function() {
