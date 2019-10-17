@@ -8,6 +8,7 @@ const Scene = {
       // for now hard-coding in some example scenes
       localStorage.setItem('scene-list', JSON.stringify([{
         id: 1,
+        name: 'First scene',
         captions: [{
           id: 1
         }]
