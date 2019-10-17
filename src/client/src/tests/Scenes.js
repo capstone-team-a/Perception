@@ -23,6 +23,9 @@ o.spec('Scenes', function() {
     o(out.should.not.contain('Scene 3')).equals(true) // there should only be 2 scenes to start with
     out.click('.add-scene') // trigger a button click on the "add scene button"
     o(out.should.contain('Scene 3')).equals(true) // now there should be 3 scenes
-
+    // testing the delete scene function
+    Scene.deleteScene(3) // use the scene deleteFunction to delete a scene
+    out = mq(Scenes) // rerender the scenes view mithril-query
+    o(out.should.not.contain('Scene 3')).equals(true) // there should only be 2 scenes to end with
   })
 })

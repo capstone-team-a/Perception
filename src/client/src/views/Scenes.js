@@ -15,31 +15,35 @@ module.exports = {
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
-	  return m('div.scene-list-item', [
-	    m('a', {
-	      onclick: function() {
-		m.route.set(`/edit-scene/${scene.id}`, {
-		  captions: scene.captions
-		})
+          return m('div.scene-list-item', [
+            m('a', {
+              onclick: function() {
+                m.route.set(`/edit-scene/${scene.id}`, {
+                  captions: scene.captions
+                })
               }
             }, `Scene ${scene.id}`),
-	    m('button.delete-scene-button', {
-	      onclick: function() {
-		Scene.deleteScene(scene.id)
-	      }
-	    }, 'Delete')
-	  ])
+            // when maping the scenes the delete button is included.
+            m('button.delete-scene-button', {
+              onclick: function() {
+                //ask the user for confirmation.
+                if (confirm("Are you sure?")) {
+                  Scene.deleteScene(scene.id)
+                }
+              }
+            }, 'Delete')
+          ])
         })),
-          
+
       m('button.delete-all-scenes', {
         onclick: function() {
           //ask the user for confirmation.
-          if(confirm("Delete all scenes?")){
-          //get all the scenes and map an new anon function on them.
+          if (confirm("Delete all scenes?")) {
+            //get all the scenes and map an new anon function on them.
             //we need to put each scene into the _ param, which is unused.
             m('.scene-list', Scene.getScenes()
               .map(function(_) {
-                //sort of silly- because when we delete a scene using 
+                //sort of silly- because when we delete a scene using
                 //Scene.deleteScene it shifts all the Scene IDs, we just delete
                 //the first scene every time (for the total num of scenes)
                 Scene.deleteScene(1) //...which is why this is 1, not 'scene.id'
@@ -52,7 +56,7 @@ module.exports = {
       m('button.clear-cache', {
         onclick: function() {
           //ask user for confirmation
-          if(confirm("Clear cache?")){
+          if (confirm("Clear cache?")) {
             //clear the local storage
             localStorage.clear()
             //re-initialize the scene to get the structure back
