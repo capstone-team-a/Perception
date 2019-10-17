@@ -18,10 +18,7 @@ module.exports = {
           return m('div.scene-list-item', [
             m('a', {
               onclick: function() {
-                m.route.set(`/edit-scene/${scene.id}`, {
-                  captions: scene.captions,
-                  name: scene.name
-                })
+                m.route.set(`/edit-scene/${scene.id}`)
               }
             }, scene.name ? scene.name : `Scene ${scene.id}`),
             // when maping the scenes the delete button is included.
