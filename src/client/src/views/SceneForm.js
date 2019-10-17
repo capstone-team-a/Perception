@@ -8,25 +8,22 @@ module.exports = {
   oninit: function(vnode) {Scene.setCurrent(vnode.attrs.id - 1)},
   view: function(vnode) {
     const captions = Scene.current.captions
-
-    console.log('current scene:', Scene.current)
-    console.log('all scenes:', Scene.getScenes())
     
     return m('', [
       m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
-      m('form', {
+      m('form.save-name-form', {
         onsubmit: function(e) {
           e.preventDefault()
           Scene.save()
         }
       }, [
-        m("input.input[type=text]", {
+        m("input.new-name-input[type=text]", {
           oninput: function (e) {
             Scene.current.name = e.target.value
           },
           value: Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`
         }),
-        m("button.button[type=submit]", "Save")
+        m("button.save-name-button[type=submit]", "Save")
       ]),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption) {
