@@ -1,15 +1,30 @@
 // This is the scene editor page, which lists all of the captions for the current scene.
 
 const m = require('mithril')
+const Scene = require('../models/Scene')
 
 module.exports = {
+  // on initialization of this component, set the current scene to the corresponding "current scene"
+  oninit: function(vnode) {Scene.setCurrent(vnode.attrs.id - 1)},
   view: function(vnode) {
-    console.log('vnode:', vnode)
-    // since captions come from route params, an empty array will not make it through. So we need to set it to be empty if it doesn't exist.
-    // otherwise trying to map over the captions array will result in an error.
-    const captions = vnode.attrs.captions ? vnode.attrs.captions : []
+    const captions = Scene.current.captions
+    
     return m('', [
-      m('h1', `Scene ${vnode.attrs.id}`),
+      m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
+      m('form.save-name-form', {
+        onsubmit: function(e) {
+          e.preventDefault()
+          Scene.save()
+        }
+      }, [
+        m("input.new-name-input[type=text]", {
+          oninput: function (e) {
+            Scene.current.name = e.target.value
+          },
+          value: Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`
+        }),
+        m("button.save-name-button[type=submit]", "Save")
+      ]),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption) {
         return m(m.route.Link, {
