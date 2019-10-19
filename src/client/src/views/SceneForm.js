@@ -8,7 +8,7 @@ module.exports = {
   oninit: function(vnode) {Scene.setCurrent(vnode.attrs.id - 1)},
   view: function(vnode) {
     const captions = Scene.current.captions
-    
+    //console.log(captions)
     return m('', [
       m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
       m('form.save-name-form', {
@@ -25,6 +25,14 @@ module.exports = {
         }),
         m("button.save-name-button[type=submit]", "Save")
       ]),
+      m('button.add-caption', {
+        onclick: function() {
+          Scene.current.captions.push({
+            id : Scene.current.captions.length + 1
+          })
+          Scene.save()
+        }
+      }, 'New Caption'),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption) {
         return m(m.route.Link, {
