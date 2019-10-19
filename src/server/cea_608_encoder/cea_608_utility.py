@@ -1,4 +1,4 @@
-from src.server.character_sets.basic_na_char_set import basic_north_american_char_set
+from src.server.character_sets.char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -56,6 +56,26 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     return byte_pairs
 
 
+def which_char_set(caption_char: str) -> str:
+    """Finds which character set the letter is in
+
+    :param caption_char:
+    :return: the name of the char set the caption_char is in
+    """
+    if caption_char in char_sets['basic_na_set']:
+        return 'basic_na_set'
+    elif caption_char in char_sets['special_na_set']:
+        return 'special_na_set'
+    elif caption_char in char_sets['extended_we_sm_set']:
+        return 'extended_we_sm_set'
+    elif caption_char in char_sets['extended_we_french_set']:
+        return 'extended_we_french_set'
+    elif caption_char in char_sets['extended_we_port_set']:
+        return 'extended_we_port_set'
+    elif caption_char in char_sets['extended_we_gd_set']:
+        return 'extended_we_gd_set'
+
+
 def create_byte_pairs(caption_string: str) -> list:
     """Generates a list of byte pairs given a caption string
 
@@ -64,11 +84,12 @@ def create_byte_pairs(caption_string: str) -> list:
     """
     byte_list = []
     for letter in caption_string:
-        if letter in basic_north_american_char_set:
-            character_hex_value = basic_north_american_char_set[letter]
-            if check_parity(character_hex_value) == 0:
-                character_hex_value = add_parity_to_byte(character_hex_value)
-            byte_list.append(hex(character_hex_value))
+        set_flag = which_char_set(letter)
+        character_hex_value = char_sets[set_flag][letter]
+        if check_parity(character_hex_value) == 0:
+            character_hex_value = add_parity_to_byte(character_hex_value)
+        byte_list.append(hex(character_hex_value))
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
+
