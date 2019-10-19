@@ -1,4 +1,7 @@
-from src.server.character_sets.char_sets import char_sets
+#from src.server.character_sets.char_sets import char_sets
+import sys
+sys.path.append('../character_sets')
+from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -51,7 +54,10 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
         if not byte_list:
             second_byte = ''
         else:
-            second_byte = byte_list.pop(0)
+            if len(first_byte) == 4:
+                second_byte = ''
+            else:
+                second_byte = byte_list.pop(0)
         byte_pairs.append(first_byte + second_byte)
     return byte_pairs
 
@@ -76,16 +82,40 @@ def which_char_set(caption_char: str) -> str:
         return 'extended_we_gd_set'
 
 
-def create_byte_pairs(caption_string: str) -> list:
+def which_channel(channel_toggle: int,char_set: str) -> str:
+    """Provides the correct first byte to a letter depending on the channel toggle
+
+    :param channel_toggle, char_set:
+    :return: The first byte
+    """
+    if channel_toggle == 0:
+        if char_set == 'special_na_set':
+            return '11'
+        elif char_set == 'extended_we_sm_set' or char_set == 'extended_we_french_set':
+            return '12'
+        elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
+            return '13'
+    elif channel_toggle == 1:
+        if char_set == 'special_na_set':
+            return '19'
+        elif char_set == 'extended_we_sm_set' or char_set == 'extended_we_french_set':
+            return '1a'
+        elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
+            return '1b'
+
+
+def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     """Generates a list of byte pairs given a caption string
 
-    :param caption_string:
+    :param caption_string, channel_toggle:
     :return: list of byte pairs
     """
     byte_list = []
     for letter in caption_string:
         set_flag = which_char_set(letter)
         character_hex_value = char_sets[set_flag][letter]
+        first_byte = which_channel(channel_toggle,set_flag)
+        character_hex_value = int(first_byte + str(hex(character_hex_value))[2:],16)
         if check_parity(character_hex_value) == 0:
             character_hex_value = add_parity_to_byte(character_hex_value)
         byte_list.append(hex(character_hex_value))
@@ -93,3 +123,6 @@ def create_byte_pairs(caption_string: str) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
+
+caption_string = '♪♪♪'
+print(create_byte_pair(caption_string,0))
