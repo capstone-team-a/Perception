@@ -51,10 +51,7 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
         if not byte_list:
             second_byte = ''
         else:
-            if len(first_byte) == 4:
-                second_byte = ''
-            else:
-                second_byte = byte_list.pop(0)
+            second_byte = byte_list.pop(0)
         byte_pairs.append(first_byte + second_byte)
     return byte_pairs
 
@@ -92,6 +89,8 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
             return '12'
         elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
             return '13'
+        else:
+            return '-1'
     elif channel_toggle == 1:
         if char_set == 'special_na_set':
             return '19'
@@ -99,6 +98,8 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
             return '1a'
         elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
             return '1b'
+        else:
+            return '-1'
 
 
 def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
@@ -110,9 +111,15 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     byte_list = []
     for letter in caption_string:
         set_flag = which_char_set(letter)
-        character_hex_value = char_sets[set_flag][letter]
         first_byte = which_channel(channel_toggle,set_flag)
-        character_hex_value = int(first_byte + str(hex(character_hex_value))[2:],16)
+        print(first_byte)
+        if first_byte != '-1':
+            first_hex_value = int(first_byte,16)
+            if check_parity(first_hex_value) == 0:
+                first_hex_value = add_parity_to_byte(first_hex_value)
+            byte_list.append(hex(first_hex_value))
+            print(hex(first_hex_value))
+        character_hex_value = char_sets[set_flag][letter]
         if check_parity(character_hex_value) == 0:
             character_hex_value = add_parity_to_byte(character_hex_value)
         byte_list.append(hex(character_hex_value))
