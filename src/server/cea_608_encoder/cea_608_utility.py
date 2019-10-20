@@ -80,9 +80,9 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
             return '-1'
         elif char_set == 'special_na_set':
             return '11'
-        elif char_set in ('extended..sm','extended..french'):
+        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
             return '12'
-        elif char_set in ('extended..port','extended..gd'):
+        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
             return '13'
         else:
             raise ValueError(f'The character set: {char_set} is not supported')
@@ -91,9 +91,9 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
             return '-1'
         elif char_set == 'special_na_set':
             return '19'
-        elif char_set in ('extended..sm','extended..french'):
+        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
             return '1a'
-        elif char_set in ('extended..port','extended..gd'):
+        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
             return '1b'
         else:
             raise ValueError(f'The character set: {char_set} is not supported')
