@@ -85,7 +85,6 @@ def which_channel(channel_toggle: int,char_set: str) -> hex:
             return 0x12
         elif char_set in ('extended_we_port_set','extended_we_gd_set'):
             return 0x13
-        #raise ValueError(f'The character set: {char_set} is not supported')
     elif channel_toggle == 1:
         if char_set == 'basic_na_set':
             return 0x00
@@ -95,7 +94,6 @@ def which_channel(channel_toggle: int,char_set: str) -> hex:
             return 0x1a
         elif char_set in ('extended_we_port_set','extended_we_gd_set'):
             return 0x1b
-        #raise ValueError(f'The character set: {char_set} is not supported')
     else:
         raise ValueError(f'Channel toggle must be 0 or 1!')
 
@@ -122,5 +120,3 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
-caption_string = '♪♪♪'
-print(create_byte_pair(caption_string,1))
