@@ -65,21 +65,22 @@ def consume_scenes(scene_list: list) -> list:
             opacity = scene['opacity']
             scene_utils.create_bytes_for_scene_opacity(opacity)
 
-        scene_data.append(consume_captions(scene))
+        caption_list = scene['caption_list']
+        scene_data.append(consume_captions(caption_list))
 
     return []
 
 
-def consume_captions(scene: dict) -> dict:
+def consume_captions(caption_list: list) -> dict:
     """Iterate over the list of captions in a scene and create bytes pairs
     for the list of caption strings and properties that the strings have.
 
-    :param scene:
+    :param caption_list:
     :return: TODO
     """
     caption_metadata = {}
 
-    for caption in scene:
+    for caption in caption_list:
         if not caption['caption_id'] or not caption['string_list']:
             raise ValueError('A caption ID and string list must be set for each caption')
 
