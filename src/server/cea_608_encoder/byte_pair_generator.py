@@ -1,12 +1,20 @@
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
 
+# At a future time this could live in it's own config file
+# Leaving it here temporarily
 supported_caption_formats = [
     'CEA_608'
 ]
 
 
 def consume(caption_data: dict) -> dict:
+    """Perform error handling around caption format and ensure
+    there are scenes to create byte pairs for.
+
+    :param caption_data: the full JSON blob from the front end
+    :return: TODO
+    """
     if not caption_data['caption_format']:
         raise ValueError('You must specify a caption format')
 
@@ -27,6 +35,13 @@ def consume(caption_data: dict) -> dict:
 
 
 def consume_scenes(scene_list: list) -> list:
+    """Iterate over the list of scenes and create bytes for fields that
+    are set in the scene data. Call the consume function for caption
+    strings to return byte pairs for caption strings inside a scene.
+
+    :param scene_list:
+    :return: TODO
+    """
     scene_data = []
     for scene in scene_list:
         if not scene['scene_id']:
@@ -56,6 +71,12 @@ def consume_scenes(scene_list: list) -> list:
 
 
 def consume_captions(scene: dict) -> dict:
+    """Iterate over the list of captions in a scene and create bytes pairs
+    for the list of caption strings and properties that the strings have.
+
+    :param scene:
+    :return: TODO
+    """
     caption_metadata = {}
 
     for caption in scene:
