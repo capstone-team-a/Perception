@@ -66,6 +66,7 @@ def which_char_set(caption_char: str) -> str:
         for letter,decimal in set.items():
             if caption_char == letter:
                 return set_name
+    raise ValueError(f'The character: {caption_char} is not in any of the supported character sets')
 
 
 def which_channel(channel_toggle: int,char_set: str) -> str:
@@ -84,7 +85,7 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
         elif char_set in ('extended..port','extended..gd'):
             return '13'
         else:
-            raise ValueError(f'The character: {char_set} is not in any of the supported character sets')
+            raise ValueError(f'The character set: {char_set} is not supported')
     elif channel_toggle == 1:
         if char_set == 'basic_na_set':
             return '-1'
@@ -95,7 +96,7 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
         elif char_set in ('extended..port','extended..gd'):
             return '1b'
         else:
-            raise ValueError(f'The character: {char_set} is not in any of the supported character sets')
+            raise ValueError(f'The character set: {char_set} is not supported')
 
 
 def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
