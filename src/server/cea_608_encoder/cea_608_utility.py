@@ -1,4 +1,7 @@
-from src.server.character_sets.char_sets import char_sets
+#from src.server.character_sets.char_sets import char_sets
+import sys
+sys.path.append('../character_sets/')
+from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -62,18 +65,10 @@ def which_char_set(caption_char: str) -> str:
     :param caption_char:
     :return: the name of the char set the caption_char is in
     """
-    if caption_char in char_sets['basic_na_set']:
-        return 'basic_na_set'
-    elif caption_char in char_sets['special_na_set']:
-        return 'special_na_set'
-    elif caption_char in char_sets['extended_we_sm_set']:
-        return 'extended_we_sm_set'
-    elif caption_char in char_sets['extended_we_french_set']:
-        return 'extended_we_french_set'
-    elif caption_char in char_sets['extended_we_port_set']:
-        return 'extended_we_port_set'
-    elif caption_char in char_sets['extended_we_gd_set']:
-        return 'extended_we_gd_set'
+    for set_name,set in char_sets.items():
+        for letter,decimal in set.items():
+            if caption_char == letter:
+                return set_name
 
 
 def which_channel(channel_toggle: int,char_set: str) -> str:
@@ -83,23 +78,27 @@ def which_channel(channel_toggle: int,char_set: str) -> str:
     :return: The first byte
     """
     if channel_toggle == 0:
-        if char_set == 'special_na_set':
+        if char_set == 'basic_na_set':
+            return '-1'
+        elif char_set == 'special_na_set':
             return '11'
-        elif char_set == 'extended_we_sm_set' or char_set == 'extended_we_french_set':
+        elif char_set in ('extended..sm','extended..french'):
             return '12'
-        elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
+        elif char_set in ('extended..port','extended..gd'):
             return '13'
         else:
-            return '-1'
+            raise ValueError(f'The character: {char_set} is not in any of the supported character sets')
     elif channel_toggle == 1:
-        if char_set == 'special_na_set':
+        if char_set == 'basic_na_set':
+            return '-1'
+        elif char_set == 'special_na_set':
             return '19'
-        elif char_set == 'extended_we_sm_set' or char_set == 'extended_we_french_set':
+        elif char_set in ('extended..sm','extended..french'):
             return '1a'
-        elif char_set == 'extended_we_port_set' or char_set == 'extended_we_gd_set':
+        elif char_set in ('extended..port','extended..gd'):
             return '1b'
         else:
-            return '-1'
+            raise ValueError(f'The character: {char_set} is not in any of the supported character sets')
 
 
 def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
@@ -112,13 +111,11 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     for letter in caption_string:
         set_flag = which_char_set(letter)
         first_byte = which_channel(channel_toggle,set_flag)
-        print(first_byte)
         if first_byte != '-1':
             first_hex_value = int(first_byte,16)
             if check_parity(first_hex_value) == 0:
                 first_hex_value = add_parity_to_byte(first_hex_value)
             byte_list.append(hex(first_hex_value))
-            print(hex(first_hex_value))
         character_hex_value = char_sets[set_flag][letter]
         if check_parity(character_hex_value) == 0:
             character_hex_value = add_parity_to_byte(character_hex_value)
@@ -127,3 +124,5 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
+caption_string = '♪♪♪'
+print(create_byte_pair(caption_string,0))
