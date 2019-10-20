@@ -1,7 +1,4 @@
-#from src.server.character_sets.char_sets import char_sets
-import sys
-sys.path.append('../character_sets/')
-from char_sets import char_sets
+from src.server.character_sets.char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -124,5 +121,3 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
-caption_string = '♪♪♪'
-print(create_byte_pair(caption_string,0))
