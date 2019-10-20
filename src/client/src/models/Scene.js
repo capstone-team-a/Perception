@@ -56,8 +56,6 @@ const Scene = {
   save: function() {
     const list = Scene.getScenes()
 
-    console.log('about to save... current scene:', Scene.current)
-
     // update the current scene in the scene list 
     list[Scene.current.id-1] = Scene.current
 

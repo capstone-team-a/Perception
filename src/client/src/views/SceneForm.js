@@ -8,7 +8,7 @@ module.exports = {
   oninit: function(vnode) {Scene.setCurrent(vnode.attrs.id - 1)},
   view: function(vnode) {
     const captions = Scene.current.captions
-    //console.log(captions)
+
     return m('', [
       m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
       m('form.save-name-form', {
