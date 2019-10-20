@@ -29,5 +29,11 @@ o.spec('SceneForm', function() {
     // make sure that change name form actually changes the name in the data model
     out.trigger('.save-name-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.name === 'new name') !== undefined).equals(true)
+
+    // make sure that add caption button adds a new caption when triggered
+    o(out.should.contain('New Caption')).equals(true)
+    o(out.should.not.contain('Caption 2')).equals(true)
+    out.click('.add-caption')
+    o(out.should.contain('Caption 2')).equals(true)
   })
 })
