@@ -62,10 +62,9 @@ def which_char_set(caption_char: str) -> str:
     :param caption_char:
     :return: the name of the char set the caption_char is in
     """
-    for set_name,set in char_sets.items():
-        for letter,decimal in set.items():
-            if caption_char == letter:
-                return set_name
+    for char_set_name,list_of_characters in char_sets.items():
+        if caption_char in list_of_characters:
+            return char_set_name
 
 
 def which_channel(channel_toggle: int,char_set: str) -> str:
