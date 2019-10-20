@@ -105,14 +105,14 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     """
     byte_list = []
     for letter in caption_string:
-        set_flag = which_char_set(letter)
-        first_byte = which_channel(channel_toggle,set_flag)
+        char_set_name = which_char_set(letter)
+        first_byte = which_channel(channel_toggle,char_set_name)
         if first_byte != '-1':
             first_hex_value = int(first_byte,16)
             if check_parity(first_hex_value) == 0:
                 first_hex_value = add_parity_to_byte(first_hex_value)
             byte_list.append(hex(first_hex_value))
-        character_hex_value = char_sets[set_flag][letter]
+        character_hex_value = char_sets[char_set_name][letter]
         if check_parity(character_hex_value) == 0:
             character_hex_value = add_parity_to_byte(character_hex_value)
         byte_list.append(hex(character_hex_value))
