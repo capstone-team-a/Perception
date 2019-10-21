@@ -120,3 +120,19 @@ def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
+
+def create_byte_pairs_for_caption_color(color):
+    pass
+
+
+def create_byte_pairs_for_text_alignment(alignment):
+    pass
+
+
+def create_bytes_to_underline_text():
+    pass
+
+
+def create_bytes_to_italicize_text():
+    pass
+
