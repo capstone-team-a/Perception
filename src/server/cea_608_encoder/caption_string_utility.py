@@ -1,4 +1,7 @@
-from src.server.character_sets.basic_na_char_set import basic_north_american_char_set
+#from src.server.character_sets.char_sets import char_sets
+import sys
+sys.path.append('../character_sets/')
+from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -56,19 +59,63 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     return byte_pairs
 
 
-def create_byte_pairs_for_caption_string(caption_string: str) -> list:
+def which_char_set(caption_char: str) -> str:
+    """Finds which character set the letter is in
+
+    :param caption_char:
+    :return: the name of the char set the caption_char is in
+    """
+    for char_set_name,list_of_characters in char_sets.items():
+        if caption_char in list_of_characters:
+            return char_set_name
+
+
+def which_channel(channel_toggle: int,char_set: str) -> hex:
+    """Provides the correct first byte to a letter depending on the channel toggle
+
+    :param channel_toggle, char_set:
+    :return: The first byte
+    """
+    if channel_toggle == 0:
+        if char_set == 'basic_na_set':
+            return 0x00
+        elif char_set == 'special_na_set':
+            return 0x11
+        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
+            return 0x12
+        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
+            return 0x13
+    elif channel_toggle == 1:
+        if char_set == 'basic_na_set':
+            return 0x00
+        elif char_set == 'special_na_set':
+            return 0x19
+        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
+            return 0x1a
+        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
+            return 0x1b
+    else:
+        raise ValueError(f'Channel toggle must be 0 or 1!')
+
+
+def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
     """Generates a list of byte pairs given a caption string
 
-    :param caption_string:
+    :param caption_string, channel_toggle:
     :return: list of byte pairs
     """
     byte_list = []
     for letter in caption_string:
-        if letter in basic_north_american_char_set:
-            character_hex_value = basic_north_american_char_set[letter]
-            if check_parity(character_hex_value) == 0:
-                character_hex_value = add_parity_to_byte(character_hex_value)
-            byte_list.append(hex(character_hex_value))
+        char_set_name = which_char_set(letter)
+        first_byte = which_channel(channel_toggle,char_set_name)
+        if first_byte != 0x00:
+            if check_parity(first_byte) == 0:
+                first_byte = add_parity_to_byte(first_byte)
+            byte_list.append(hex(first_byte))
+        character_hex_value = char_sets[char_set_name][letter]
+        if check_parity(character_hex_value) == 0:
+            character_hex_value = add_parity_to_byte(character_hex_value)
+        byte_list.append(hex(character_hex_value))
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
@@ -88,3 +135,4 @@ def create_bytes_to_underline_text():
 
 def create_bytes_to_italicize_text():
     pass
+

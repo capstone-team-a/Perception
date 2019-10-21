@@ -8,6 +8,7 @@ const Scene = {
       // for now hard-coding in some example scenes
       localStorage.setItem('scene-list', JSON.stringify([{
         id: 1,
+        name: 'First scene',
         captions: [{
           id: 1
         }]
@@ -49,6 +50,25 @@ const Scene = {
       list[i].id = i + 1
     }
     localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // this function will save the current scene to the localStorage
+  save: function() {
+    const list = Scene.getScenes()
+
+    // update the current scene in the scene list 
+    list[Scene.current.id-1] = Scene.current
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // this is useful to have as a way to manage a scene using global state
+  current: null,
+
+  // self-explanatory. Sets the currentScene property to the scene corresponding to the sceneId
+  setCurrent: function(sceneId) {
+    const list = Scene.getScenes()
+    Scene.current = list[sceneId]
   }
 }
 
