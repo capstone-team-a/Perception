@@ -1,7 +1,7 @@
-#from src.server.character_sets.char_sets import char_sets
-import sys
-sys.path.append('../character_sets/')
-from char_sets import char_sets
+from src.server.character_sets.char_sets import char_sets
+# import sys
+# sys.path.append('../character_sets/')
+# from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
@@ -73,7 +73,8 @@ def which_char_set(caption_char: str) -> str:
 def which_channel(channel_toggle: int,char_set: str) -> hex:
     """Provides the correct first byte to a letter depending on the channel toggle
 
-    :param channel_toggle, char_set:
+    :param char_set:
+    :param channel_toggle:
     :return: The first byte
     """
     if channel_toggle == 0:
@@ -98,10 +99,11 @@ def which_channel(channel_toggle: int,char_set: str) -> hex:
         raise ValueError(f'Channel toggle must be 0 or 1!')
 
 
-def create_byte_pair(caption_string: str, channel_toggle: int) -> list:
+def create_byte_pairs_for_caption_string(caption_string: str, channel_toggle: int) -> list:
     """Generates a list of byte pairs given a caption string
 
-    :param caption_string, channel_toggle:
+    :param caption_string
+    :param channel_toggle
     :return: list of byte pairs
     """
     byte_list = []
