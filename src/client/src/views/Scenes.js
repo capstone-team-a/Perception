@@ -6,9 +6,24 @@ const m = require('mithril')
 const Scene = require('../models/Scene')
 
 module.exports = {
-  view: function() {
+  controller: function(opts) {
+    this.opts = ["CAE-608", "Teletex"];
+  },
+  view: function(ctrl, opts) {
     return m('.scenes', [
       m('h1', 'Scenes'),
+      m('select.language-input', [
+        m('option', {
+          value: '',
+          selected: 'selected',
+          disabled: 'disabled'
+        }, 'Select your option'),
+        ctrl.opts.map(function(opt){
+          return m('option', {
+            val: opt
+          }, opt.charAt(0).toUpperCase()+opt.slice(1))
+        }) 
+      ]),
       m('button.add-scene', {
         onclick: Scene.addScene
       }, 'New Scene'),

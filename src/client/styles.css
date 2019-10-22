@@ -34,3 +34,8 @@ a:hover {
 .save-name-form {
   margin-bottom: 1em;
 }
+
+.language-input {
+  display: block;
+  margin-bottom: 2em;
+}
