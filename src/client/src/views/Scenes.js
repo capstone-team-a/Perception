@@ -9,16 +9,20 @@ module.exports = {
   view: function() {
     return m('.scenes', [
       m('h1', 'Scenes'),
-      m('select.language-input', [
+      m('select.language-input', //{
+        //onchange: function(e) {
+          //Scene.setInputFormat(e.target.value)
+        //}},
+        [
         m('option', {
-          value: '',
-          selected: 'selected',
-          disabled: 'disabled'
+          value: "Nothing",
+          selected: "selected",
+          disabled: "disabled"
         }, 'Select your option'),
-        ["CAE-608", "Teletex"].map(function(opt){
+        ["CAE-608", "Teletex"].map(function(opt) {
           return m('option', {
-            val: opt
-          }, opt.charAt(0).toUpperCase()+opt.slice(1))
+            value: opt
+          }, opt)
         }) 
       ]),
       m('button.add-scene', {

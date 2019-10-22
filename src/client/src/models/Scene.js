@@ -17,6 +17,12 @@ const Scene = {
         captions: []
       }]))
     }
+
+    if(!localStorage.getItem('input-format')) {
+      localStorage.setItem('input-format', JSON.stringify({
+        inputFormat: 'CAE-608'
+      }))
+    }
   },
 
   getScenes: function() {
@@ -69,6 +75,14 @@ const Scene = {
   setCurrent: function(sceneId) {
     const list = Scene.getScenes()
     Scene.current = list[sceneId]
+  },
+
+  setInputFormat: function(format) {
+    const list = JSON.parse(localStorage.getItem('input-format'))
+    list['inputFormat'] = format
+    localStorage.setItem('input-format', JSON.stringify(list))
+    //var x = document.getElementsByClassName("language-input").value
+    //list['inputFormat'] = x
   }
 }
 
