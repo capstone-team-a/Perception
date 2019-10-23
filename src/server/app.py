@@ -3,9 +3,6 @@ import json
 from flask import Flask, request, Response, send_from_directory
 from flask_cors import CORS
 
-#import sys
-#sys.path.append('../server/cea_608_encoder')
-#import byte_pair_generator as encoder
 import src.server.cea_608_encoder.byte_pair_generator as encoder
 
 
