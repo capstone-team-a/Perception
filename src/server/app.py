@@ -6,7 +6,7 @@ from flask_cors import CORS
 import src.server.cea_608_encoder.byte_pair_generator as encoder
 
 
-app = Flask(__name__, static_folder='../client/')
+app = Flask(__name__)
 CORS(app)
 
 
@@ -33,12 +33,12 @@ def submit():
                         status=200,
                         mimetype='application/json')
     except IOError as err:
-        app.logger.error('Could not write JSON to file: ')
+        app.logger.error(f'Could not write JSON to file: {err}')
         return Response(json.dumps({'Error': 'There was a problem trying to write the caption data to file'}),
                         status=500,
                         mimetype='application/json')
     except ValueError as err:
-        app.logger.error('Could not encode caption data to byte pairs, shutting down with error: ')
+        app.logger.error(f'Could not encode caption data to byte pairs, shutting down with error: {err}')
         return Response(json.dumps({'Error': 'Received bad input for one or more values.'}),
                         status=500,
                         mimetype='application/json')
