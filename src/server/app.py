@@ -1,13 +1,21 @@
 import json
 
-from flask import Flask, request, Response
+from flask import Flask, request, Response, send_from_directory
 from flask_cors import CORS
 
+#import sys
+#sys.path.append('../server/cea_608_encoder')
+#import byte_pair_generator as encoder
 import src.server.cea_608_encoder.byte_pair_generator as encoder
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../client/')
 CORS(app)
+
+
+@app.route("/", methods=['GET'])
+def home():
+    return send_from_directory('../client/index.html')
 
 
 @app.route("/submit", methods=['POST'])
@@ -28,12 +36,12 @@ def submit():
                         status=200,
                         mimetype='application/json')
     except IOError as err:
-        app.logger.error(f'Could not write JSON to file: {err}')
+        app.logger.error('Could not write JSON to file: ')
         return Response(json.dumps({'Error': 'There was a problem trying to write the caption data to file'}),
                         status=500,
                         mimetype='application/json')
     except ValueError as err:
-        app.logger.error(f'Could not encode caption data to byte pairs, shutting down with error: {err}')
+        app.logger.error('Could not encode caption data to byte pairs, shutting down with error: ')
         return Response(json.dumps({'Error': 'Received bad input for one or more values.'}),
                         status=500,
                         mimetype='application/json')
