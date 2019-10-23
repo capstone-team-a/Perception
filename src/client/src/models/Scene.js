@@ -53,7 +53,27 @@ const Scene = {
   },
 
   // this function will save the current scene to the localStorage
-  save: function() {
+  saveCaptions: function() {
+    const list = Scene.getScenes()
+
+    // update the current scene in the scene list 
+    list[Scene.current.id-1].captions = Scene.current.captions
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // this function will save the current scene name to the localStorage
+  saveName: function() {
+    const list = Scene.getScenes()
+
+    // update the current scene in the scene list 
+    list[Scene.current.id-1].name = Scene.current.name
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // this function will save the current scene to the localStorage
+  saveStart: function() {
     const list = Scene.getScenes()
 
     // this is a check to make sure the value entered into start is a number
@@ -62,8 +82,8 @@ const Scene = {
       Scene.current.start = ``
     }
 
-    // update the current scene in the scene list 
-    list[Scene.current.id-1] = Scene.current
+    // update the current scenes start in the scene list 
+    list[Scene.current.id-1].start = Scene.current.start
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },

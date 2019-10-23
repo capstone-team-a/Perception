@@ -27,7 +27,7 @@ o.spec('SceneForm', function() {
     o(out.should.contain('new name')).equals(true)
     
     // make sure that change name form actually changes the name in the data model
-    out.click('.save-changes-button')
+    out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.name === 'new name') !== undefined).equals(true)
 
     // make sure that add caption button adds a new caption when triggered
@@ -38,22 +38,22 @@ o.spec('SceneForm', function() {
 
     // make sure that adding a negative number has the desired results
     out.setValue('.new-start-input', `-1`) // trigger an input in the input form
-    out.click('.save-changes-button')
+    out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.start === '-1') !== undefined).equals(true)
 
     // make sure that adding a positive  number has the desired results
     out.setValue('.new-start-input', '9000') // trigger an input in the input form
-    out.click('.save-changes-button')
+    out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.start === '9000') !== undefined).equals(true)
 
     // make sure that adding a float has the desired results
     out.setValue('.new-start-input', '9000.1') // trigger an input in the input form
-    out.click('.save-changes-button')
+    out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.start === '9000.1') !== undefined).equals(true)
 
     // make sure that adding a NaN has the desired results
     out.setValue('.new-start-input', 'IT\'S OVER 9000!!!') // trigger an input in the input form
-    out.click('.save-changes-button')
+    out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.start === 'IT\'S OVER 9000!!!') !== undefined).equals(false)
   })
 })

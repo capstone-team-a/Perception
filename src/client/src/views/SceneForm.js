@@ -11,9 +11,11 @@ module.exports = {
 
     return m('', [
       m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
-      m('form.save-name-form', {
+      m('form.save-changes-form', {
         onsubmit: function(e) {
           e.preventDefault()
+          Scene.saveName()
+          Scene.saveStart()
         }
       }, [
         m("input.new-name-input[type=text]", {
@@ -22,31 +24,22 @@ module.exports = {
           },
           value: Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`
         }),
-      ]),
-      m('h2', `Start`),
-      m('form.save-start-form', {
-        onsubmit: function(e) {
-          e.preventDefault()
-        }
-      }, [
+        m('h2', `Start`),
         m("input.new-start-input[type=text]", {
           oninput: function (e) {
             Scene.current.start = e.target.value
           },
           value: Scene.current.start ? Scene.current.start : ``
         }),
+        m('h5', ``),
+        m("button.save-changes-button[type=submit]", 'Save all changes'),
       ]),
-      m('button.save-changes-button', {
-        onclick: function() {
-          Scene.save()
-        }
-      }, 'Save all changes'),
       m('button.add-caption', {
         onclick: function() {
           Scene.current.captions.push({
             id : Scene.current.captions.length + 1
           })
-          Scene.save()
+          Scene.saveCaptions()
         }
       }, 'New Caption'),
       m('h2', 'List of captions'),
