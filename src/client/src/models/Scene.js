@@ -56,6 +56,12 @@ const Scene = {
   save: function() {
     const list = Scene.getScenes()
 
+    // this is a check to make sure the value entered into start is a number
+    const start_check = Number(Scene.current.start)
+    if (isNaN(start_check)) {
+      Scene.current.start = ``
+    }
+
     // update the current scene in the scene list 
     list[Scene.current.id-1] = Scene.current
 

@@ -14,7 +14,6 @@ module.exports = {
       m('form.save-name-form', {
         onsubmit: function(e) {
           e.preventDefault()
-          Scene.save()
         }
       }, [
         m("input.new-name-input[type=text]", {
@@ -23,8 +22,25 @@ module.exports = {
           },
           value: Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`
         }),
-        m("button.save-name-button[type=submit]", "Save")
       ]),
+      m('h2', `Start`),
+      m('form.save-start-form', {
+        onsubmit: function(e) {
+          e.preventDefault()
+        }
+      }, [
+        m("input.new-start-input[type=text]", {
+          oninput: function (e) {
+            Scene.current.start = e.target.value
+          },
+          value: Scene.current.start ? Scene.current.start : ``
+        }),
+      ]),
+      m('button.save-changes-button', {
+        onclick: function() {
+          Scene.save()
+        }
+      }, 'Save all changes'),
       m('button.add-caption', {
         onclick: function() {
           Scene.current.captions.push({
