@@ -15,7 +15,7 @@ CORS(app)
 
 @app.route("/", methods=['GET'])
 def home():
-    return send_from_directory('../client/index.html')
+    return send_from_directory('../client/','index.html')
 
 
 @app.route("/submit", methods=['POST'])
