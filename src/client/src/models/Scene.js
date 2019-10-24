@@ -20,7 +20,7 @@ const Scene = {
 
     if(!localStorage.getItem('input-format')) {
       localStorage.setItem('input-format', JSON.stringify({
-        inputFormat: 'CAE-608'
+        'input-format': 'CAE-608'
       }))
     }
   },
@@ -78,9 +78,9 @@ const Scene = {
   },
 
   setInputFormat: function(format) {
-    const list = JSON.parse(localStorage.getItem('input-format'))
-    list['inputFormat'] = format
-    localStorage.setItem('input-format', JSON.stringify(list))
+    const object = JSON.parse(localStorage.getItem('input-format'))
+    object['input-format'] = format
+    localStorage.setItem('input-format', JSON.stringify(object))
     //var x = document.getElementsByClassName("language-input").value
     //list['inputFormat'] = x
   }
