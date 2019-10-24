@@ -10,6 +10,9 @@ module.exports = {
     const captions = Scene.current.captions
 
     return m('', [
+      m(m.route.Link, {
+        href: '/scenes',
+      }, 'Back To Scene List'),
       m('h1', Scene.current.name ? Scene.current.name : `Scene ${Scene.current.id}`),
       m('form.save-changes-form', {
         onsubmit: function(e) {
@@ -49,11 +52,6 @@ module.exports = {
           href: `/edit-caption/${caption.id}`,
         }, `Caption ${caption.id}`)
       })),
-      m('button.back-button', {
-        onclick: function() {
-          m.route.set('/scenes')
-        }
-      }, 'Back To Scene List')
     ])
   }
 }
