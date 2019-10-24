@@ -48,7 +48,12 @@ module.exports = {
           class: 'caption-list-item',
           href: `/edit-caption/${caption.id}`,
         }, `Caption ${caption.id}`)
-      }))
+      })),
+      m('button.back-button', {
+        onclick: function() {
+          m.route.set('/scenes')
+        }
+      }, 'Back To Scene List')
     ])
   }
 }
