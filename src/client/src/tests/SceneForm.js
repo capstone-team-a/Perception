@@ -15,7 +15,7 @@ o.spec('SceneForm', function() {
     // render the SceneForm view mithril-query
     // also passing in id as attrs because this view expects id as a route param
     // note this test will have to change if we ever get rid of the default scene in Scene.initialize
-    var out = mq(SceneForm, {id: 1})
+    var out = mq(SceneForm, {sceneId: 1})
 
     // here we are simply checking if it correctly renders the text we expected
     o(out.should.contain('List of captions')).equals(true)
@@ -38,7 +38,7 @@ o.spec('SceneForm', function() {
 
     // testing the delete caption function
     Scene.deleteCaption(2) // use the scene deleteFunction to delete a scene
-    out = mq(SceneForm, {id: 1}) // rerender the scenes view
+    out = mq(SceneForm, {sceneId: 1}) // rerender the scenes view
     o(out.should.not.contain('Caption 2')).equals(true) // there should only be 2 scenes to end with
 
     // make sure that adding a negative number has the desired results
