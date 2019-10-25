@@ -15,10 +15,10 @@ module.exports = {
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
-          return m('div.scene-list-item', [
+          return m('div.scene-list-item', {key: scene.id}, [
             m('a', {
               onclick: function() {
-                m.route.set(`/edit-scene/${scene.id}`)
+                m.route.set(`/scenes/scene-${scene.id}`)
               }
             }, scene.name ? scene.name : `Scene ${scene.id}`),
             // when maping the scenes the delete button is included.

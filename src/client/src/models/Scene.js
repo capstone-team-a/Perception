@@ -57,7 +57,7 @@ const Scene = {
     const list = Scene.getScenes()
 
     // update the current scene in the scene list 
-    list[Scene.current.id-1].captions = Scene.current.captions
+    list[Scene.currentScene.id-1].captions = Scene.currentScene.captions
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -67,7 +67,7 @@ const Scene = {
     const list = Scene.getScenes()
 
     // update the current scene in the scene list 
-    list[Scene.current.id-1].name = Scene.current.name
+    list[Scene.currentScene.id-1].name = Scene.currentScene.name
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -77,24 +77,75 @@ const Scene = {
     const list = Scene.getScenes()
 
     // this is a check to make sure the value entered into start is a number
-    const start_check = Number(Scene.current.start)
+    const start_check = Number(Scene.currentScene.start)
     if (isNaN(start_check)) {
-      Scene.current.start = ``
+      Scene.currentScene.start = ``
     }
 
     // update the current scenes start in the scene list 
-    list[Scene.current.id-1].start = Scene.current.start
+    list[Scene.currentScene.id-1].start = Scene.currentScene.start
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
 
   // this is useful to have as a way to manage a scene using global state
-  current: null,
+  currentScene: null,
 
   // self-explanatory. Sets the currentScene property to the scene corresponding to the sceneId
-  setCurrent: function(sceneId) {
+  setCurrentScene: function(sceneId) {
     const list = Scene.getScenes()
-    Scene.current = list[sceneId]
+    Scene.currentScene = list[sceneId]
+  },
+
+  currentCaption: null,
+
+  setCurrentCaption: function(captionId) {
+    Scene.currentCaption = Scene.currentScene.captions[captionId]
+  },
+
+  // saves the current caption with its new name to localStorage
+  saveCaptionName: function() {
+    const list = Scene.getScenes()
+
+    list[Scene.currentScene.id-1].captions[Scene.currentCaption.id-1].name = Scene.currentCaption.name
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // saves the current caption with its new text to localStorage
+  saveCaptionText: function() {
+    const list = Scene.getScenes()
+
+    list[Scene.currentScene.id-1].captions[Scene.currentCaption.id-1].text = Scene.currentCaption.text
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  deleteCaption: function(captionId) {
+    // look for the caption
+    const indexToRemove = Scene.currentScene.captions.findIndex(function(caption) {
+      return caption.id === captionId
+    })
+
+    // no caption was found that matches captionId
+    if (captionId === -1) {
+      console.log('Cannot find the caption you are trying to delete.')
+      return
+    }
+
+    // we found the caption, so now we remove it
+    const list = Scene.getScenes()
+    list[Scene.currentScene.id-1].captions.splice(indexToRemove, 1)
+    
+    localStorage.setItem('scene-list', JSON.stringify(list))
+
+    // also remove it from currentScene
+    Scene.currentScene.captions.splice(indexToRemove, 1)
+
+    // loop and fix id numbers
+    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+      Scene.currentScene.captions[i].id = i + 1
+    }
   }
 }
 

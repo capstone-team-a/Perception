@@ -27,7 +27,7 @@ a:hover {
   cursor: pointer;
 }
 
-.delete-scene-button {
+.delete-scene-button, .delete-caption-button {
   margin-left: 2em;
 }
 
