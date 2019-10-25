@@ -36,6 +36,11 @@ o.spec('SceneForm', function() {
     out.click('.add-caption')
     o(out.should.contain('Caption 2')).equals(true)
 
+    // testing the delete caption function
+    Scene.deleteCaption(2) // use the scene deleteFunction to delete a scene
+    out = mq(SceneForm, {id: 1}) // rerender the scenes view
+    o(out.should.not.contain('Caption 2')).equals(true) // there should only be 2 scenes to end with
+
     // make sure that adding a negative number has the desired results
     out.setValue('.new-start-input', `-1`) // trigger an input in the input form
     out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
