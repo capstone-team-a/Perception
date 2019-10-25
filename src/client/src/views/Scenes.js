@@ -15,7 +15,7 @@ module.exports = {
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
-          return m('div.scene-list-item', [
+          return m('div.scene-list-item', {key: scene.id}, [
             m('a', {
               onclick: function() {
                 m.route.set(`/scenes/scene-${scene.id}`)
