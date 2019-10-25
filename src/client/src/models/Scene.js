@@ -141,6 +141,11 @@ const Scene = {
 
     // also remove it from currentScene
     Scene.currentScene.captions.splice(indexToRemove, 1)
+
+    // loop and fix id numbers
+    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+      Scene.currentScene.captions[i].id = i + 1
+    }
   }
 }
 
