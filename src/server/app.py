@@ -6,13 +6,13 @@ from flask_cors import CORS
 import src.server.cea_608_encoder.byte_pair_generator as encoder
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../client/")
 CORS(app)
 
 
 @app.route("/", methods=['GET'])
 def home():
-    return send_from_directory('../client/','index.html')
+    return send_from_directory('../client','index.html')
 
 
 @app.route("/submit", methods=['POST'])
