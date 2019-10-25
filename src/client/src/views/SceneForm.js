@@ -5,7 +5,9 @@ const Scene = require('../models/Scene')
 
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
-  oninit: function(vnode) {Scene.setCurrent(vnode.attrs.id - 1)},
+  oninit: function(vnode) {
+    Scene.setCurrentScene(vnode.attrs.id - 1)
+  },
   view: function(vnode) {
     const captions = Scene.current.captions
 
@@ -49,7 +51,7 @@ module.exports = {
       m('.caption-list', captions.map(function(caption) {
         return m(m.route.Link, {
           class: 'caption-list-item',
-          href: `/edit-caption/${caption.id}`,
+          href: `/scenes/scene-${vnode.attrs.id}/caption-${caption.id}`,
         }, `Caption ${caption.id}`)
       })),
     ])

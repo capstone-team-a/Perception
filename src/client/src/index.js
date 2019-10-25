@@ -19,12 +19,12 @@ const CaptionForm = require('./views/CaptionForm')
 m.route(document.body, '/start', {
   '/start': Start,
   '/scenes': Scenes,
-  '/edit-scene/:id': {
+  '/scenes/scene-:id': {
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
     }
   },
-  '/edit-caption/:id': {
+  '/scenes/scene-:sceneId/caption-:captionId': {
     render: function(vnode) {
       return m(CaptionForm, vnode.attrs)
     }

@@ -92,9 +92,33 @@ const Scene = {
   current: null,
 
   // self-explanatory. Sets the currentScene property to the scene corresponding to the sceneId
-  setCurrent: function(sceneId) {
+  setCurrentScene: function(sceneId) {
     const list = Scene.getScenes()
     Scene.current = list[sceneId]
+  },
+
+  currentCaption: null,
+
+  setCurrentCaption: function(captionId) {
+    Scene.currentCaption = Scene.current.captions[captionId]
+  },
+
+  // saves the current caption with its new name to localStorage
+  saveCaptionName: function() {
+    const list = Scene.getScenes()
+
+    list[Scene.current.id-1].captions[Scene.currentCaption.id-1].name = Scene.currentCaption.name
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
+  },
+
+  // saves the current caption with its new text to localStorage
+  saveCaptionText: function() {
+    const list = Scene.getScenes()
+
+    list[Scene.current.id-1].captions[Scene.currentCaption.id-1].text = Scene.currentCaption.text
+
+    localStorage.setItem('scene-list', JSON.stringify(list))
   }
 }
 
