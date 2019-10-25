@@ -11,7 +11,7 @@ module.exports = {
   },
   view: function(vnode) {
     return m('', [
-      m('h1', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${vnode.attrs.captionId}`),
+      m('h1', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
       m('form.save-changes-form', {
         onsubmit: function(e) {
           e.preventDefault()
