@@ -17,6 +17,12 @@ const Scene = {
         captions: []
       }]))
     }
+
+    if(!localStorage.getItem('input-format')) {
+      localStorage.setItem('input-format', JSON.stringify({
+        'input-format': 'Select your option'
+      }))
+    }
   },
 
   getScenes: function() {
@@ -146,7 +152,17 @@ const Scene = {
     for (var i = 0; i < Scene.currentScene.captions.length; i++) {
       Scene.currentScene.captions[i].id = i + 1
     }
-  }
+  },
+
+  setInputFormat: function(format) {
+    const object = JSON.parse(localStorage.getItem('input-format'))
+    object['input-format'] = format
+    localStorage.setItem('input-format', JSON.stringify(object))
+  },
+
+  getInputFormat: function() {
+    return JSON.parse(localStorage.getItem('input-format'))
+  },
 }
 
 module.exports = Scene
