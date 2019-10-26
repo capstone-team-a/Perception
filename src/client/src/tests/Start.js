@@ -9,6 +9,7 @@ o.spec('Start', function(){
         
         // Initialize the Scene data model
         Scene.initialize()
+        console.log('Test')
 
         // Reder the start view mithril-query
         var out = mq(Start)
