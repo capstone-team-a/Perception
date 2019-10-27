@@ -2,7 +2,7 @@
 
 const m = require('mithril')
 const Scene = require('../models/Scene')
-var inputFile
+var inputFile = null
 
 module.exports = {
   view: function() {
@@ -33,10 +33,10 @@ module.exports = {
       m('form.load-file-form', {
         onsubmit: function(e) {
           e.preventDefault()
-          if(Scene.loadFromFile(inputFile)) {
+          if(inputFile !== null && Scene.loadFromFile(inputFile)) {
             m.route.set('/scenes')
-          } else {
-            // TODO Give an error for broken JSON.
+          } else if (inputFile === null) {
+            alert("Must select file to load from")
           }
         }
       }, [

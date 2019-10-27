@@ -187,14 +187,19 @@ const Scene = {
 
   loadFromFile: function(inputFile) {
     if(!Scene.setFileName(inputFile.name)) {
+      alert("File type to load from must be .json")
       return false
     }
-    var reader = new FileReader()
-    var blob = inputFile.slice(0, inputFile.size)
-    reader.onloadend = function(e) {
-      localStorage.setItem('file-data', e.target.result)
+    try {
+      var reader = new FileReader()
+      var blob = inputFile.slice(0, inputFile.size)
+      reader.onloadend = function(e) {
+        localStorage.setItem('file-data', e.target.result)
+      }
+      reader.readAsBinaryString(blob)
+    } catch (error) {
+      alert("Error while reading file. Please try again.\n Error info: " + error)
     }
-    reader.readAsBinaryString(blob)
     const loadedData = JSON.parse(localStorage.getItem('file-data'))
     
     //TODO Load each item into local storage.
