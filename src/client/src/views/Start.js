@@ -2,6 +2,7 @@
 
 const m = require('mithril')
 const Scene = require('../models/Scene')
+var inputFile
 
 module.exports = {
   view: function() {
@@ -28,7 +29,34 @@ module.exports = {
       ]),
       m(m.route.Link, {
 	      href: '/scenes',
-      }, 'New Scene List')
+      }, 'New Scene List'),
+      m('form.load-file-form', {
+        onsubmit: function(e) {
+          e.preventDefault()
+          if(Scene.loadFromFile(inputFile)) {
+            m.route.set('/scenes')
+          } else {
+            // TODO Give an error for broken JSON.
+          }
+        }
+      }, [
+        m('h3', 'Load From File'),
+        m("label", {
+            class: "file",
+          },
+          m("input", {
+            onchange: function(e){
+              inputFile = e.target.files[0]
+            },
+            accept: ".json",
+            type: "file",
+          }),
+          m("span", {
+            class: "file-custom",
+          })
+        ),
+        m('button.load-file[type=submit]', 'Load File'),
+      ]),
     ])
   }
 }
