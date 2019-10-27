@@ -1,3 +1,5 @@
+const m = require('mithril')
+
 // This object represents the list of scenes which will be displayed on the scenes page and exported via HTTP to the server.
 // Basically, this is our key "JSON object"
 // We use localStorage for persistence
@@ -155,14 +157,56 @@ const Scene = {
   },
 
   setInputFormat: function(format) {
-    const object = JSON.parse(localStorage.getItem('input-format'))
-    object['input-format'] = format
-    localStorage.setItem('input-format', JSON.stringify(object))
+    localStorage.setItem('input-format', JSON.stringify(format))
   },
 
   getInputFormat: function() {
     return JSON.parse(localStorage.getItem('input-format'))
   },
+
+  exportToServer: function() {
+    const payload = Scene.constructJSON()
+
+    return m.request({
+      method: 'POST',
+      url: '/submit',
+      body: payload
+    })
+  },
+
+  // this function constructs the JSON payload in the format the server expects
+  constructJSON: function() {
+    const caption_format = Scene.getInputFormat()
+    const scenes = Scene.getScenes().map(function(scene) {
+
+      // using defualt values on these since the server requires non-null and non-undefined values at this time.
+      // TODO: once the server no longer requires everything, get rid of these hardcoded default values
+      return {
+        scene_id: scene.id,
+        start_time: scene.start ? Number(scene.start) : 123,
+        background_color: scene.background_color ? scene.background_color : 'blue',
+        position: scene.position ? scene.position : 'blah',
+        opacity: scene.opacity ? scene.opacity : 'sure',
+        caption_list: scene.captions.map(function(caption) {
+          return {
+            caption_id: caption.id,
+            string_list: caption.text ? [caption.text] : ['Huckleberry'],
+            color: caption.color ? caption.color : 'magenta',
+            text_alignment: caption.text_alignment ? caption.text_alignment : 'right',
+            underline: caption.underline ? caption.underline : 'nope',
+            italics: caption.italics ? caption.italics : 'sure'
+          }
+        })
+      }
+    })
+
+    return {
+      caption_format: caption_format,
+      scenes_list: scenes
+    }
+  }
 }
+
+
 
 module.exports = Scene

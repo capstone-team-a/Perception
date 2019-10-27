@@ -86,7 +86,7 @@ def consume_captions(caption_list: list) -> dict:
 
         caption_string_byte_pairs = []
         for string in caption['string_list']:
-            caption_string_byte_pairs.append(utils.create_byte_pairs_for_caption_string(string))
+            caption_string_byte_pairs.append(utils.create_byte_pairs_for_caption_string(string, 0))
 
         if caption['color']:
             caption_color = caption['color']
