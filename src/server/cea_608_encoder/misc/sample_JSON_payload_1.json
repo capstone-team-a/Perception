@@ -1,0 +1,59 @@
+{
+  "caption_format": "CEA_608",
+  "scenes_list": [
+    {
+      "scene_id": 1,
+      "start_time": 1,
+      "background_color": "yellow",
+      "position": "bottom center",
+      "channel_toggle": 0,
+      "caption_list": [
+        {
+          "caption_id": 1,
+          "string_list": ["Sample", "JSON"],
+          "color": "green",
+          "text_alignment": "left",
+          "underline": "false",
+          "italics": "false",
+          "opacity": "1"
+        },
+        {
+          "caption_id": 2,
+          "string_list": ["Payload", "1"],
+          "color": "black",
+          "text_alignment": "center",
+          "underline": "false",
+          "italics": "true",
+          "opacity": "0"
+        },
+      ]
+    },
+    {
+      "scene_id": 2,
+      "start_time": 120,
+      "background_color": "black",
+      "position": "bottom center",
+      "channel_toggle": 0,
+      "caption_list": [
+        {
+          "caption_id": 3,
+          "string_list": ["Capstone", "Team", "A"],
+          "color": "blue",
+          "text_alignment": "left",
+          "underline": "true",
+          "italics": "false",
+          "opacity": "1"
+        },
+        {
+          "caption_id": 4,
+          "string_list": ["Û«»ÃãÍ", "♪♪♪♪"],
+          "color": "red",
+          "text_alignment": "right",
+          "underline": "true",
+          "italics": "true",
+          "opacity": "0"
+        },
+      ]
+    }
+  ]
+}
