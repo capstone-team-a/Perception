@@ -23,6 +23,12 @@ const Scene = {
         'input-format': 'Select your option'
       }))
     }
+
+    if(!localStorage.getItem('file-name')) {
+      localStorage.setItem('file-name', JSON.stringify({
+        'file-name': ''
+      }))
+    }
   },
 
   getScenes: function() {
@@ -163,6 +169,42 @@ const Scene = {
   getInputFormat: function() {
     return JSON.parse(localStorage.getItem('input-format'))
   },
+
+  setFileName: function(fileName) {
+    var extensionCheck = fileName.split('.')
+    if (extensionCheck[extensionCheck.length - 1].toLowerCase() !== 'json') {
+      return false
+    }
+    const object = JSON.parse(localStorage.getItem('file-name'))
+    object['file-name'] = extensionCheck[0]
+    localStorage.setItem('file-name', JSON.stringify(object))
+    return true
+  },
+
+  getFileName: function() {
+    return JSON.parse(localStorage.getItem('file-name'))
+  },
+
+  loadFromFile: function(inputFile) {
+    if(!Scene.setFileName(inputFile.name)) {
+      alert("File type to load from must be .json")
+      return false
+    }
+    try {
+      var reader = new FileReader()
+      var blob = inputFile.slice(0, inputFile.size)
+      reader.onloadend = function(e) {
+        localStorage.setItem('file-data', e.target.result)
+      }
+      reader.readAsBinaryString(blob)
+    } catch (error) {
+      alert("Error while reading file. Please try again.\n Error info: " + error)
+    }
+    const loadedData = JSON.parse(localStorage.getItem('file-data'))
+    
+    //TODO Load each item into local storage.
+    return true
+  }
 }
 
 module.exports = Scene
