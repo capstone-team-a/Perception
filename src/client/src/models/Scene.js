@@ -31,6 +31,10 @@ const Scene = {
     }
   },
 
+  setScenes: function(scenes) {
+    localStorage.setItem('scene-list', JSON.stringify(scenes))
+  },
+
   getScenes: function() {
     return JSON.parse(localStorage.getItem('scene-list'))
   },
@@ -199,12 +203,70 @@ const Scene = {
       reader.readAsBinaryString(blob)
     } catch (error) {
       alert("Error while reading file. Please try again.\n Error info: " + error)
+      return false
     }
     const loadedData = JSON.parse(localStorage.getItem('file-data'))
-    
-    //TODO Load each item into local storage.
+    Scene.loadSceneListFromFile(loadedData)
     return true
-  }
+  },
+  
+  loadSceneListFromFile: function(loadedData) {
+    try {
+      console.log(loadedData)
+      Scene.setInputFormat(loadedData['caption_format'])
+      if (loadedData['caption_format'] === "CEA-608") {
+        var i
+        var sceneList = []
+        for (i = 0; i < loadedData['scene_list'].length; i++) {
+          newScene = Scene.loadSceneFromFile(loadedData['scene_list'][i], loadedData['caption_format'])
+          sceneList.push(newScene)
+        }
+        Scene.setScenes(sceneList)
+      } else {
+        alert("The loaded Caption Format is not supported.")
+      }
+    } catch (error) {
+      alert("JSON file was malformed." + error)
+    }
+  },
+  
+  loadSceneFromFile: function(loadedScene, format) {
+    if (format === "CEA-608") {
+      var i
+      var captionList = []
+      for (i = 0; i < loadedScene['caption_list'].length; i++) {
+        newCaption = Scene.loadCaptionFromFile(loadedScene['caption_list'][i], format)
+        captionList.push(newCaption)
+      }
+      return {
+        id: loadedScene['scene_id'],
+        name: loadedScene['scene_name'],
+        start: loadedScene['start'].time.toString(),
+        //TODO position: loadedScene['position']
+        captions: captionList
+      }
+    } else {
+      alert("The loaded Caption Format is not supported.")
+    }
+  },
+
+  loadCaptionFromFile: function(loadedCaption, format) {
+    if (format === "CEA-608") {
+      return {
+        id: loadedCaption['caption_id'],
+        name: loadedCaption['caption_name'],
+        text: loadedCaption['caption_string']
+        //TODO backround: loadedCaption['backround_color']['color']
+        //TODO fore_color: loadedCaption['fore_color']['color']
+        //TODO alighnment: loadedCaption['text_alighnment']['placment']
+        //TODO underline: loadedCaption['underline']
+        //TODO italics: loadedCaption['italics']
+        //TODO opacity: loadedCaption['opacity']
+      }
+    } else {
+      alert("The loaded Caption Format is not supported.")
+    }
+  },
 }
 
 module.exports = Scene
