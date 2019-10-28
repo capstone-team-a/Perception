@@ -41,32 +41,57 @@ const Scene = {
     return JSON.parse(localStorage.getItem('scene-list'))
   },
 
-  addScene: function() {
+  findSceneIndex: function(sceneid) {
     // get current list
     const list = JSON.parse(localStorage.getItem('scene-list'))
 
+    for (var i = 0; i < list.length; i++) {
+      if (sceneid == list[i].id) {
+        return i
+      }
+    }
+
+    return -1
+  },
+
+  addScene: function() {
+    // get current list
+    const list = JSON.parse(localStorage.getItem('scene-list'))
+      // keeps tracks of id numbers in order to not crash into each other
+    var scenes_index = 0
+    // Finds the max scene id in the list
+    if (list.length == 0) {
+      scenes_index = 0
+    } else {
+      scenes_index = 0
+      for (var i = 0; i < list.length; i++) {
+        if (scenes_index < list[i].id) {
+          scenes_index = list[i].id
+        }
+      }
+    }
+    // Adds a new scene
+    scenes_index = scenes_index + 1
+
     // add new scene object
     list.push({
-      id: list.length + 1,
+      id: scenes_index,
+      start: null,
       captions: []
     })
+    // saves the current list
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
 
   deleteScene: function(sceneid) {
-    // decrease sceneid to match with JSON
-    sceneid = sceneid - 1
-
     // get current list
     const list = JSON.parse(localStorage.getItem('scene-list'))
-
-    // goto index at sceneid and take one element out
-    list.splice(sceneid,1)
-
-    // loop and fix id numbers
-    for (var i = 0; i < list.length; i++) {
-      list[i].id = i + 1
+    // loop and delete the scene at that instance in the scene
+    const scene_index = Scene.findSceneIndex(sceneid)
+    if (scene_index != -1) {
+      list.splice(scene_index,1)
     }
+    // saves the current list
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
 
@@ -74,8 +99,8 @@ const Scene = {
   saveCaptions: function() {
     const list = Scene.getScenes()
 
-    // update the current scene in the scene list 
-    list[Scene.currentScene.id-1].captions = Scene.currentScene.captions
+    // update the current scene in the scene list
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions = Scene.currentScene.captions
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -84,8 +109,8 @@ const Scene = {
   saveName: function() {
     const list = Scene.getScenes()
 
-    // update the current scene in the scene list 
-    list[Scene.currentScene.id-1].name = Scene.currentScene.name
+    // update the current scene in the scene list
+    list[Scene.findSceneIndex(Scene.currentScene.id)].name = Scene.currentScene.name
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -100,8 +125,8 @@ const Scene = {
       Scene.currentScene.start = ``
     }
 
-    // update the current scenes start in the scene list 
-    list[Scene.currentScene.id-1].start = Scene.currentScene.start
+    // update the current scenes start in the scene list
+    list[Scene.findSceneIndex(Scene.currentScene.id)].start = Scene.currentScene.start
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -112,20 +137,52 @@ const Scene = {
   // self-explanatory. Sets the currentScene property to the scene corresponding to the sceneId
   setCurrentScene: function(sceneId) {
     const list = Scene.getScenes()
-    Scene.currentScene = list[sceneId]
+    Scene.currentScene = list[Scene.findSceneIndex(sceneId)]
   },
 
   currentCaption: null,
 
   setCurrentCaption: function(captionId) {
-    Scene.currentCaption = Scene.currentScene.captions[captionId]
+    Scene.currentCaption = Scene.currentScene.captions[Scene.findCaptionIndex(captionId)]
+  },
+
+  findCaptionIndex: function (captionId) {
+    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+      if (Scene.currentScene.captions[i].id == captionId) {
+        return i
+      }
+    }
+
+    return -1
+  },
+
+  addCaption: function () {
+    var caption_index = 0
+    // Finds the max scene id in the list
+    if (Scene.currentScene.captions.length == 0) {
+      caption_index = 0
+    } else {
+      caption_index = 0
+      for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+        if (caption_index < Scene.currentScene.captions[i].id) {
+          caption_index = Scene.currentScene.captions[i].id
+        }
+      }
+    }
+    // Adds a new scene
+    caption_index = caption_index + 1
+
+
+    Scene.currentScene.captions.push({
+      id : caption_index
+    })
   },
 
   // saves the current caption with its new name to localStorage
   saveCaptionName: function() {
     const list = Scene.getScenes()
 
-    list[Scene.currentScene.id-1].captions[Scene.currentCaption.id-1].name = Scene.currentCaption.name
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].name = Scene.currentCaption.name
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -134,7 +191,7 @@ const Scene = {
   saveCaptionText: function() {
     const list = Scene.getScenes()
 
-    list[Scene.currentScene.id-1].captions[Scene.currentCaption.id-1].text = Scene.currentCaption.text
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].text = Scene.currentCaption.text
 
     localStorage.setItem('scene-list', JSON.stringify(list))
   },
@@ -153,17 +210,13 @@ const Scene = {
 
     // we found the caption, so now we remove it
     const list = Scene.getScenes()
-    list[Scene.currentScene.id-1].captions.splice(indexToRemove, 1)
-    
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions.splice(indexToRemove, 1)
+
     localStorage.setItem('scene-list', JSON.stringify(list))
 
     // also remove it from currentScene
     Scene.currentScene.captions.splice(indexToRemove, 1)
 
-    // loop and fix id numbers
-    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
-      Scene.currentScene.captions[i].id = i + 1
-    }
   },
 
   setInputFormat: function(format) {
@@ -210,9 +263,12 @@ const Scene = {
       alert("Error while reading file. Please try again.\n Error info: " + error)
       return false
     }
+    const loadedData = JSON.parse(localStorage.getItem('file-data'))
+
+    //TODO Load each item into local storage.
     return true
   },
-  
+
 
   exportToServer: function() {
     const payload = Scene.constructJSON()
@@ -277,7 +333,7 @@ const Scene = {
       alert("JSON file was malformed." + error)
     }
   },
-  
+
   load608SceneFromFile: function(loadedScene, format) {
     var i
     var captionList = []

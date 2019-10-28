@@ -6,8 +6,8 @@ const Scene = require('../models/Scene')
 module.exports = {
   oninit: function(vnode) {
     // first set the current Scene, then set the current caption.
-    Scene.setCurrentScene(vnode.attrs.sceneId - 1)
-    Scene.setCurrentCaption(vnode.attrs.captionId - 1)
+    Scene.setCurrentScene(vnode.attrs.sceneId)
+    Scene.setCurrentCaption(vnode.attrs.captionId)
   },
   view: function(vnode) {
     return m('', [
@@ -41,6 +41,3 @@ module.exports = {
     ])
   }
 }
-
-
-
