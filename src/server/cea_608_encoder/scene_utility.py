@@ -27,4 +27,4 @@ def get_erase_non_displayed_memory_bytes() -> tuple:
 
 
 def get_end_of_caption_bytes() -> tuple:
-    return 0x14, 0x2F
+    return 0x14, 0x2f
