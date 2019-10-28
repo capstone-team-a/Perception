@@ -197,10 +197,13 @@ const Scene = {
     try {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
-      reader.onloadend = function(e) {
+      reader.onload = function(e) {
         localStorage.setItem('file-data', e.target.result)
         const loadedData = JSON.parse(localStorage.getItem('file-data'))
         Scene.loadSceneListFromFile(loadedData)
+      }
+      reader.onerror = function(e) {
+        alert("There was an error while reading your file.")
       }
       reader.readAsBinaryString(blob)
     } catch (error) {
