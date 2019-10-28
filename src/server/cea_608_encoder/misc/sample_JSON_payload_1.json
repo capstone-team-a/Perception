@@ -4,9 +4,11 @@
   "scenes_list": [
     {
       "scene_id": 1,
+      "scene_name": "Scene 1",
       "caption_list": [
         {
           "caption_id": 1,
+          "caption_name": "Caption 1",
           "caption_string": "Sample JSON",
           "background_color": 
             {
@@ -26,6 +28,7 @@
         },
         {
           "caption_id": 2,
+          "caption_name": "Caption 2",
           "caption_string": "Payload 1",
           "background_color": 
             {
@@ -55,9 +58,11 @@
     },
     {
       "scene_id": 2,
+      "scene_name": "Scene 2",
       "caption_list": [
         {
           "caption_id": 3,
+          "caption_name": "Caption 3",
           "caption_string": "Capstone Team A",
           "background_color": 
             {
@@ -77,6 +82,7 @@
         },
         {
           "caption_id": 4,
+          "caption_name": "Caption 4",
           "caption_string": "Û«»ÃãÍ ♪♪♪♪",
           "background_color": 
             {
