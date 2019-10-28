@@ -11,6 +11,9 @@ module.exports = {
   },
   view: function(vnode) {
     return m('', [
+      m(m.route.Link, {
+        href: `/scenes/scene-${Scene.currentScene.id}`,
+      }, 'Back To Scene'),
       m('h1', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
       m('form.save-changes-form', {
         onsubmit: function(e) {
