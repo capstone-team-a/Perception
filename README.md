@@ -20,7 +20,9 @@ cd ~/Perception/src/server
 pip3 install -r requirements.txt
 ```
 4. Invoke main.py with a valid JSON file: 
-```python3 main.py path-to-file.json```
+```
+python3 main.py path-to-file.json
+```
 
 #### Running the web application:
 
