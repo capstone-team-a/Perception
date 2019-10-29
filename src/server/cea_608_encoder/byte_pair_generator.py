@@ -42,11 +42,13 @@ def consume_scenes(scene_list: list) -> list:
     :param scene_list:
     :return: TODO
     """
-    scene_data = {}
-    scene_data['start'] = 0
-    scene_data['data'] = []
-
+    scene_data = []
+    
     for scene in scene_list:
+        current_scene_data = {}
+        current_scene_data['start'] = 0
+        current_scene_data['data'] = []
+
         if not scene['scene_id']:
             raise ValueError('Every scene must have a scene ID.')
 
@@ -54,42 +56,44 @@ def consume_scenes(scene_list: list) -> list:
             raise ValueError('You must specify a starting time for a scene.')
         else:
             start = scene['start']
-            scene_data['start'] = start
+            current_scene_data['start'] = start
 
         if scene['position']:
             position = scene['position']
             scene_utils.create_bytes_for_scene_position(position)
 
         # append RCL.
-        scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_resume_caption_loading_bytes()
                         )
 
         # append ENM.
-        scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_erase_non_displayed_memory_bytes()
                         )
 
         # append Default Style Bytepairs.
         # TODO This will have to be reworked when we add proper style support.
-        scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_default_preamble_style_bytes()
                         )
 
         # append Default Style Bytepairs.
         # TODO This will have to be reworked when we add proper position support
-        scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_default_preamble_address_bytes()
                         )
 
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        scene_data['data'] += consume_captions(caption_list)['caption_string']
+        current_scene_data['data'] += consume_captions(caption_list)['caption_string']
 
         # append EOC.
-        scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
                               scene_utils.get_end_of_caption_bytes()
                               )
+
+        scene_data.append(current_scene_data)
 
     return scene_data
 
@@ -113,12 +117,12 @@ def consume_captions(caption_list: list) -> dict:
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
 
         if 'foreground_color' in caption:
-            caption_color = caption['foreground_color'].get('color')
+            caption_color = caption['foreground_color']['color']
             caption_color_byte_encoded = utils.create_byte_pairs_for_caption_color(caption_color)
             caption_metadata['foreground_color'] = caption_color_byte_encoded
 
         if 'background_color' in caption:
-            background_color = caption['background_color'].get('color')
+            background_color = caption['background_color']['color']
             scene_utils.create_bytes_for_scene_background_color(background_color)
 
         if 'opacity' in caption:
@@ -126,7 +130,7 @@ def consume_captions(caption_list: list) -> dict:
             scene_utils.create_bytes_for_scene_opacity(opacity)
 
         if 'text_alignment' in caption:
-            text_alignment = caption['text_alignment'].get("placement")
+            text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_metadata['text_alignment'] = caption_alignment_byte_encoded
 

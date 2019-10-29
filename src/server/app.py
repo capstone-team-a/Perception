@@ -29,7 +29,7 @@ def submit():
         with open('data.json', 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
         result = encoder.consume(caption_data)
-        print(json.dumps(result))
+        print(json.dumps(result, indent=4))
         return Response(json.dumps({'Success': 'ok'}),
                         status=200,
                         mimetype='application/json')
