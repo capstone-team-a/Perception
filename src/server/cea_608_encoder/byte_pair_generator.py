@@ -123,7 +123,8 @@ def consume_captions(caption_list: list) -> dict:
 
         if 'background_color' in caption and 'color' in caption['background_color']:
             background_color = caption['background_color']['color']
-            scene_utils.create_bytes_for_scene_background_color(background_color)
+            background_color_byte_encoded = scene_utils.create_bytes_for_scene_background_color(background_color)
+            caption_metadata['background_color'] = background_color_byte_encoded
 
         if 'opacity' in caption:
             opacity = caption['opacity']
