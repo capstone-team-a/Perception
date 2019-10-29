@@ -33,3 +33,43 @@ The `bin` direcetory contains the compiled "bundle" file.
 `src/views` contains the various views/screens.
 
 `src/tests` contains the test files.
+
+## Other stuff
+
+It useful to test out POST requests to the server using curl before implementing the code in the frontend.
+
+Here is an example curl command which takes in a JSON file:
+
+```
+curl -vX POST http://127.0.0.1:5000/submit -d @temp.json \
+--header "Content-Type: application/json"
+```
+
+Where temp.json in this case is a file formatted like so:
+
+```
+{
+  "caption_format": "CEA_608",
+  "scenes_list": [
+    {
+      "scene_id": 1,
+      "start_time": 123,
+      "background_color": "blue",
+      "position": "blah",
+      "opacity": "sure",
+      "caption_list": [
+        {
+          "caption_id": 1337,
+          "string_list": ["hello", "world"],
+          "color": "magenta",
+          "text_alignment": "right",
+          "underline": "nope",
+          "italics": "sure"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Just change `temp.json` to whatever file you want to point it to.

@@ -20,13 +20,13 @@ o.spec('Start', function(){
         // When trigger select box and choose Teletext option, the option should
         // correctly saved into local storage
         out.trigger('select.language-input', 'onchange', {target: {value: "Teletext"}})
-        var object = Scene.getInputFormat()
-        o(object['input-format'] === 'Teletext').equals(true)
+        var format = Scene.getInputFormat()
+        o(format === 'Teletext').equals(true)
 
         // When trigger select box and choose CEA-608 option, local storage
         // should no longer contain Teletext option
         out.trigger('select.language-input', 'onchange', {target: {value: "CEA-608"}})
-        var object = Scene.getInputFormat()
-        o(object['input-format'] === 'Teletext').equals(false)
+        var format = Scene.getInputFormat()
+        o(format === 'Teletext').equals(false)
     })
 })

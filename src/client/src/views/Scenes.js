@@ -12,6 +12,18 @@ module.exports = {
       m('button.add-scene', {
         onclick: Scene.addScene
       }, 'New Scene'),
+      m('button.export', {
+        onclick: function() {
+          Scene.exportToServer()
+            .then(function(response) {
+              alert('Successfully exported!')
+            })
+            .catch(function(e) {
+              alert(`Error: response code ${e.code}, ${e.response.Error}`)
+              console.dir(e)
+            })
+        }
+      }, 'Export'),
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
