@@ -20,10 +20,10 @@ module.exports = {
           disabled: "disabled"
         }, 'Select your option'),
         ["CEA-608", "Teletext"].map(function(opt) {
-          var object = Scene.getInputFormat()
+          const format = Scene.getInputFormat()
           return m('option', {
             value: opt,
-            selected: opt === object['input-format'] ? true : false
+            selected: opt === format ? true : false
           }, opt)
         }) 
       ]),

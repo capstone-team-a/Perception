@@ -1,3 +1,5 @@
+const m = require('mithril')
+
 // This object represents the list of scenes which will be displayed on the scenes page and exported via HTTP to the server.
 // Basically, this is our key "JSON object"
 // We use localStorage for persistence
@@ -165,9 +167,7 @@ const Scene = {
   },
 
   setInputFormat: function(format) {
-    const object = JSON.parse(localStorage.getItem('input-format'))
-    object['input-format'] = format
-    localStorage.setItem('input-format', JSON.stringify(object))
+    localStorage.setItem('input-format', JSON.stringify(format))
   },
 
   getInputFormat: function() {
@@ -213,6 +213,52 @@ const Scene = {
     return true
   },
   
+
+  exportToServer: function() {
+    const payload = Scene.constructJSON()
+
+    return m.request({
+      method: 'POST',
+      url: '/submit',
+      body: payload
+    })
+  },
+
+  // this function constructs the JSON payload in the format the server expects
+  constructJSON: function() {
+    const caption_format = Scene.getInputFormat()
+    const scenes = Scene.getScenes().map(function(scene) {
+
+      // using defualt values on these since the server requires non-null and non-undefined values at this time.
+      // TODO: once the server no longer requires everything, get rid of these hardcoded default values
+      return {
+        scene_id: scene.id,
+        scene_name: scene.name,
+        start: scene.start,
+        position: scene.position,
+        caption_list: scene.captions.map(function(caption) {
+          return {
+            caption_id: caption.id,
+            caption_name: caption.name,
+            caption_string: caption.text,
+            background_color: caption.background_color,
+            foreground_color: caption.foreground_color,
+            text_alignment: caption.text_alignment,
+            underline: caption.underline,
+            italics: caption.italics,
+            opacity: caption.opacity,
+          }
+        })
+      }
+    })
+
+    return {
+      file_name: 'test_file',
+      caption_format: caption_format,
+      scene_list: scenes
+    }
+  }
+
   loadSceneListFromFile: function(loadedData) {
     try {
       Scene.setInputFormat(loadedData['caption_format'])
@@ -262,5 +308,7 @@ const Scene = {
     }
   },
 }
+
+
 
 module.exports = Scene
