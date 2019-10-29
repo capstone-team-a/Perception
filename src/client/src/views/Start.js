@@ -19,7 +19,7 @@ module.exports = {
           selected: "selected",
           disabled: "disabled"
         }, 'Select your option'),
-        ["CEA_608", "Teletext"].map(function(opt) {
+        ["CEA-608", "Teletext"].map(function(opt) {
           const format = Scene.getInputFormat()
           return m('option', {
             value: opt,
