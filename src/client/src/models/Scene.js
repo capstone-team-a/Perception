@@ -226,19 +226,19 @@ const Scene = {
       return {
         scene_id: scene.id,
         scene_name: scene.name,
-        start: scene.start ? {time: Number(scene.start)} : {time: 0},
-        position: scene.position ? scene.position : {channel: '11'},
+        start: scene.start,
+        position: scene.position,
         caption_list: scene.captions.map(function(caption) {
           return {
             caption_id: caption.id,
             caption_name: caption.name,
-            caption_string: caption.text ? caption.text : '',
-            background_color: caption.background_color ? caption.background_color : {color: 'black'},
-            fore_color: caption.fore_color ? caption.fore_color : {color: 'white'},
-            text_alignment: caption.text_alignment ? caption.text_alignment : {placement: 'left'},
-            underline: caption.underline ? caption.underline : false,
-            italics: caption.italics ? caption.italics : false,
-            opacity: caption.opacity ? caption.opacity : 100,
+            caption_string: caption.text,
+            background_color: caption.background_color,
+            foreground_color: caption.foreground_color,
+            text_alignment: caption.text_alignment,
+            underline: caption.underline,
+            italics: caption.italics,
+            opacity: caption.opacity,
           }
         })
       }
