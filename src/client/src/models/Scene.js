@@ -225,26 +225,29 @@ const Scene = {
       // TODO: once the server no longer requires everything, get rid of these hardcoded default values
       return {
         scene_id: scene.id,
-        start_time: scene.start ? Number(scene.start) : 123,
-        background_color: scene.background_color ? scene.background_color : 'blue',
-        position: scene.position ? scene.position : 'blah',
-        opacity: scene.opacity ? scene.opacity : 'sure',
+        scene_name: scene.name,
+        start: scene.start ? {time: Number(scene.start)} : {time: 0},
+        position: scene.position ? scene.position : {channel: '11'},
         caption_list: scene.captions.map(function(caption) {
           return {
             caption_id: caption.id,
-            string_list: caption.text ? [caption.text] : ['Huckleberry'],
-            color: caption.color ? caption.color : 'magenta',
-            text_alignment: caption.text_alignment ? caption.text_alignment : 'right',
-            underline: caption.underline ? caption.underline : 'nope',
-            italics: caption.italics ? caption.italics : 'sure'
+            caption_name: caption.name,
+            caption_string: caption.text ? caption.text : '',
+            background_color: caption.background_color ? caption.background_color : {color: 'black'},
+            fore_color: caption.fore_color ? caption.fore_color : {color: 'white'},
+            text_alignment: caption.text_alignment ? caption.text_alignment : {placement: 'left'},
+            underline: caption.underline ? caption.underline : false,
+            italics: caption.italics ? caption.italics : false,
+            opacity: caption.opacity ? caption.opacity : 100,
           }
         })
       }
     })
 
     return {
+      file_name: 'test_file',
       caption_format: caption_format,
-      scenes_list: scenes
+      scene_list: scenes
     }
   }
 }
