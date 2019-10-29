@@ -23,7 +23,7 @@ Perception is a headless web application for encoding caption data to CEA-608 by
 7. Invoke Flask: `flask run`
 8. Open your browser to: `http://localhost:5000`
 
-**Note:** If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: `export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"`. 
+**Note:** If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: `export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"`
 
 ## Installation
 
