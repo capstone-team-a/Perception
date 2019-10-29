@@ -7,21 +7,55 @@ Perception is a headless web application for encoding caption data to CEA-608 by
 
 #### Running the application via command-line interface:
 
-1. Clone the repo: `git clone https://github.com/capstone-team-a/Perception.git`
-2. Navigate to: `~/Perception/src/server`
-3. Run `pip3 install -r requirements.txt`
-4. Invoke main.py with a valid JSON file: `python3 main.py path-to-file.json` TODO: link to a reference JSON payload
+1. Clone the repository: 
+```
+git clone https://github.com/capstone-team-a/Perception.git
+```
+2. Navigate to the Perception backend directory: 
+```
+cd ~/Perception/src/server
+```
+3. Install Python dependencies with pip: 
+```
+pip3 install -r requirements.txt
+```
+4. Invoke main.py with a valid JSON file: 
+```python3 main.py path-to-file.json```
 
 #### Running the web application:
 
-1. Clone the repo: `git clone https://github.com/capstone-team-a/Perception.git`
-2. Navigate to: `~/Perception/src/client`
-3. Run `npm install`, this will install necessary dependencies
-4. Run `npm start`, this will invoke webpack to bundle all JavaScript files into one file: `bin/app.js`
-5. Navigate to: `~/Perception/src/server`
-6. Run `pip3 install -r requirements.txt`
-7. Invoke Flask: `flask run`
-8. Open your browser to: `http://localhost:5000`
+1. Clone the repository: 
+```
+git clone https://github.com/capstone-team-a/Perception.git
+```
+2. Navigate to the Perception frontend directory: 
+```
+cd ~/Perception/src/client
+```
+3. Run the npm command to install necessary dependencies:
+```
+npm install
+```
+4. Run the npm command to bundle all JavaScript files into one file: bin/app.js
+```
+npm start
+```
+5. Navigate to the Perception backend directory: 
+```
+cd ~/Perception/src/server
+```
+6. Install Python dependencies with pip:
+```
+pip3 install -r requirements.txt
+```
+7. Start the Flask application: 
+```
+flask run
+```
+8. Open your browser to: 
+```
+http://localhost:5000
+```
 
 **Note:** If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: `export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"`
 
