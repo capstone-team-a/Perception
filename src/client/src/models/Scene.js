@@ -243,7 +243,7 @@ const Scene = {
       id: loadedScene['scene_id'],
       name: loadedScene['scene_name'],
       start: loadedScene['start'].time.toString(),
-      //TODO position: loadedScene['position']
+      //TODO position: loadedScene['position'].key
       captions: captionList
     }
   },
@@ -253,9 +253,9 @@ const Scene = {
       id: loadedCaption['caption_id'],
       name: loadedCaption['caption_name'],
       text: loadedCaption['caption_string']
-      //TODO backround: loadedCaption['backround_color']['color']
-      //TODO fore_color: loadedCaption['fore_color']['color']
-      //TODO alighnment: loadedCaption['text_alighnment']['placment']
+      //TODO background: loadedCaption['background_color'].color
+      //TODO foreground_color: loadedCaption['foreground_color'].color
+      //TODO alignment: loadedCaption['text_alignment'].placment
       //TODO underline: loadedCaption['underline']
       //TODO italics: loadedCaption['italics']
       //TODO opacity: loadedCaption['opacity']
