@@ -59,7 +59,11 @@ flask run
 http://localhost:5000
 ```
 
-**Note:** If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: `export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"`
+**Note:** 
+
+If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: ```
+export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
+```
 
 ## Installation
 
