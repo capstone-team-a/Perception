@@ -116,12 +116,12 @@ def consume_captions(caption_list: list) -> dict:
             string = caption['caption_string']
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
 
-        if 'foreground_color' in caption and 'color' in caption:
+        if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             caption_color = caption['foreground_color']['color']
             caption_color_byte_encoded = utils.create_byte_pairs_for_caption_color(caption_color)
             caption_metadata['foreground_color'] = caption_color_byte_encoded
 
-        if 'background_color' in caption and 'color' in caption:
+        if 'background_color' in caption and 'color' in caption['background_color']:
             background_color = caption['background_color']['color']
             scene_utils.create_bytes_for_scene_background_color(background_color)
 
@@ -129,7 +129,7 @@ def consume_captions(caption_list: list) -> dict:
             opacity = caption['opacity']
             scene_utils.create_bytes_for_scene_opacity(opacity)
 
-        if 'text_alignment' in caption and 'placement' in caption:
+        if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
             text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_metadata['text_alignment'] = caption_alignment_byte_encoded
@@ -141,4 +141,3 @@ def consume_captions(caption_list: list) -> dict:
             caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
 
     return caption_metadata
-
