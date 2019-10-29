@@ -257,7 +257,7 @@ const Scene = {
       caption_format: caption_format,
       scene_list: scenes
     }
-  }
+  },
 
   loadSceneListFromFile: function(loadedData) {
     try {
