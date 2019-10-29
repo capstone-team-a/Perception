@@ -5,12 +5,23 @@ Perception is a headless webapplication for encoding caption data to CEA-608 byt
 
 ## Getting Started
 
-Running the application via command-line interface:
+#### Running the application via command-line interface:
 
 1. Clone the repo: `git clone https://github.com/capstone-team-a/Perception.git`
 2. Navigate to: `~/Perception/src/server`
 3. Run `pip3 install -r requirements.txt`
 4. Invoke main.py with a valid JSON file: `python3 main.py path-to-file.json` TODO: link to a reference JSON payload
+
+#### Running the web application:
+
+1. Clone the repo: `git clone https://github.com/capstone-team-a/Perception.git`
+2. Navigate to: `~/Perception/src/client`
+3. Run `npm install`, this will install necessary dependencies
+4. Run `npm start`, this will invoke webpack to bundle all JavaScript files into one file: `bin/app.js`
+5. Navigate to: `~/Perception/src/server`
+6. Run `pip3 install -r requirements.txt`
+7. Invoke Flask: `flask run`
+8. Open your browser to: `http://localhost:5000`
 
 ## Installation
 
