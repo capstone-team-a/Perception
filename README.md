@@ -1,6 +1,6 @@
 # Perception
 
-Perception is an encoder for creating CEA-608 byte pairs and logging the data as JSON to a file.
+Perception is a headless webapplication for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file.
 
 ## Getting Started
 
