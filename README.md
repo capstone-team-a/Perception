@@ -7,9 +7,10 @@ Perception is a headless webapplication for encoding caption data to CEA-608 byt
 
 Running the application via command-line interface:
 
-1. Navigate to ~/Perception/src/server
-2. Run `pip3 install -r requirements.txt`
-3. Invoke main.py with a valid JSON file: `python3 main.py path-to-file.json`
+1. Clone the repo: `git clone https://github.com/capstone-team-a/Perception.git`
+2. Navigate to: `~/Perception/src/server`
+3. Run `pip3 install -r requirements.txt`
+4. Invoke main.py with a valid JSON file: `python3 main.py path-to-file.json`
 
 ## Installation
 
