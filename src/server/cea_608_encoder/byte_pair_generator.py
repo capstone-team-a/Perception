@@ -4,7 +4,7 @@ import src.server.cea_608_encoder.scene_utility as scene_utils
 # At a future time this could live in it's own config file
 # Leaving it here temporarily
 supported_caption_formats = [
-    'CEA_608'
+    'CEA-608'
 ]
 
 
@@ -22,15 +22,15 @@ def consume(caption_data: dict) -> dict:
         caption_format = caption_data['caption_format']
         raise ValueError(f'The supplied caption format {caption_format} is not supported.')
 
-    if not caption_data['scenes_list']:
+    if not caption_data['scene_list']:
         raise ValueError('Cannot encode byte pairs with an empty scene list.')
 
-    scene_data = caption_data['scenes_list']
+    scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
 
     return {
         'type': caption_format,
-        'data': consume_scenes(scene_data)
+        'scenes': consume_scenes(scene_data)
     }
 
 
@@ -43,32 +43,59 @@ def consume_scenes(scene_list: list) -> list:
     :return: TODO
     """
     scene_data = []
+    
     for scene in scene_list:
+        current_scene_data = {}
+        current_scene_data['start'] = 0
+        current_scene_data['data'] = []
+
         if not scene['scene_id']:
             raise ValueError('Every scene must have a scene ID.')
 
-        if not scene['start_time']:
+        if not scene['start']:
             raise ValueError('You must specify a starting time for a scene.')
         else:
-            start_time = scene['start_time']
-            scene_utils.validate_time_formatting(start_time)
-
-        if scene['background_color']:
-            background_color = scene['background_color']
-            scene_utils.create_bytes_for_scene_background_color(background_color)
+            start = scene['start']
+            current_scene_data['start'] = start
 
         if scene['position']:
             position = scene['position']
             scene_utils.create_bytes_for_scene_position(position)
 
-        if scene['opacity']:
-            opacity = scene['opacity']
-            scene_utils.create_bytes_for_scene_opacity(opacity)
+        # append RCL.
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+                        scene_utils.get_resume_caption_loading_bytes()
+                        )
 
+        # append ENM.
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+                        scene_utils.get_erase_non_displayed_memory_bytes()
+                        )
+
+        # append Default Style Bytepairs.
+        # TODO This will have to be reworked when we add proper style support.
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+                        scene_utils.get_default_preamble_style_bytes()
+                        )
+
+        # append Default Style Bytepairs.
+        # TODO This will have to be reworked when we add proper position support
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+                        scene_utils.get_default_preamble_address_bytes()
+                        )
+
+        # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        scene_data.append(consume_captions(caption_list))
+        current_scene_data['data'] += consume_captions(caption_list)['caption_string']
 
-    return []
+        # append EOC.
+        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+                              scene_utils.get_end_of_caption_bytes()
+                              )
+
+        scene_data.append(current_scene_data)
+
+    return scene_data
 
 
 def consume_captions(caption_list: list) -> dict:
@@ -79,30 +106,38 @@ def consume_captions(caption_list: list) -> dict:
     :return: TODO
     """
     caption_metadata = {}
+    caption_metadata['caption_string'] = []
 
     for caption in caption_list:
-        if not caption['caption_id'] or not caption['string_list']:
+        if 'caption_id' not in caption or 'caption_string' not in caption:
             raise ValueError('A caption ID and string list must be set for each caption')
+        
+        if 'caption_string' in caption:
+            string = caption['caption_string']
+            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
 
-        caption_string_byte_pairs = []
-        for string in caption['string_list']:
-            caption_string_byte_pairs.append(utils.create_byte_pairs_for_caption_string(string, 0))
-
-        if caption['color']:
-            caption_color = caption['color']
+        if 'foreground_color' in caption and 'color' in caption['foreground_color']:
+            caption_color = caption['foreground_color']['color']
             caption_color_byte_encoded = utils.create_byte_pairs_for_caption_color(caption_color)
-            caption_metadata[caption_color] = caption_color_byte_encoded
+            caption_metadata['foreground_color'] = caption_color_byte_encoded
 
-        if caption['text_alignment']:
-            text_alignment = caption['text_alignment']
+        if 'background_color' in caption and 'color' in caption['background_color']:
+            background_color = caption['background_color']['color']
+            scene_utils.create_bytes_for_scene_background_color(background_color)
+
+        if 'opacity' in caption:
+            opacity = caption['opacity']
+            scene_utils.create_bytes_for_scene_opacity(opacity)
+
+        if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
+            text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
-            caption_metadata[text_alignment] = caption_alignment_byte_encoded
+            caption_metadata['text_alignment'] = caption_alignment_byte_encoded
 
-        if caption['underline']:
+        if 'underline' in caption:
             caption_metadata['underlined_text_bytes'] = utils.create_bytes_to_underline_text()
 
-        if caption['italics']:
+        if 'italics' in caption:
             caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
 
-    return {}
-
+    return caption_metadata

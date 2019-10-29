@@ -33,6 +33,10 @@ const Scene = {
     }
   },
 
+  setScenes: function(scenes) {
+    localStorage.setItem('scene-list', JSON.stringify(scenes))
+  },
+
   getScenes: function() {
     return JSON.parse(localStorage.getItem('scene-list'))
   },
@@ -193,19 +197,23 @@ const Scene = {
     try {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
-      reader.onloadend = function(e) {
+      reader.onload = function(e) {
         localStorage.setItem('file-data', e.target.result)
+        const loadedData = JSON.parse(localStorage.getItem('file-data'))
+        Scene.loadSceneListFromFile(loadedData)
+      }
+      reader.onerror = function(e) {
+        alert("There was an error while reading your file.")
       }
       reader.readAsBinaryString(blob)
     } catch (error) {
       alert("Error while reading file. Please try again.\n Error info: " + error)
+      return false
     }
-    const loadedData = JSON.parse(localStorage.getItem('file-data'))
-    
-    //TODO Load each item into local storage.
     return true
   },
   
+
   exportToServer: function() {
     const payload = Scene.constructJSON()
 
@@ -250,6 +258,55 @@ const Scene = {
       scene_list: scenes
     }
   }
+
+  loadSceneListFromFile: function(loadedData) {
+    try {
+      Scene.setInputFormat(loadedData['caption_format'])
+      if (loadedData['caption_format'] === "CEA-608") {
+        var i
+        var sceneList = []
+        for (i = 0; i < loadedData['scene_list'].length; i++) {
+          newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i], loadedData['caption_format'])
+          sceneList.push(newScene)
+        }
+        Scene.setScenes(sceneList)
+      } else {
+        alert("The loaded Caption Format is not supported.")
+      }
+    } catch (error) {
+      alert("JSON file was malformed." + error)
+    }
+  },
+  
+  load608SceneFromFile: function(loadedScene, format) {
+    var i
+    var captionList = []
+    for (i = 0; i < loadedScene['caption_list'].length; i++) {
+      newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i], format)
+      captionList.push(newCaption)
+    }
+    return {
+      id: loadedScene['scene_id'],
+      name: loadedScene['scene_name'],
+      start: loadedScene['start'].time.toString(),
+      //TODO position: loadedScene['position'].key
+      captions: captionList
+    }
+  },
+
+  load608CaptionFromFile: function(loadedCaption, format) {
+    return {
+      id: loadedCaption['caption_id'],
+      name: loadedCaption['caption_name'],
+      text: loadedCaption['caption_string']
+      //TODO background: loadedCaption['background_color'].color
+      //TODO foreground_color: loadedCaption['foreground_color'].color
+      //TODO alignment: loadedCaption['text_alignment'].placment
+      //TODO underline: loadedCaption['underline']
+      //TODO italics: loadedCaption['italics']
+      //TODO opacity: loadedCaption['opacity']
+    }
+  },
 }
 
 
