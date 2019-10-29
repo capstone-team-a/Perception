@@ -109,7 +109,7 @@ def consume_captions(caption_list: list) -> dict:
     caption_metadata['caption_string'] = []
 
     for caption in caption_list:
-        if not caption['caption_id'] or not caption['caption_string']:
+        if 'caption_id' not in caption or 'caption_string' not in caption:
             raise ValueError('A caption ID and string list must be set for each caption')
         
         if 'caption_string' in caption:
