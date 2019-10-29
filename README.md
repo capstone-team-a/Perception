@@ -1,7 +1,7 @@
-# Perception blah
+# Perception
 
-TODO: Add description
-Test
+
+Perception is a headless webapplication for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file.
 
 ## Getting Started
 
