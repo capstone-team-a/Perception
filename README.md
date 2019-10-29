@@ -61,7 +61,8 @@ http://localhost:5000
 
 **Note:** 
 
-If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into PYTHONPATH: ```
+If you have receiving errors regarding Python failing to find modules. Try to export the path to Perception into the PYTHONPATH environment variable:
+```
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
 
