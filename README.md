@@ -1,11 +1,15 @@
 # Perception
 
 
-Perception is a headless webapplication for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file.
+Perception is a headless webapplication for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file. The specification for implementing the encoder can be found on this wiki page: https://en.wikipedia.org/wiki/EIA-608
 
 ## Getting Started
 
-TODO
+Running the application via command-line interface:
+
+1. Navigate to ~/Perception/src/server
+2. Run `pip3 install -r requirements.txt`
+3. Invoke main.py with a valid JSON file: `python3 main.py path-to-file.json`
 
 ## Installation
 
@@ -18,6 +22,8 @@ Add additional notes about how to deploy this on a live system
 ## Built With
 
 * Python 3.7.4
+* Flask 1.1.1
+* Mithril 2.0.4
 
 ## Contributors
 
