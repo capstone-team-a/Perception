@@ -108,32 +108,32 @@ def consume_captions(caption_list: list) -> dict:
         if not caption['caption_id'] or not caption['caption_string']:
             raise ValueError('A caption ID and string list must be set for each caption')
         
-        if caption['caption_string']:
+        if 'caption_string' in caption:
             string = caption['caption_string']
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
 
-        if caption['foreground_color']:
+        if 'foreground_color' in caption:
             caption_color = caption['foreground_color'].get('color')
             caption_color_byte_encoded = utils.create_byte_pairs_for_caption_color(caption_color)
             caption_metadata['foreground_color'] = caption_color_byte_encoded
 
-        if caption['background_color']:
+        if 'background_color' in caption:
             background_color = caption['background_color'].get('color')
             scene_utils.create_bytes_for_scene_background_color(background_color)
 
-        if caption['opacity']:
+        if 'opacity' in caption:
             opacity = caption['opacity']
             scene_utils.create_bytes_for_scene_opacity(opacity)
 
-        if caption['text_alignment']:
+        if 'text_alignment' in caption:
             text_alignment = caption['text_alignment'].get("placement")
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_metadata['text_alignment'] = caption_alignment_byte_encoded
 
-        if caption['underline']:
+        if 'underline' in caption:
             caption_metadata['underlined_text_bytes'] = utils.create_bytes_to_underline_text()
 
-        if caption['italics']:
+        if 'italics' in caption:
             caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
 
     return caption_metadata
