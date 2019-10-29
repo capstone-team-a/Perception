@@ -49,16 +49,16 @@ def consume_scenes(scene_list: list) -> list:
         current_scene_data['start'] = 0
         current_scene_data['data'] = []
 
-        if not scene['scene_id']:
+        if 'scene_id' not in scene:
             raise ValueError('Every scene must have a scene ID.')
 
-        if not scene['start']:
+        if 'start' not in scene: 
             raise ValueError('You must specify a starting time for a scene.')
         else:
             start = scene['start']
             current_scene_data['start'] = start
 
-        if scene['position']:
+        if 'position' in scene:
             position = scene['position']
             scene_utils.create_bytes_for_scene_position(position)
 
