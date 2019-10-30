@@ -34,11 +34,6 @@ def create_bytes_for_scene_background_color(color: str, transparency = False):
 def create_bytes_for_scene_position(position):
     pass
 
-# the below function is useless, opacity is set in the 
-# create_bytes_for_scene_background_color() function
-def create_bytes_for_scene_opacity(opacity):
-    pass
-
 
 def validate_time_formatting(time):
     pass
