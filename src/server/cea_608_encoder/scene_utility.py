@@ -10,7 +10,7 @@ def create_bytes_for_scene_background_color(color: str, transparency = False):
     first_byte = 0x17 
     second_byte = 0x2d
 
-    if(isinstance(color, str)):
+    if isinstance(color, str):
         color = color.lower()
     if color in background_colors:
         first_byte = 0x10
