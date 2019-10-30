@@ -5,8 +5,6 @@ background_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6,
 
 def create_bytes_for_scene_background_color(color: str, transparency = False):
     byte_list = []
-    first_byte = 0x00
-    second_byte = 0x00
 
     color = color.lower()
     if color in background_colors:
