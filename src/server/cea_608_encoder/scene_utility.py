@@ -5,6 +5,10 @@ background_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6,
 
 def create_bytes_for_scene_background_color(color: str, transparency = False):
     byte_list = []
+    
+    # Default: no background
+    first_byte = 0x17 
+    second_byte = 0x2d
 
     if(isinstance(color, str)):
         color = color.lower()
@@ -12,10 +16,7 @@ def create_bytes_for_scene_background_color(color: str, transparency = False):
         first_byte = 0x10
         second_byte = 0x20 + background_colors[color]
         if transparency == True: 
-            second_byte += 0x1
-    else:                           # if color not found, then no background
-        first_byte = 0x17
-        second_byte = 0x2d
+            second_byte += 0x1                        
 
     if utils.check_parity(first_byte) == 0:
         first_byte = utils.add_parity_to_byte(first_byte)
