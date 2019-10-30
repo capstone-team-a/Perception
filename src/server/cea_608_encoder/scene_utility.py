@@ -1,30 +1,22 @@
 import src.server.cea_608_encoder.caption_string_utility as utils
 
-def create_bytes_for_scene_background_color(color: str):
+background_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
+    "red": 0x8, "yellow": 0xa, "magenta": 0xc, "black": 0xe}
+
+def create_bytes_for_scene_background_color(color: str, transparency = False):
     byte_list = []
     first_byte = 0x00
     second_byte = 0x00
-    if color == "no background":
+
+    color = color.lower()
+    if color in background_colors:
+        first_byte = 0x10
+        second_byte = 0x20 + background_colors[color]
+        if transparency == True: 
+            second_byte += 0x1
+    else:                           # if color not found, then no background
         first_byte = 0x17
         second_byte = 0x2d
-    else:
-       first_byte = 0x10
-       second_byte = 0x20 #default - white
-       if color == "green":
-           second_byte += 0x2
-       elif color == "blue":
-           second_byte += 0x4   
-       elif color == "cyan":
-           second_byte += 0x6
-       elif color == "red":
-           second_byte += 0x8
-       elif color == "yellow":
-           second_byte += 0xa
-       elif color == "magenta":
-           second_byte += 0xc
-       elif color == "black":
-           second_byte += 0xe
-    # second_byte += 0x1 for Transparency == True
 
     if utils.check_parity(first_byte) == 0:
         first_byte = utils.add_parity_to_byte(first_byte)
@@ -42,7 +34,8 @@ def create_bytes_for_scene_background_color(color: str):
 def create_bytes_for_scene_position(position):
     pass
 
-
+# the below function is useless, opacity is set in the 
+# create_bytes_for_scene_background_color() function
 def create_bytes_for_scene_opacity(opacity):
     pass
 
