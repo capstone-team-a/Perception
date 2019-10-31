@@ -26,7 +26,7 @@ module.exports = {
           oninput: function (e) {
             Scene.currentCaption.name = e.target.value
           },
-            value: Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`
+            value: Scene.currentCaption.name ? Scene.currentCaption.name : ''
         }),
         m('h2', `Text`),
         m("input.new-caption-text-input[type=text]", {
