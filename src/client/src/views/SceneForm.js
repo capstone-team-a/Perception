@@ -9,7 +9,17 @@ module.exports = {
     Scene.setCurrentScene(vnode.attrs.sceneId)
   },
   view: function(vnode) {
+    if(Scene.currentScene == undefined) {
+      return m('', [
+        m(m.route.Link, {
+  	  href: `/scenes`,
+        }, 'Return To Scenes'),
+        m('h1', '404 - Scene Not found'),
+        ])
+    }
+
     const captions = Scene.currentScene.captions
+
 
     return m('', [
       m(m.route.Link, {

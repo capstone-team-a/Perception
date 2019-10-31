@@ -10,6 +10,14 @@ module.exports = {
     Scene.setCurrentCaption(vnode.attrs.captionId)
   },
   view: function(vnode) {
+    if(Scene.currentCaption == undefined) {
+      return m('', [
+        m(m.route.Link, {
+  	  href: `/scenes`,
+        }, 'Return To Scenes'),
+        m('h1', '404 - Caption Not Found'),
+        ])
+    }
     return m('', [
       m(m.route.Link, {
         href: `/scenes/scene-${Scene.currentScene.id}`,
