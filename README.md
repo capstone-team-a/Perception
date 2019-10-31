@@ -24,6 +24,46 @@ pip3 install -r requirements.txt
 python3 main.py path-to-file.json
 ```
 
+Perception expects a JSON file with the following format:
+
+```
+{
+  "file_name": "test file",
+  "caption_format": "CEA-608",
+  "scene_list": [
+    {
+      "scene_id": 1,
+      "scene_name": "Scene 1",
+      "caption_list": [
+        {
+          "caption_id": 1,
+          "caption_name": "Caption 1",
+          "caption_string": "I'm your huckleberry",
+          "background_color": {
+            "color": "black"
+          },
+          "foreground_color": {
+            "color": "white"
+          },
+          "text_alignment": {
+            "placement": "left"
+          },
+          "underline": true,
+          "italics": false,
+          "opacity": 100
+        }
+      ],
+      "start": {
+        "time": 0
+      },
+      "position": {
+        "row": "11"
+      }
+    }
+  ]
+}
+```
+
 #### Running the web application:
 
 1. Clone the repository: 
