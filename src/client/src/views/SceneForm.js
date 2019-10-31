@@ -6,11 +6,11 @@ const Scene = require('../models/Scene')
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
-    Scene.setCurrentScene(vnode.attrs.sceneId - 1)
+    Scene.setCurrentScene(vnode.attrs.sceneId)
   },
   view: function(vnode) {
     const captions = Scene.currentScene.captions
-    
+
     return m('', [
       m(m.route.Link, {
         href: '/scenes',
@@ -41,9 +41,7 @@ module.exports = {
       ]),
       m('button.add-caption', {
         onclick: function() {
-          Scene.currentScene.captions.push({
-            id : Scene.currentScene.captions.length + 1
-          })
+          Scene.addCaption()
           Scene.saveCaptions()
         }
       }, 'New Caption'),
@@ -69,4 +67,3 @@ module.exports = {
     ])
   }
 }
-
