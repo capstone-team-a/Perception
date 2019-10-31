@@ -27,7 +27,7 @@ module.exports = {
           oninput: function (e) {
             Scene.currentScene.name = e.target.value
           },
-          value: Scene.currentScene.name ? Scene.currentScene.name : `Scene ${Scene.currentScene.id}`
+          value: Scene.currentScene.name ? Scene.currentScene.name : ''
         }),
         m('h2', `Start`),
         m("input.new-start-input[type=text]", {
