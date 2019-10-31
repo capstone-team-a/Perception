@@ -63,17 +63,6 @@ module.exports = {
         }
       }, 'Delete All Scenes'),
 
-      m('button.clear-cache', {
-        onclick: function() {
-          //ask user for confirmation
-          if (confirm("Clear cache?")) {
-            //clear the local storage
-            localStorage.clear()
-            //re-initialize the scene to get the structure back
-            Scene.initialize()
-          }
-        }
-      }, "Clear Cache")
     ])
   }
 }
