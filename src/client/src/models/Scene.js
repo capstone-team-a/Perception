@@ -43,10 +43,9 @@ const Scene = {
 
   findSceneIndex: function(sceneid) {
     // get current list
-    const list = JSON.parse(localStorage.getItem('scene-list'))
-
-    for (var i = 0; i < list.length; i++) {
-      if (sceneid == list[i].id) {
+    const scene_list = Scene.getScenes()
+    for (i = 0; i < scene_list.length; i++) {
+      if (scene_list[i].id == sceneid) {
         return i
       }
     }
@@ -56,43 +55,37 @@ const Scene = {
 
   addScene: function() {
     // get current list
-    const list = JSON.parse(localStorage.getItem('scene-list'))
+    const scene_list = Scene.getScenes()
       // keeps tracks of id numbers in order to not crash into each other
-    var scenes_index = 0
+    var scene_max_id = 0
     // Finds the max scene id in the list
-    if (list.length == 0) {
-      scenes_index = 0
-    } else {
-      scenes_index = 0
-      for (var i = 0; i < list.length; i++) {
-        if (scenes_index < list[i].id) {
-          scenes_index = list[i].id
+    if (scene_list.length > 0) {
+      for (i = 0; i < scene_list.length; i++) {
+        if (scene_max_id < scene_list[i].id) {
+          scene_max_id = scene_list[i].id
         }
       }
     }
-    // Adds a new scene
-    scenes_index = scenes_index + 1
-
     // add new scene object
-    list.push({
-      id: scenes_index,
+    scene_list.push({
+      id: scene_max_id + 1,
       start: null,
       captions: []
     })
     // saves the current list
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(scene_list)
   },
 
   deleteScene: function(sceneid) {
     // get current list
-    const list = JSON.parse(localStorage.getItem('scene-list'))
+    const scene_list = Scene.getScenes()
     // loop and delete the scene at that instance in the scene
     const scene_index = Scene.findSceneIndex(sceneid)
     if (scene_index != -1) {
-      list.splice(scene_index,1)
+      scene_list.splice(scene_index,1)
+      // saves the current list
+      Scene.setScenes(scene_list)
     }
-    // saves the current list
-    localStorage.setItem('scene-list', JSON.stringify(list))
   },
 
   // this function will save the current scene to the localStorage
@@ -102,7 +95,7 @@ const Scene = {
     // update the current scene in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions = Scene.currentScene.captions
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
   },
 
   // this function will save the current scene name to the localStorage
@@ -112,7 +105,7 @@ const Scene = {
     // update the current scene in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].name = Scene.currentScene.name
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
   },
 
   // this function will save the current scene to the localStorage
@@ -128,7 +121,7 @@ const Scene = {
     // update the current scenes start in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].start = Scene.currentScene.start
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
   },
 
   // this is useful to have as a way to manage a scene using global state
@@ -147,7 +140,7 @@ const Scene = {
   },
 
   findCaptionIndex: function (captionId) {
-    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+    for ( i = 0; i < Scene.currentScene.captions.length; i++) {
       if (Scene.currentScene.captions[i].id == captionId) {
         return i
       }
@@ -157,24 +150,18 @@ const Scene = {
   },
 
   addCaption: function () {
-    var caption_index = 0
-    // Finds the max scene id in the list
-    if (Scene.currentScene.captions.length == 0) {
-      caption_index = 0
-    } else {
-      caption_index = 0
+    var caption_max_id = 0
+    // Finds the max caption id in the list
+    if (Scene.currentScene.captions.length > 0) {
       for (var i = 0; i < Scene.currentScene.captions.length; i++) {
-        if (caption_index < Scene.currentScene.captions[i].id) {
-          caption_index = Scene.currentScene.captions[i].id
+        if (caption_max_id < Scene.currentScene.captions[i].id) {
+          caption_max_id = Scene.currentScene.captions[i].id
         }
       }
     }
-    // Adds a new scene
-    caption_index = caption_index + 1
-
-
+    // Adds a new caption
     Scene.currentScene.captions.push({
-      id : caption_index
+      id : caption_max_id + 1
     })
   },
 
@@ -184,7 +171,7 @@ const Scene = {
 
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].name = Scene.currentCaption.name
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
   },
 
   // saves the current caption with its new text to localStorage
@@ -193,7 +180,7 @@ const Scene = {
 
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].text = Scene.currentCaption.text
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
   },
 
   deleteCaption: function(captionId) {
@@ -212,7 +199,7 @@ const Scene = {
     const list = Scene.getScenes()
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions.splice(indexToRemove, 1)
 
-    localStorage.setItem('scene-list', JSON.stringify(list))
+    Scene.setScenes(list)
 
     // also remove it from currentScene
     Scene.currentScene.captions.splice(indexToRemove, 1)
