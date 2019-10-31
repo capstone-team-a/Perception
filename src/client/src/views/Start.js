@@ -57,6 +57,18 @@ module.exports = {
         ),
         m('button.load-file[type=submit]', 'Load File'),
       ]),
+      m('button.clear-cache', {
+        onclick: function() {
+          //ask user for confirmation
+          if (confirm("Clear cache?")) {
+            //clear the local storage
+            localStorage.clear()
+            document.location.reload()
+            //re-initialize the scene to get the structure back
+            Scene.initialize()
+          }
+        }
+      }, "Clear Cache"),
     ])
   }
 }
