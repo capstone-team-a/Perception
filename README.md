@@ -13,7 +13,7 @@ git clone https://github.com/capstone-team-a/Perception.git
 ```
 2. Navigate to the Perception backend directory: 
 ```
-cd ~/Perception/src/server
+cd Perception/src/server
 ```
 3. Install Python dependencies with pip: 
 ```
@@ -72,7 +72,7 @@ git clone https://github.com/capstone-team-a/Perception.git
 ```
 2. Navigate to the Perception frontend directory: 
 ```
-cd ~/Perception/src/client
+cd Perception/src/client
 ```
 3. Run the npm command to install necessary dependencies:
 ```
@@ -84,7 +84,7 @@ npm start
 ```
 5. Navigate to the Perception backend directory: 
 ```
-cd ~/Perception/src/server
+cd Perception/src/server
 ```
 6. Install Python dependencies with pip:
 ```
