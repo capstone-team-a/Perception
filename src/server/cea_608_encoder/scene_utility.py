@@ -1,14 +1,37 @@
 import src.server.cea_608_encoder.caption_string_utility as utils
 
-def create_bytes_for_scene_background_color(color: str):
-    pass
+background_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
+    "red": 0x8, "yellow": 0xa, "magenta": 0xc, "black": 0xe}
+
+def create_bytes_for_scene_background_color(color: str, transparency = False):
+    byte_list = []
+    
+    # Default: no background
+    first_byte = 0x17 
+    second_byte = 0x2d
+
+    if isinstance(color, str):
+        color = color.lower()
+    if color in background_colors:
+        first_byte = 0x10
+        second_byte = 0x20 + background_colors[color]
+        if transparency == True: 
+            second_byte += 0x1                        
+
+    if utils.check_parity(first_byte) == 0:
+        first_byte = utils.add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+
+    if utils.check_parity(second_byte) == 0:
+        second_byte = utils.add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
+
+    raw_hex_values = utils.parse_raw_hex_values(byte_list)
+    byte_pairs = utils.bytes_to_byte_pairs(raw_hex_values)
+    return byte_pairs
 
 
 def create_bytes_for_scene_position(position):
-    pass
-
-
-def create_bytes_for_scene_opacity(opacity):
     pass
 
 
