@@ -11,6 +11,9 @@ global.window = dom.window
 global.document = dom.window.document
 global.requestAnimationFrame = dom.window.requestAnimationFrame
 global.localStorage = dom.window.localStorage
+global.Blob = dom.window.Blob
+global.URL = dom.window.URL
+global.URL.createObjectURL = function() {} // unfortunately I don't think this function works with jsdom, so we override it.
 
 // Require Mithril to make sure it loads properly.
 require("mithril")
