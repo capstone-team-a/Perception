@@ -1,3 +1,8 @@
+import json
+# import os
+import pathlib
+from datetime import datetime
+
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
 
@@ -6,6 +11,21 @@ import src.server.cea_608_encoder.scene_utility as scene_utils
 supported_caption_formats = [
     'CEA-608'
 ]
+
+def save_json_to_file(caption_data: dict):
+    # datetime object containing current date and time
+    now = datetime.now()
+    # mm.dd.YY_H:M:S
+    dt_string = now.strftime("%m.%d.%Y_%H:%M:%S")
+
+    path = pathlib.Path(__file__).parent.parent.parent.parent
+    path = str(path) + '/data/byte_pairs/'
+    file_name = 'output_' + dt_string + '.json'
+    try:
+        with open(path + file_name, 'w', encoding='utf-8') as file:
+            json.dump(caption_data, file, ensure_ascii=False, indent=4)
+    except IOError as err:
+        app.logger.error(f'Could not write JSON to file: {err}')
 
 
 def consume(caption_data: dict) -> dict:
@@ -28,10 +48,13 @@ def consume(caption_data: dict) -> dict:
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
 
-    return {
+    caption_data = {
         'type': caption_format,
         'scenes': consume_scenes(scene_data)
     }
+
+    save_json_to_file(caption_data)
+    return caption_data
 
 
 def consume_scenes(scene_list: list) -> list:
