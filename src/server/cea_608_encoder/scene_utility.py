@@ -38,6 +38,9 @@ def create_bytes_for_scene_position(position):
 def validate_time_formatting(time):
     pass
 
+def create_bytes_for_scene_opacity(opacity):
+    pass
+
 
 def get_default_preamble_style_bytes() -> list:
     return [0x10, 0x40]
