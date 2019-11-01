@@ -39,3 +39,7 @@ a:hover {
   display: block;
   margin-bottom: 2em;
 }
+
+.download-link {
+  margin-left: 1em;
+}

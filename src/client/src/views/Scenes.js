@@ -24,7 +24,7 @@ module.exports = {
             })
         }
       }, 'Export'),
-      m('a', {
+      m('a.download-link', {
         download: 'scenes',
         href: Scene.getDownloadURL()
       }, 'Download JSON file'),
