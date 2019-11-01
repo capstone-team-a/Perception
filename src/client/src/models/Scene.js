@@ -121,14 +121,14 @@ const Scene = {
     // this is a check to make sure the value entered into start is a number
     const start_check = Number(Scene.currentScene.start)
     if (isNaN(start_check)) {
-      Scene.current.start = null;
+      Scene.currentScene.start = null;
     } else {
       var i;
       for (i = 0; i < list.length; i++) {
         if (list[i].start === null) {
           //do nothing
-        } else if (Number(list[i].start) === start_check && i !== Scene.current.id - 1) {
-          Scene.current.start = `Collision Detected`
+        } else if (Number(list[i].start) === start_check && i !== Scene.findSceneIndex(Scene.currentScene.id)) {
+          Scene.currentScene.start = `Collision Detected`
         }
       }
     }
