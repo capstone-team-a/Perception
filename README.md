@@ -3,7 +3,7 @@
 
 Perception is a headless web application for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file. The specification for implementing the encoder can be found on this wiki page: https://en.wikipedia.org/wiki/EIA-608
 
-## Getting Started
+## Installation
 
 #### Running the application via command-line interface:
 
@@ -106,10 +106,6 @@ If you have receiving errors regarding Python failing to find modules. Try to ex
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
 
-## Installation
-
-TODO
-
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
@@ -139,5 +135,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](../master/
 
 * Hat tip to anyone whose code was used
 * Inspiration
-* etc
 
