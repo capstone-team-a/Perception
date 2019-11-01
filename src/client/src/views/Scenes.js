@@ -24,6 +24,10 @@ module.exports = {
             })
         }
       }, 'Export'),
+      m('a.download-link', {
+        download: 'scenes',
+        href: Scene.getDownloadURL()
+      }, 'Download JSON file'),
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {

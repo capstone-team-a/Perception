@@ -277,16 +277,16 @@ const Scene = {
       return {
         scene_id: scene.id,
         scene_name: scene.name,
-        start: scene.start,
-        position: scene.position,
+        start: {time: scene.start},
+        position: {row: scene.position},
         caption_list: scene.captions.map(function(caption) {
           return {
             caption_id: caption.id,
             caption_name: caption.name,
             caption_string: caption.text,
-            background_color: caption.background_color,
-            foreground_color: caption.foreground_color,
-            text_alignment: caption.text_alignment,
+            background_color: {color: caption.background_color},
+            foreground_color: {color: caption.foreground_color},
+            text_alignment: {placement: caption.text_alignment},
             underline: caption.underline,
             italics: caption.italics,
             opacity: caption.opacity,
@@ -350,6 +350,13 @@ const Scene = {
       //TODO opacity: loadedCaption['opacity']
     }
   },
+
+  // this creates a download link for a file containing the JSON
+  getDownloadURL: function() {
+    const blob = new Blob([JSON.stringify(Scene.constructJSON())], {type : 'application/json'})
+
+    return URL.createObjectURL(blob)
+  }
 }
 
 
