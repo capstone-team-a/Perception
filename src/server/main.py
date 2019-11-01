@@ -21,12 +21,9 @@ def main():
     try:
         with open(args.file_path, 'r') as file:
             caption_data = json.load(file)
-            data = consume(caption_data)
+            consume(caption_data)
 
-            # for now, just print to the terminal.
-            # TODO write this variable, data, to a file.
-            # it should also be formatted correctly.
-            print(data)
+
             
     except IOError as err:
         logging.error('Error trying to read in the file.', exc_info=err)

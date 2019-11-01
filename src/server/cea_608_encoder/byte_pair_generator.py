@@ -14,7 +14,7 @@ supported_caption_formats = [
 
 def write_caption_data_to_file(caption_data: dict):
     """Writes caption data to file as json.
-    
+
        :param caption_data: json with byte pairs
     """
     # datetime object containing current date and time
@@ -33,12 +33,11 @@ def write_caption_data_to_file(caption_data: dict):
         logging.error(f'Could not write JSON to file: {err}')
 
 
-def consume(caption_data: dict) -> dict:
+def consume(caption_data: dict):
     """Perform error handling around caption format and ensure
     there are scenes to create byte pairs for.
 
     :param caption_data: the full JSON blob from the front end
-    :return: TODO
     """
     if not caption_data['caption_format']:
         raise ValueError('You must specify a caption format')
@@ -59,7 +58,6 @@ def consume(caption_data: dict) -> dict:
     }
 
     write_caption_data_to_file(caption_data)
-    return caption_data
 
 
 def consume_scenes(scene_list: list) -> list:
