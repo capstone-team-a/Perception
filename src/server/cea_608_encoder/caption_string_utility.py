@@ -125,7 +125,7 @@ def create_byte_pairs_for_caption_string(caption_string: str, channel_toggle: in
             # since we know we just appended a full bytepair, we set to false.
             basic_chars_is_odd = False
         else:
-            basic_chars_is_odd = ~basic_chars_is_odd
+            basic_chars_is_odd = not basic_chars_is_odd
         character_hex_value = char_sets[char_set_name][letter]
         if check_parity(character_hex_value) == 0:
             character_hex_value = add_parity_to_byte(character_hex_value)
