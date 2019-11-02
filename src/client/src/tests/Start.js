@@ -28,5 +28,9 @@ o.spec('Start', function(){
         out.trigger('select.language-input', 'onchange', {target: {value: "CEA-608"}})
         var format = Scene.getInputFormat()
         o(format === 'Teletext').equals(false)
+
+        // Check if the labels for the inputs exist
+        o(out.should.have.at.least(2, 'label')).equals(true)
+        o(out.should.contain('Caption specification')).equals(true)
     })
 })
