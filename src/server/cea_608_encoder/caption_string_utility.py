@@ -59,47 +59,41 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     return byte_pairs
 
 
-def which_char_set(caption_char: str) -> str:
+def get_char_set(caption_char: str) -> str:
     """Finds which character set the letter is in
 
     :param caption_char:
     :return: the name of the char set the caption_char is in
     """
-    for char_set_name,list_of_characters in char_sets.items():
+    for char_set_name, list_of_characters in char_sets.items():
         if caption_char in list_of_characters:
             return char_set_name
 
 
-def which_channel(channel_toggle: int,char_set: str) -> hex:
+def get_special_characters_first_byte(char_set: str) -> hex:
     """Provides the correct first byte to a letter depending on the channel toggle
 
     :param char_set:
     :param channel_toggle:
     :return: The first byte
     """
-    if channel_toggle == 0:
-        if char_set == 'basic_na_set':
-            return 0x00
-        elif char_set == 'special_na_set':
-            return 0x11
-        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
-            return 0x12
-        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
-            return 0x13
-    elif channel_toggle == 1:
-        if char_set == 'basic_na_set':
-            return 0x00
-        elif char_set == 'special_na_set':
-            return 0x19
-        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
-            return 0x1a
-        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
-            return 0x1b
+    if char_set in special_character_sets:
+        return special_character_sets[char_set]
     else:
         raise ValueError(f'Channel toggle must be 0 or 1!')
 
 
-def create_byte_pairs_for_caption_string(caption_string: str, channel_toggle: int) -> list:
+special_character_sets = {
+    ''
+    'special_na_set': 0x11,
+    'extended_we_sm_set': 0x12,
+    'extended_we_french_set': 0x12,
+    'extended_we_port_set': 0x13,
+    'extended_we_gd_set': 0x13
+}
+
+
+def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     """Generates a list of byte pairs given a caption string
 
     :param caption_string
@@ -108,8 +102,8 @@ def create_byte_pairs_for_caption_string(caption_string: str, channel_toggle: in
     """
     byte_list = []
     for letter in caption_string:
-        char_set_name = which_char_set(letter)
-        first_byte = which_channel(channel_toggle,char_set_name)
+        char_set_name = get_char_set(letter)
+        first_byte = get_special_characters_first_byte(char_set_name)
         if first_byte != 0x00:
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
