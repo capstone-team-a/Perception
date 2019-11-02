@@ -23,20 +23,26 @@ module.exports = {
           Scene.saveStart()
         }
       }, [
+        m('label', {
+          for: 'new-name-input'
+        }, 'Scene name'),
         m("input.new-name-input[type=text]", {
+          id: 'new-name-input',
           oninput: function (e) {
             Scene.currentScene.name = e.target.value
           },
           value: Scene.currentScene.name ? Scene.currentScene.name : ''
         }),
-        m('h2', `Start`),
+        m('label', {
+          for: 'new-start-input'
+        }, 'Start unit'),
         m("input.new-start-input[type=text]", {
+          id: 'new-start-input',
           oninput: function (e) {
             Scene.currentScene.start = e.target.value
           },
           value: Scene.currentScene.start ? Scene.currentScene.start : ``
         }),
-        m('h5', ``),
         m("button.save-changes-button[type=submit]", 'Save all changes'),
       ]),
       m('button.add-caption', {

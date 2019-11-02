@@ -8,7 +8,11 @@ module.exports = {
   view: function() {
     return m('.start', [
       m('h1', 'Welcome!!'),
+      m('label', {
+        for: 'language-input'
+      }, 'Caption specification'),
       m('select.language-input', {
+        id: 'language-input',
         onchange: function(e) {
           Scene.setInputFormat(e.target.value)
           select = e.target.value

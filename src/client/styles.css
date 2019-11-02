@@ -39,3 +39,23 @@ a:hover {
   display: block;
   margin-bottom: 2em;
 }
+
+form.save-changes-form {
+  margin-bottom: 0.5rem;
+}
+
+form.save-changes-form > label, .start > label {
+  display: block;
+  font-size: 15px;
+  margin-bottom: .1rem;
+}
+
+form.save-changes-form > input {
+  margin-bottom: 1rem;
+}
+
+.save-changes-button {
+  display: block;
+}
+
+
