@@ -108,20 +108,21 @@ const Scene = {
     Scene.setScenes(list)
   },
 
-
-
-
-
-
-
-  // this function will save the current scene to the localStorage
+// this function will save the current scene to the localStorage
   saveStart: function() {
     const list = Scene.getScenes()
 
     // this is a check to make sure the value entered into start is a number
-    const start_check = Number(Scene.currentScene.start)
-    if (isNaN(start_check)) {
-      Scene.currentScene.start = null;
+    var start_check, start_replace
+    if (Scene.currentScene.start !== null) {
+      start_replace = Scene.currentScene.start.replace(/\s/g, "")
+      start_check = Number(start_replace)
+    } else {
+      start_replace = ""
+      start_check = 0
+    }
+    if (isNaN(start_check) || !start_replace.length) {
+      Scene.currentScene.start = null
     } else {
       var i;
       for (i = 0; i < list.length; i++) {
@@ -143,11 +144,6 @@ const Scene = {
     })
     Scene.setScenes(list)
   },
-
-
-
-
-
 
   // this is useful to have as a way to manage a scene using global state
   currentScene: null,
