@@ -113,13 +113,10 @@ const Scene = {
     const list = Scene.getScenes()
 
     // this is a check to make sure the value entered into start is a number
-    var start_check, start_replace
+    var start_check = 0, start_replace = ""
     if (Scene.currentScene.start !== null) {
       start_replace = Scene.currentScene.start.replace(/\s/g, "")
       start_check = Number(start_replace)
-    } else {
-      start_replace = ""
-      start_check = 0
     }
     if (isNaN(start_check) || !start_replace.length) {
       Scene.currentScene.start = null
