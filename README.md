@@ -110,7 +110,7 @@ export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 
 ### Client Tests
 
-1. Navigate to the clinet directoy:
+1. Navigate to the client directoy:
 ```
 cd Perception/src/client
 ```
@@ -125,9 +125,14 @@ The convention will be to name each test file with the same name as the file it 
 
 ### Server Tests
 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
+1. Navigate to the server directory:
+```
+cd Perception/src/server
+```
+2. Run the test suite:
+```
+TODO
+```
 
 ## Built With
 
