@@ -4,7 +4,7 @@ from datetime import datetime
 
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
-import src.config as config
+import src.server.config as config
 
 # At a future time this could live in it's own config file
 # Leaving it here temporarily
@@ -22,8 +22,7 @@ def write_caption_data_to_file(caption_data: dict):
     # mm.dd.YY_H:M:S
     dt_string = now.strftime("%m.%d.%Y_%H:%M:%S")
 
-    # path = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-    path = config.path
+    path = config.path_to_perception
     path = str(path) + '/data/byte_pairs/'
     file_name = 'output_' + dt_string + '.json'
     try:
