@@ -133,6 +133,7 @@ const Scene = {
     // update the current scenes start in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].start = Scene.currentScene.start
     list.sort(function(a, b){
+      if (b.start === null && a.start === null) {return 0} // If both are null don't touch anything
       if(b.start === null) {return -1} // undefined starts are sorted at the end
       if(a.start === null) {return 1} // undefined starts are sorted at the end
       if(Number(a.start) < Number(b.start)) {return -1} // a comes before b
