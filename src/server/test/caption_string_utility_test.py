@@ -68,13 +68,13 @@ class TestCaptionStringUtilities(unittest.TestCase):
         self.assertRaises(ValueError, utils.get_char_set, unsupported_character)
 
     def test_get_special_characters_first_byte_with_valid_char_set(self):
-        valid_character_sets_and_first_bytes = {'special_na_set': 0x11,
+        valid_special_character_sets_and_first_bytes = {'special_na_set': 0x11,
                                                 'extended_we_sm_set': 0x12,
                                                 'extended_we_french_set': 0x12,
                                                 'extended_we_port_set': 0x13,
                                                 'extended_we_gd_set': 0x13}
 
-        for special_char_set, expected_first_byte in valid_character_sets_and_first_bytes.items():
+        for special_char_set, expected_first_byte in valid_special_character_sets_and_first_bytes.items():
             actual_first_byte = utils.get_special_characters_first_byte(special_char_set)
             self.assertEqual(expected_first_byte, actual_first_byte)
 
