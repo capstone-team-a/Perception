@@ -131,7 +131,7 @@ cd Perception/src/server
 ```
 2. Run the test suite:
 ```
-TODO
+python3 -m unittest
 ```
 
 ## Built With
