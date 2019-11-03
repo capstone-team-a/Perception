@@ -22,20 +22,26 @@ module.exports = {
           Scene.saveCaptionText()
         }
       }, [
+        m('label', {
+          for: 'new-name-input'
+        }, 'Caption Name'),
         m("input.new-name-input[type=text]", {
+          id: 'new-name-input',
           oninput: function (e) {
             Scene.currentCaption.name = e.target.value
           },
             value: Scene.currentCaption.name ? Scene.currentCaption.name : ''
         }),
-        m('h2', `Text`),
+        m('label', {
+          for: 'new-caption-text-input'
+        }, 'Caption String'),
         m("input.new-caption-text-input[type=text]", {
+          id: 'new-caption-text-input',
           oninput: function (e) {
             Scene.currentCaption.text = e.target.value
           },
           value: Scene.currentCaption.text ? Scene.currentCaption.text : ``
         }),
-        m('h5', ``),
         m("button.save-changes-button[type=submit]", 'Save all changes'),
       ])
     ])
