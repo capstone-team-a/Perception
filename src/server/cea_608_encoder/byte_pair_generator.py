@@ -15,14 +15,14 @@ def consume(caption_data: dict) -> dict:
     :param caption_data: the full JSON blob from the front end
     :return: TODO
     """
-    if not caption_data['caption_format']:
+    if 'caption_format' not in caption_data:
         raise ValueError('You must specify a caption format')
 
     if caption_data['caption_format'] not in supported_caption_formats:
         caption_format = caption_data['caption_format']
         raise ValueError(f'The supplied caption format {caption_format} is not supported.')
 
-    if not caption_data['scene_list']:
+    if 'scene_list' not in caption_data:
         raise ValueError('Cannot encode byte pairs with an empty scene list.')
 
     scene_data = caption_data['scene_list']
@@ -114,7 +114,7 @@ def consume_captions(caption_list: list) -> dict:
         
         if 'caption_string' in caption:
             string = caption['caption_string']
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
+            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
 
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             caption_color = caption['foreground_color']['color']
