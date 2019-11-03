@@ -10,7 +10,7 @@ module.exports = {
       m('h1', 'Welcome!!'),
       m('label', {
         for: 'language-input'
-      }, 'Caption format'),
+      }, 'Caption Format'),
       m('select.language-input', {
         id: 'language-input',
         onchange: function(e) {

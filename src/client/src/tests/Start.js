@@ -31,6 +31,6 @@ o.spec('Start', function(){
 
         // Check if the labels for the inputs exist
         o(out.should.have.at.least(2, 'label')).equals(true)
-        o(out.should.contain('Caption format')).equals(true)
+        o(out.should.contain('Caption Format')).equals(true)
     })
 })
