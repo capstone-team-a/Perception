@@ -15,7 +15,7 @@ def consume(caption_data: dict) -> dict:
     :param caption_data: the full JSON blob from the front end
     :return: TODO
     """
-    if 'caption_data' not in caption_data:
+    if 'caption_format' not in caption_data:
         raise ValueError('You must specify a caption format')
 
     if caption_data['caption_format'] not in supported_caption_formats:
