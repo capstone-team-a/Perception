@@ -50,6 +50,34 @@ class TestCaptionStringUtilities(unittest.TestCase):
 
         self.assertRaises(ValueError, utils.bytes_to_byte_pairs, bytes_list)
 
+    def test_get_char_set_with_valid_caption_character(self):
+        valid_character_sets_and_chars = {'basic_na_set': '@',
+                                          'special_na_set': '♪',
+                                          'extended_we_sm_set': 'Á',
+                                          'extended_we_french_set': 'À',
+                                          'extended_we_port_set': 'Ã',
+                                          'extended_we_gd_set': 'Ä'}
+
+        for expected_character_set, sample_char in valid_character_sets_and_chars.items():
+            actual_character_set = utils.get_char_set(sample_char)
+            self.assertEqual(expected_character_set, actual_character_set)
+
+    def test_get_char_set_with_invalid_caption_character(self):
+        unsupported_character = '👎'
+
+        self.assertRaises(ValueError, utils.get_char_set, unsupported_character)
+
+    def test_get_special_characters_first_byte_with_valid_char_set(self):
+        valid_character_sets_and_first_bytes = {'special_na_set': 0x11,
+                                                'extended_we_sm_set': 0x12,
+                                                'extended_we_french_set': 0x12,
+                                                'extended_we_port_set': 0x13,
+                                                'extended_we_gd_set': 0x13}
+
+        for special_char_set, expected_first_byte in valid_character_sets_and_first_bytes.items():
+            actual_first_byte = utils.get_special_characters_first_byte(special_char_set)
+            self.assertEqual(expected_first_byte, actual_first_byte)
+
 
 if __name__ == '__main__':
     unittest.main()
