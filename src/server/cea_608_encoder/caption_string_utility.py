@@ -91,7 +91,8 @@ def get_special_characters_first_byte(char_set: str) -> hex:
     if char_set in valid_special_character_sets_and_static_first_bytes:
         return valid_special_character_sets_and_static_first_bytes[char_set]
     else:
-        raise ValueError(f'The character: {char_set} does not belong to a supported character set')
+        raise ValueError(f'The character set: {char_set} does not belong to a '
+                         f'supported special character set')
 
 
 def create_byte_pairs_for_caption_string(caption_string: str) -> list:
