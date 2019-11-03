@@ -114,7 +114,7 @@ def consume_captions(caption_list: list) -> dict:
         
         if 'caption_string' in caption:
             string = caption['caption_string']
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string, 0)
+            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
 
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             caption_color = caption['foreground_color']['color']

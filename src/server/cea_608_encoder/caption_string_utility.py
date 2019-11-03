@@ -1,10 +1,19 @@
+from collections import deque
+
 from src.server.character_sets.char_sets import char_sets
-# import sys
-# sys.path.append('../character_sets/')
-# from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
+
+BASIC_NORTH_AMERICAN_CHARACTER_SET = 'basic_na_set'
+
+valid_special_character_sets_and_static_first_bytes = {
+    'special_na_set': 0x11,
+    'extended_we_sm_set': 0x12,
+    'extended_we_french_set': 0x12,
+    'extended_we_port_set': 0x13,
+    'extended_we_gd_set': 0x13
+}
 
 
 def check_parity(integer: int) -> int:
@@ -49,91 +58,85 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     :return: list of byte pairs ['a0', 'e5'] -> ['a0e5']
     """
     byte_pairs = []
+
+    if len(byte_list) % 2 != 0:
+        raise ValueError('Can not create byte pairs for an odd length list')
+
+    byte_list = deque(byte_list)
     while byte_list:
-        first_byte = byte_list.pop(0)
-        if not byte_list:
-            second_byte = ''
-        else:
-            second_byte = byte_list.pop(0)
+        first_byte = byte_list.popleft()
+        second_byte = byte_list.popleft()
         byte_pairs.append(first_byte + second_byte)
+
     return byte_pairs
 
 
-def which_char_set(caption_char: str) -> str:
+def get_char_set(caption_char: str) -> str:
     """Finds which character set the letter is in
 
     :param caption_char:
     :return: the name of the char set the caption_char is in
     """
-    for char_set_name,list_of_characters in char_sets.items():
+    for char_set_name, list_of_characters in char_sets.items():
         if caption_char in list_of_characters:
             return char_set_name
 
+    raise ValueError(f'The character {caption_char} is not in any of the valid character sets')
 
-def which_channel(channel_toggle: int,char_set: str) -> hex:
+
+def get_special_characters_first_byte(char_set: str) -> hex:
     """Provides the correct first byte to a letter depending on the channel toggle
 
     :param char_set:
-    :param channel_toggle:
     :return: The first byte
     """
-    if channel_toggle == 0:
-        if char_set == 'basic_na_set':
-            return 0x00
-        elif char_set == 'special_na_set':
-            return 0x11
-        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
-            return 0x12
-        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
-            return 0x13
-    elif channel_toggle == 1:
-        if char_set == 'basic_na_set':
-            return 0x00
-        elif char_set == 'special_na_set':
-            return 0x19
-        elif char_set in ('extended_we_sm_set','extended_we_french_set'):
-            return 0x1a
-        elif char_set in ('extended_we_port_set','extended_we_gd_set'):
-            return 0x1b
+    if char_set in valid_special_character_sets_and_static_first_bytes:
+        return valid_special_character_sets_and_static_first_bytes[char_set]
     else:
-        raise ValueError(f'Channel toggle must be 0 or 1!')
+        raise ValueError(f'The character set: {char_set} does not belong to a '
+                         f'supported special character set')
 
 
-def create_byte_pairs_for_caption_string(caption_string: str, channel_toggle: int) -> list:
+def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     """Generates a list of byte pairs given a caption string
 
     :param caption_string
-    :param channel_toggle
     :return: list of byte pairs
     """
     byte_list = []
     # for determining whether or not a 0x80 needs to be appended before the end
     # of the string or before an extended character set. if it is odd, we need
     # to append before putting the extended char header.
-    basic_chars_is_odd = False
+    null_byte_is_needed = False
     for letter in caption_string:
-        char_set_name = which_char_set(letter)
-        first_byte = which_channel(channel_toggle,char_set_name)
-        if first_byte != 0x00:
-            # check to see if the basic chars prior to this was an odd number,
-            # and if so, append 0x80
-            if basic_chars_is_odd:
+        character_set = get_char_set(letter)
+
+        if character_set is BASIC_NORTH_AMERICAN_CHARACTER_SET:
+            character_hex_value = char_sets[BASIC_NORTH_AMERICAN_CHARACTER_SET][letter]
+            if check_parity(character_hex_value) == 0:
+                character_hex_value = add_parity_to_byte(character_hex_value)
+
+            byte_list.append(hex(character_hex_value))
+
+            null_byte_is_needed = not null_byte_is_needed
+        else:
+            if null_byte_is_needed:
                 byte_list.append(hex(get_single_null_byte_with_parity()))
+                null_byte_is_needed = False
+
+            first_byte = get_special_characters_first_byte(character_set)
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
             byte_list.append(hex(first_byte))
-            # since we know we just appended a full bytepair, we set to false.
-            basic_chars_is_odd = False
-        else:
-            basic_chars_is_odd = not basic_chars_is_odd
-        character_hex_value = char_sets[char_set_name][letter]
-        if check_parity(character_hex_value) == 0:
-            character_hex_value = add_parity_to_byte(character_hex_value)
-        byte_list.append(hex(character_hex_value))
-    # at the end of the string, we again check to see if we have an odd number
-    # of basic chars, and if so, append 0x80.
-    if basic_chars_is_odd:
+
+            second_byte = char_sets[character_set][letter]
+            if check_parity(second_byte) == 0:
+                second_byte = add_parity_to_byte(second_byte)
+            byte_list.append(hex(second_byte))
+
+    if null_byte_is_needed:
         byte_list.append(hex(get_single_null_byte_with_parity()))
+
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
@@ -153,6 +156,7 @@ def create_bytes_to_underline_text():
 
 def create_bytes_to_italicize_text():
     pass
+
 
 def get_single_null_byte_with_parity():
     return 0x80
