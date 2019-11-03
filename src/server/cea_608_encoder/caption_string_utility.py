@@ -104,6 +104,10 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     :return: list of byte pairs
     """
     byte_list = []
+    # for determining whether or not a 0x80 needs to be appended before the end
+    # of the string or before an extended character set. if it is odd, we need
+    # to append before putting the extended char header.
+    basic_chars_is_odd = False
     for letter in caption_string:
         character_set = get_char_set(letter)
 
@@ -143,3 +147,5 @@ def create_bytes_to_underline_text():
 def create_bytes_to_italicize_text():
     pass
 
+def get_single_null_byte_with_parity():
+    return 0x80
