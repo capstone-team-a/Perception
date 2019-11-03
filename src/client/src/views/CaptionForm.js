@@ -7,10 +7,13 @@ module.exports = {
   oninit: function(vnode) {
     // first set the current Scene, then set the current caption.
     Scene.setCurrentScene(vnode.attrs.sceneId)
-    Scene.setCurrentCaption(vnode.attrs.captionId)
+
+    if (Scene.currentScene) {
+      Scene.setCurrentCaption(vnode.attrs.captionId)      
+    }
   },
   view: function(vnode) {
-    if(Scene.currentCaption == undefined) {
+    if(!Scene.currentCaption) {
       return m('', [
         m(m.route.Link, {
   	  href: `/scenes`,

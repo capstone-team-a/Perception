@@ -9,7 +9,7 @@ module.exports = {
     Scene.setCurrentScene(vnode.attrs.sceneId)
   },
   view: function(vnode) {
-    if(Scene.currentScene == undefined) {
+    if(!Scene.currentScene) {
       return m('', [
         m(m.route.Link, {
   	  href: `/scenes`,
