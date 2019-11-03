@@ -81,6 +81,8 @@ def get_char_set(caption_char: str) -> str:
         if caption_char in list_of_characters:
             return char_set_name
 
+    raise ValueError(f'The character {caption_char} is not in any of the valid character sets')
+
 
 def get_special_characters_first_byte(char_set: str) -> hex:
     """Provides the correct first byte to a letter depending on the channel toggle
