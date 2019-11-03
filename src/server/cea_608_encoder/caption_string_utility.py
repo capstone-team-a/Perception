@@ -104,6 +104,10 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     :return: list of byte pairs
     """
     byte_list = []
+    # for determining whether or not a 0x80 needs to be appended before the end
+    # of the string or before an extended character set. if it is odd, we need
+    # to append before putting the extended char header.
+    null_byte_is_needed = False
     for letter in caption_string:
         character_set = get_char_set(letter)
 
@@ -111,8 +115,15 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
             character_hex_value = char_sets[BASIC_NORTH_AMERICAN_CHARACTER_SET][letter]
             if check_parity(character_hex_value) == 0:
                 character_hex_value = add_parity_to_byte(character_hex_value)
+
             byte_list.append(hex(character_hex_value))
+
+            null_byte_is_needed = not null_byte_is_needed
         else:
+            if null_byte_is_needed:
+                byte_list.append(hex(get_single_null_byte_with_parity()))
+                null_byte_is_needed = False
+
             first_byte = get_special_characters_first_byte(character_set)
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
@@ -122,6 +133,9 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
             if check_parity(second_byte) == 0:
                 second_byte = add_parity_to_byte(second_byte)
             byte_list.append(hex(second_byte))
+
+    if null_byte_is_needed:
+        byte_list.append(hex(get_single_null_byte_with_parity()))
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
@@ -143,3 +157,6 @@ def create_bytes_to_underline_text():
 def create_bytes_to_italicize_text():
     pass
 
+
+def get_single_null_byte_with_parity():
+    return 0x80
