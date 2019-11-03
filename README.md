@@ -106,9 +106,33 @@ If you have receiving errors regarding Python failing to find modules. Try to ex
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
 
-## Deployment
+## Testing
 
-Add additional notes about how to deploy this on a live system
+### Client Tests
+
+1. Navigate to the client directoy:
+```
+cd Perception/src/client
+```
+2. Run the test suite:
+```
+npm test
+```
+
+This will automatically run any tests defined in any .js file within the `src/tests` directory.
+
+The convention will be to name each test file with the same name as the file it is testing.
+
+### Server Tests
+
+1. Navigate to the server directory:
+```
+cd Perception/src/server
+```
+2. Run the test suite:
+```
+TODO
+```
 
 ## Built With
 
