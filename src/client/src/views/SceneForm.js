@@ -25,7 +25,7 @@ module.exports = {
       }, [
         m('label', {
           for: 'new-name-input'
-        }, 'Scene name'),
+        }, 'Scene Name'),
         m("input.new-name-input[type=text]", {
           id: 'new-name-input',
           oninput: function (e) {
@@ -35,7 +35,7 @@ module.exports = {
         }),
         m('label', {
           for: 'new-start-input'
-        }, 'Start unit'),
+        }, 'Start'),
         m("input.new-start-input[type=text]", {
           id: 'new-start-input',
           oninput: function (e) {

@@ -47,6 +47,7 @@ form.save-changes-form {
 form.save-changes-form > label, .start > label {
   display: block;
   font-size: 15px;
+  font-weight: bold;
   margin-bottom: .1rem;
 }
 

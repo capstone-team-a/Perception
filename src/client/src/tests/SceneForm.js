@@ -63,7 +63,7 @@ o.spec('SceneForm', function() {
 
     // check to make sure that the labels for input boxes exist
     o(out.should.have.at.least(2, 'label')).equals(true)
-    o(out.should.contain('Scene name')).equals(true)
-    o(out.should.contain('Start unit')).equals(true)
+    o(out.should.contain('Scene Name')).equals(true)
+    o(out.should.contain('Start')).equals(true)
   })
 })

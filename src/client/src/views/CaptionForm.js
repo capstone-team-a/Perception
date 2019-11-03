@@ -24,7 +24,7 @@ module.exports = {
       }, [
         m('label', {
           for: 'new-name-input'
-        }, 'Caption name'),
+        }, 'Caption Name'),
         m("input.new-name-input[type=text]", {
           id: 'new-name-input',
           oninput: function (e) {
@@ -34,7 +34,7 @@ module.exports = {
         }),
         m('label', {
           for: 'new-caption-text-input'
-        }, 'Text input'),
+        }, 'Caption String'),
         m("input.new-caption-text-input[type=text]", {
           id: 'new-caption-text-input',
           oninput: function (e) {

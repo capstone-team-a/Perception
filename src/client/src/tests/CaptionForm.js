@@ -34,7 +34,7 @@ o.spec('CaptionForm', function() {
 
     // check to make sure that the labels for input boxes exist
     o(out.should.have.at.least(2, 'label')).equals(true)
-    o(out.should.contain('Caption name')).equals(true)
-    o(out.should.contain('Text input')).equals(true)
+    o(out.should.contain('Caption Name')).equals(true)
+    o(out.should.contain('Caption String')).equals(true)
   })
 })
