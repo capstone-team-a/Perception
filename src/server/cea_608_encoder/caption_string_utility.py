@@ -1,10 +1,19 @@
+from collections import deque
+
 from src.server.character_sets.char_sets import char_sets
-# import sys
-# sys.path.append('../character_sets/')
-# from char_sets import char_sets
 
 
 BYTE_PARITY_MASK = 0x80
+
+BASIC_NORTH_AMERICAN_CHARACTER_SET = 'basic_na_set'
+
+valid_special_character_sets_and_static_first_bytes = {
+    'special_na_set': 0x11,
+    'extended_we_sm_set': 0x12,
+    'extended_we_french_set': 0x12,
+    'extended_we_port_set': 0x13,
+    'extended_we_gd_set': 0x13
+}
 
 
 def check_parity(integer: int) -> int:
@@ -49,13 +58,16 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     :return: list of byte pairs ['a0', 'e5'] -> ['a0e5']
     """
     byte_pairs = []
+
+    if len(byte_list) % 2 != 0:
+        raise ValueError('Can not create byte pairs for an odd length list')
+
+    byte_list = deque(byte_list)
     while byte_list:
-        first_byte = byte_list.pop(0)
-        if not byte_list:
-            second_byte = ''
-        else:
-            second_byte = byte_list.pop(0)
+        first_byte = byte_list.popleft()
+        second_byte = byte_list.popleft()
         byte_pairs.append(first_byte + second_byte)
+
     return byte_pairs
 
 
@@ -74,44 +86,40 @@ def get_special_characters_first_byte(char_set: str) -> hex:
     """Provides the correct first byte to a letter depending on the channel toggle
 
     :param char_set:
-    :param channel_toggle:
     :return: The first byte
     """
-    if char_set in special_character_sets:
-        return special_character_sets[char_set]
+    if char_set in valid_special_character_sets_and_static_first_bytes:
+        return valid_special_character_sets_and_static_first_bytes[char_set]
     else:
-        raise ValueError(f'Channel toggle must be 0 or 1!')
-
-
-special_character_sets = {
-    ''
-    'special_na_set': 0x11,
-    'extended_we_sm_set': 0x12,
-    'extended_we_french_set': 0x12,
-    'extended_we_port_set': 0x13,
-    'extended_we_gd_set': 0x13
-}
+        raise ValueError(f'The character: {char_set} does not belong to a supported character set')
 
 
 def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     """Generates a list of byte pairs given a caption string
 
     :param caption_string
-    :param channel_toggle
     :return: list of byte pairs
     """
     byte_list = []
     for letter in caption_string:
-        char_set_name = get_char_set(letter)
-        first_byte = get_special_characters_first_byte(char_set_name)
-        if first_byte != 0x00:
+        character_set = get_char_set(letter)
+
+        if character_set is BASIC_NORTH_AMERICAN_CHARACTER_SET:
+            character_hex_value = char_sets[BASIC_NORTH_AMERICAN_CHARACTER_SET][letter]
+            if check_parity(character_hex_value) == 0:
+                character_hex_value = add_parity_to_byte(character_hex_value)
+            byte_list.append(hex(character_hex_value))
+        else:
+            first_byte = get_special_characters_first_byte(character_set)
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
             byte_list.append(hex(first_byte))
-        character_hex_value = char_sets[char_set_name][letter]
-        if check_parity(character_hex_value) == 0:
-            character_hex_value = add_parity_to_byte(character_hex_value)
-        byte_list.append(hex(character_hex_value))
+
+            second_byte = char_sets[character_set][letter]
+            if check_parity(second_byte) == 0:
+                second_byte = add_parity_to_byte(second_byte)
+            byte_list.append(hex(second_byte))
+
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
