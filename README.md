@@ -1,7 +1,12 @@
 # Perception
 
-
 Perception is a headless web application for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file. The specification for implementing the encoder can be found on this wiki page: https://en.wikipedia.org/wiki/EIA-608
+
+## Build Branch
+
+This is the build branch, meaning it contains a bundled build of the frontend as part of the repository, meaning the web application can be run without needing node or npm.
+
+This means some of the steps in the "Running the web application" of this readme can be skipped. Specifically, the steps involving `npm install` and `npm start` can be skipped.
 
 ## Installation
 
