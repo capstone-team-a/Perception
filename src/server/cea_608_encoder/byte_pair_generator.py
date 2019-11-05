@@ -22,8 +22,7 @@ def write_caption_data_to_file(caption_data: dict):
     # mm.dd.YY_H:M:S
     dt_string = now.strftime("%m.%d.%Y_%H:%M:%S")
 
-    path = config.path_to_perception
-    path = str(path) + '/data/byte_pairs/'
+    path = config.path_to_data_folder
     file_name = 'output_' + dt_string + '.json'
     try:
         with open(path + file_name, 'w', encoding='utf-8') as file:
