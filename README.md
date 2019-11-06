@@ -3,6 +3,8 @@
 
 Perception is a headless web application for encoding caption data to CEA-608 byte pairs and logging the data as JSON to a file. The specification for implementing the encoder can be found on this wiki page: https://en.wikipedia.org/wiki/EIA-608
 
+There are two outputs of Perception. The first is a located at Perception/data/byte_pairs. This file is the caption data that has been input converted into byte pairs. The seconde is the captions in the basic JSON schema format. This is located at Perception/data/schema. This file can be used to load the caption data into the web application. 
+
 ## Installation
 
 #### Running the application via command-line interface:
@@ -105,6 +107,11 @@ If you have receiving errors regarding Python failing to find modules. Try to ex
 ```
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
+
+## Configuration
+
+The user can change the path to the folder for the byte pair generator output by changing the "path_to_data_folder" variable
+in the "config.py" file located in the "server" folder.
 
 ## Testing
 
