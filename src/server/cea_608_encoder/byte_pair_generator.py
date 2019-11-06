@@ -1,5 +1,6 @@
 import json
 import pathlib
+import logging
 from datetime import datetime
 
 import src.server.cea_608_encoder.caption_string_utility as utils
@@ -20,7 +21,7 @@ def write_caption_data_to_file(caption_data: dict):
     # datetime object containing current date and time
     now = datetime.now()
     # mm.dd.YY_H:M:S
-    dt_string = now.strftime("%m.%d.%Y_%H:%M:%S")
+    dt_string = now.strftime("%m.%d.%Y_%H-%M-%S")
 
     path = config.path_to_data_folder
     file_name = 'output_' + dt_string + '.json'

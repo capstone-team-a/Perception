@@ -106,6 +106,11 @@ If you have receiving errors regarding Python failing to find modules. Try to ex
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
 
+## Configuration
+
+The user can change the path to the folder for the byte pair generator output by changing the "path_to_data_folder" variable
+in the "config.py" file located in the "server" folder.
+
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
