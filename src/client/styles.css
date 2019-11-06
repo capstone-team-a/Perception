@@ -40,6 +40,26 @@ a:hover {
   margin-bottom: 2em;
 }
 
+form.save-changes-form {
+  margin-bottom: 0.5rem;
+}
+
+form.save-changes-form > label, .start > label {
+  display: block;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: .1rem;
+}
+
+form.save-changes-form > input {
+  margin-bottom: 1rem;
+}
+
+.save-changes-button {
+  display: block;
+}
+
+
 .download-link {
   margin-left: 1em;
 }

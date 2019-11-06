@@ -108,19 +108,38 @@ const Scene = {
     Scene.setScenes(list)
   },
 
-  // this function will save the current scene to the localStorage
+// this function will save the current scene to the localStorage
   saveStart: function() {
     const list = Scene.getScenes()
 
     // this is a check to make sure the value entered into start is a number
-    const start_check = Number(Scene.currentScene.start)
-    if (isNaN(start_check)) {
-      Scene.currentScene.start = ``
+    var start_check = 0, start_replace = ""
+    if (Scene.currentScene.start) {
+      start_replace = Scene.currentScene.start.replace(/\s/g, "")
+      start_check = Number(start_replace)
     }
-
+    if (isNaN(start_check) || !start_replace.length) {
+      Scene.currentScene.start = null
+    } else {
+      var i;
+      for (i = 0; i < list.length; i++) {
+        if (list[i].start === null) {
+          //do nothing
+        } else if (Number(list[i].start) === start_check && i !== Scene.findSceneIndex(Scene.currentScene.id)) {
+          Scene.currentScene.start = `Collision Detected`
+        }
+      }
+    }
     // update the current scenes start in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].start = Scene.currentScene.start
-
+    list.sort(function(a, b){
+      if (b.start === null && a.start === null) {return 0} // If both are null don't touch anything
+      if(b.start === null) {return -1} // undefined starts are sorted at the end
+      if(a.start === null) {return 1} // undefined starts are sorted at the end
+      if(Number(a.start) < Number(b.start)) {return -1} // a comes before b
+      if(Number(b.start) < Number(a.start)) {return 1} // b comes before a
+      return 0 // should never hit this case
+    })
     Scene.setScenes(list)
   },
 

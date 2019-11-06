@@ -9,7 +9,17 @@ module.exports = {
     Scene.setCurrentScene(vnode.attrs.sceneId)
   },
   view: function(vnode) {
+    if(!Scene.currentScene) {
+      return m('', [
+        m(m.route.Link, {
+  	  href: `/scenes`,
+        }, 'Return To Scenes'),
+        m('h1', '404 - Scene Not found'),
+        ])
+    }
+
     const captions = Scene.currentScene.captions
+
 
     return m('', [
       m(m.route.Link, {
@@ -23,20 +33,26 @@ module.exports = {
           Scene.saveStart()
         }
       }, [
+        m('label', {
+          for: 'new-name-input'
+        }, 'Scene Name'),
         m("input.new-name-input[type=text]", {
+          id: 'new-name-input',
           oninput: function (e) {
             Scene.currentScene.name = e.target.value
           },
           value: Scene.currentScene.name ? Scene.currentScene.name : ''
         }),
-        m('h2', `Start`),
+        m('label', {
+          for: 'new-start-input'
+        }, 'Start'),
         m("input.new-start-input[type=text]", {
+          id: 'new-start-input',
           oninput: function (e) {
             Scene.currentScene.start = e.target.value
           },
           value: Scene.currentScene.start ? Scene.currentScene.start : ``
         }),
-        m('h5', ``),
         m("button.save-changes-button[type=submit]", 'Save all changes'),
       ]),
       m('button.add-caption', {

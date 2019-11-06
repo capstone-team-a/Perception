@@ -7,9 +7,20 @@ module.exports = {
   oninit: function(vnode) {
     // first set the current Scene, then set the current caption.
     Scene.setCurrentScene(vnode.attrs.sceneId)
-    Scene.setCurrentCaption(vnode.attrs.captionId)
+
+    if (Scene.currentScene) {
+      Scene.setCurrentCaption(vnode.attrs.captionId)      
+    }
   },
   view: function(vnode) {
+    if(!Scene.currentCaption) {
+      return m('', [
+        m(m.route.Link, {
+  	  href: `/scenes`,
+        }, 'Return To Scenes'),
+        m('h1', '404 - Caption Not Found'),
+        ])
+    }
     return m('', [
       m(m.route.Link, {
         href: `/scenes/scene-${Scene.currentScene.id}`,
@@ -22,20 +33,26 @@ module.exports = {
           Scene.saveCaptionText()
         }
       }, [
+        m('label', {
+          for: 'new-name-input'
+        }, 'Caption Name'),
         m("input.new-name-input[type=text]", {
+          id: 'new-name-input',
           oninput: function (e) {
             Scene.currentCaption.name = e.target.value
           },
             value: Scene.currentCaption.name ? Scene.currentCaption.name : ''
         }),
-        m('h2', `Text`),
+        m('label', {
+          for: 'new-caption-text-input'
+        }, 'Caption String'),
         m("input.new-caption-text-input[type=text]", {
+          id: 'new-caption-text-input',
           oninput: function (e) {
             Scene.currentCaption.text = e.target.value
           },
           value: Scene.currentCaption.text ? Scene.currentCaption.text : ``
         }),
-        m('h5', ``),
         m("button.save-changes-button[type=submit]", 'Save all changes'),
       ])
     ])

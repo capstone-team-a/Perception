@@ -60,5 +60,10 @@ o.spec('SceneForm', function() {
     out.setValue('.new-start-input', 'IT\'S OVER 9000!!!') // trigger an input in the input form
     out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.getScenes().find(scene => scene.start === 'IT\'S OVER 9000!!!') !== undefined).equals(false)
+
+    // check to make sure that the labels for input boxes exist
+    o(out.should.have.at.least(2, 'label')).equals(true)
+    o(out.should.contain('Scene Name')).equals(true)
+    o(out.should.contain('Start')).equals(true)
   })
 })

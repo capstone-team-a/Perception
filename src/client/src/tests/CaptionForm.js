@@ -31,5 +31,10 @@ o.spec('CaptionForm', function() {
     out.setValue('.new-caption-text-input', 'hello') // trigger an input in the input form
     out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.currentScene.captions.find(caption => caption.text === 'hello') !== undefined).equals(true)
+
+    // check to make sure that the labels for input boxes exist
+    o(out.should.have.at.least(2, 'label')).equals(true)
+    o(out.should.contain('Caption Name')).equals(true)
+    o(out.should.contain('Caption String')).equals(true)
   })
 })
