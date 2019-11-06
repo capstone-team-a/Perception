@@ -75,31 +75,19 @@ Perception expects a JSON file with the following format:
 ```
 git clone https://github.com/capstone-team-a/Perception.git
 ```
-2. Navigate to the Perception frontend directory: 
-```
-cd Perception/src/client
-```
-3. Run the npm command to install necessary dependencies:
-```
-npm install
-```
-4. Run the npm command to bundle all JavaScript files into one file: bin/app.js
-```
-npm start
-```
-5. Navigate to the Perception backend directory: 
+2. Navigate to the Perception backend directory: 
 ```
 cd Perception/src/server
 ```
-6. Install Python dependencies with pip:
+3. Install Python dependencies with pip:
 ```
 pip3 install -r requirements.txt
 ```
-7. Start the Flask application: 
+4. Start the Flask application: 
 ```
 flask run
 ```
-8. Open your browser to: 
+5. Open your browser to: 
 ```
 http://localhost:5000
 ```
@@ -111,39 +99,10 @@ If you have receiving errors regarding Python failing to find modules. Try to ex
 export PYTHONPATH="${PYTHONPATH}:path/to/Perception/"
 ```
 
-## Testing
-
-### Client Tests
-
-1. Navigate to the client directoy:
-```
-cd Perception/src/client
-```
-2. Run the test suite:
-```
-npm test
-```
-
-This will automatically run any tests defined in any .js file within the `src/tests` directory.
-
-The convention will be to name each test file with the same name as the file it is testing.
-
-### Server Tests
-
-1. Navigate to the server directory:
-```
-cd Perception/src/server
-```
-2. Run the test suite:
-```
-TODO
-```
-
 ## Built With
 
 * Python 3.7.4
 * Flask 1.1.1
-* Mithril 2.0.4
 
 ## Contributors
 
