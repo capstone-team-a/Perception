@@ -321,7 +321,7 @@ const Scene = {
       alert("Error while reading file. Please try again.\n Error info: " + error)
       return false
     }
-    if(localStorage.getItem('sucessful_load')){
+    if(localStorage.getItem('sucessful_load') === "true"){
       return true
     } else {
 	  return false
