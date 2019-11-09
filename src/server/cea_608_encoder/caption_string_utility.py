@@ -15,6 +15,9 @@ valid_special_character_sets_and_static_first_bytes = {
     'extended_we_gd_set': 0x13
 }
 
+text_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
+    "red": 0x8, "yellow": 0xa, "magenta": 0xc, "italic white": 0xe}
+
 
 def check_parity(integer: int) -> int:
     """Check the bit parity of the input
@@ -141,20 +144,44 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
+def create_byte_pairs_for_midrow_style(color: str, underline = False):
+    byte_list = []
+    
+    # Default: text color: white, no underline
+    first_byte = 0x11 
+    second_byte = 0x20
+
+    if isinstance(color, str):
+        color = color.lower()
+    if color in text_colors:
+        second_byte += text_colors[color]
+    if underline == True: 
+        second_byte += 0x1  
+
+    bytes = []
+    bytes.append(first_byte)
+    bytes.append(second_byte)
+
+    # To move the cursor one position back
+    # CC1 Backspace control command
+    bytes.append(0x14)
+    bytes.append(0x21)
+
+    for byte in bytes:
+        if check_parity(byte) == 0:
+            byte = add_parity_to_byte(byte)
+        byte_list.append(hex(byte))
+
+    raw_hex_values = parse_raw_hex_values(byte_list)
+    byte_pairs = bytes_to_byte_pairs(raw_hex_values)
+    return byte_pairs
+
 
 def create_byte_pairs_for_caption_color(color):
     pass
 
 
 def create_byte_pairs_for_text_alignment(alignment):
-    pass
-
-
-def create_bytes_to_underline_text():
-    pass
-
-
-def create_bytes_to_italicize_text():
     pass
 
 
