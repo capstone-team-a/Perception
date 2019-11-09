@@ -51,7 +51,7 @@ def submit():
                         mimetype='application/json')
     except Exception as err:
         error_message = {'Error': 'Could not create byte pairs for the specified caption data, try again'}
-        app.logger.error(f'Failed to create encode byte pairs: {err}')
+        app.logger.error(f'Failed to encode byte pairs: {err}')
         return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
