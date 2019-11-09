@@ -234,12 +234,12 @@ const Scene = {
   },
 
   setFileName: function(fileName) {
-    var extensionCheck = fileName.split('.')
-    if (extensionCheck[extensionCheck.length - 1].toLowerCase() !== 'json') {
+    var extensionCheck = fileName.substr(fileName.length - 4).toLowerCase()
+    if (extensionCheck !== 'json') {
       return false
     }
     const object = JSON.parse(localStorage.getItem('file-name'))
-    object['file-name'] = extensionCheck[0]
+    object['file-name'] = fileName.substring(0, fileName.length - 5)
     localStorage.setItem('file-name', JSON.stringify(object))
     return true
   },
@@ -247,34 +247,6 @@ const Scene = {
   getFileName: function() {
     return JSON.parse(localStorage.getItem('file-name'))
   },
-
-  loadFromFile: function(inputFile) {
-    if(!Scene.setFileName(inputFile.name)) {
-      alert("File type to load from must be .json")
-      return false
-    }
-    try {
-      var reader = new FileReader()
-      var blob = inputFile.slice(0, inputFile.size)
-      reader.onload = function(e) {
-        localStorage.setItem('file-data', e.target.result)
-        const loadedData = JSON.parse(localStorage.getItem('file-data'))
-        Scene.loadSceneListFromFile(loadedData)
-      }
-      reader.onerror = function(e) {
-        alert("There was an error while reading your file.")
-      }
-      reader.readAsBinaryString(blob)
-    } catch (error) {
-      alert("Error while reading file. Please try again.\n Error info: " + error)
-      return false
-    }
-    const loadedData = JSON.parse(localStorage.getItem('file-data'))
-
-    //TODO Load each item into local storage.
-    return true
-  },
-
 
   exportToServer: function() {
     const payload = Scene.constructJSON()
@@ -321,22 +293,55 @@ const Scene = {
     }
   },
 
-  loadSceneListFromFile: function(loadedData) {
+  loadFromFile: function(inputFile) {
+    if(!Scene.setFileName(inputFile.name)) {
+      alert("File type to load from must be .json")
+      return false
+    }
     try {
-      Scene.setInputFormat(loadedData['caption_format'])
-      if (loadedData['caption_format'] === "CEA-608") {
-        var i
-        var sceneList = []
-        for (i = 0; i < loadedData['scene_list'].length; i++) {
-          newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i], loadedData['caption_format'])
-          sceneList.push(newScene)
+      var reader = new FileReader()
+      var blob = inputFile.slice(0, inputFile.size)
+      reader.onload = function(e) {
+		try {
+          localStorage.setItem('file-data', e.target.result)
+          const loadedData = JSON.parse(localStorage.getItem('file-data'))
+          //const loadedData = JSON.parse(e.target.result)
+          Scene.loadSceneListFromFile(loadedData)
+        } catch (error) {
+          localStorage.setItem('sucessful_load', false)
+          alert("JSON file was malformed.\n" + error)
         }
-        Scene.setScenes(sceneList)
-      } else {
-        alert("The loaded Caption Format is not supported.")
       }
+      reader.onerror = function(e) {
+        alert("There was an error while reading your file.")
+		return false
+      }
+      reader.readAsText(blob)
     } catch (error) {
-      alert("JSON file was malformed." + error)
+      alert("Error while reading file. Please try again.\n Error info: " + error)
+      return false
+    }
+    if(localStorage.getItem('sucessful_load')){
+      return true
+    } else {
+	  return false
+	}
+  },
+  
+  loadSceneListFromFile: function(loadedData) {
+    if (loadedData['caption_format'] === "CEA-608") {
+      var i
+      var sceneList = []
+      for (i = 0; i < loadedData['scene_list'].length; i++) {
+        newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i])
+        sceneList.push(newScene)
+      }
+      Scene.setScenes(sceneList)
+	  Scene.setInputFormat(loadedData['caption_format'])
+      localStorage.setItem('sucessful_load', true)
+    } else {
+	  localStorage.setItem('sucessful_load', false)
+      alert("The loaded Caption Format is not supported.")
     }
   },
 
@@ -344,29 +349,75 @@ const Scene = {
     var i
     var captionList = []
     for (i = 0; i < loadedScene['caption_list'].length; i++) {
-      newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i], format)
+      newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i])
       captionList.push(newCaption)
     }
+	var scene_name = ''
+	var start = ''
+	var position = ''
+	if (loadedScene['scene_name']) {
+      scene_name = loadedScene['scene_name']
+	}
+	if (loadedScene['start']) {
+      start = loadedScene['start'].time.toString()
+	}
+	if (loadedScene['position']) {
+      position = loadedScene['position'].row
+	}
     return {
       id: loadedScene['scene_id'],
-      name: loadedScene['scene_name'],
-      start: loadedScene['start'].time.toString(),
-      //TODO position: loadedScene['position'].key
-      captions: captionList
+      name: scene_name,
+      start: start,
+      position: position,
+      captions: captionList,
     }
   },
 
-  load608CaptionFromFile: function(loadedCaption, format) {
+  load608CaptionFromFile: function(loadedCaption) {
+	var caption_name = ''
+	var caption_string = ''
+	var background_color = ''
+	var foreground_color = ''
+	var text_alignment = ''
+	var underline = false
+	var italics = false
+	var opacity = ''
+	
+	if (loadedCaption['caption_name']) {
+      caption_name = loadedCaption['caption_name']
+	}
+	if (loadedCaption['caption_string']) {
+      caption_string = loadedCaption['caption_string']
+	}
+	if (loadedCaption['background_color']) {
+      background_color = loadedCaption['background_color'].color
+	}
+	if (loadedCaption['foreground_color']) {
+      foreground_color = loadedCaption['foreground_color'].color
+	}
+	if (loadedCaption['text_alignment']) {
+      text_alignment = loadedCaption['text_alignment'].placment
+	}
+	if (loadedCaption['underline']) {
+      underline = loadedCaption['underline']
+	}
+	if (loadedCaption['italics']) {
+      italics = loadedCaption['italics']
+	}
+	if (loadedCaption['opacity']) {
+      opacity = loadedCaption['opacity']
+	}
+	
     return {
       id: loadedCaption['caption_id'],
-      name: loadedCaption['caption_name'],
-      text: loadedCaption['caption_string']
-      //TODO background: loadedCaption['background_color'].color
-      //TODO foreground_color: loadedCaption['foreground_color'].color
-      //TODO alignment: loadedCaption['text_alignment'].placment
-      //TODO underline: loadedCaption['underline']
-      //TODO italics: loadedCaption['italics']
-      //TODO opacity: loadedCaption['opacity']
+      name: caption_name,
+      text: caption_string,
+      background: background_color,
+      foreground_color: foreground_color,
+      alignment: text_alignment,
+      underline: underline,
+      italics: italics,
+      opacity: opacity,
     }
   },
 
