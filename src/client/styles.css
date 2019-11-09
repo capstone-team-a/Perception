@@ -3,6 +3,7 @@
   margin: 0 0 10px;
   padding: 0;
   max-height: calc(100vh - 215px);
+  min-height: 15vh;
   overflow: scroll;
 }
 
@@ -10,6 +11,7 @@
   margin: 0 0 10px;
   padding: 0;
   max-height: calc(100vh - 380px);
+  min-height: 15vh;
   overflow: scroll;
 }
 
