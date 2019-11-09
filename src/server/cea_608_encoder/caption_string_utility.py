@@ -144,6 +144,14 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
     return byte_pairs
 
+
+def create_byte_pairs_for_backspace() -> list:
+    # CC1 Backspace control command
+    # first_byte = 0x14 
+    # second_byte = 0x21
+    return [0x94, 0xa1] # parity bits included
+
+
 def create_byte_pairs_for_midrow_style(color: str, underline = False):
     byte_list = []
     
@@ -158,19 +166,17 @@ def create_byte_pairs_for_midrow_style(color: str, underline = False):
     if underline == True: 
         second_byte += 0x1  
 
-    bytes = []
-    bytes.append(first_byte)
-    bytes.append(second_byte)
+    if check_parity(first_byte) == 0:
+            first_byte = add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+    if check_parity(second_byte) == 0:
+        second_byte = add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
 
     # To move the cursor one position back
-    # CC1 Backspace control command
-    bytes.append(0x14)
-    bytes.append(0x21)
-
-    for byte in bytes:
-        if check_parity(byte) == 0:
-            byte = add_parity_to_byte(byte)
-        byte_list.append(hex(byte))
+    backaspace_bytes = create_byte_pairs_for_backspace()
+    byte_list.append(hex(backaspace_bytes[0]))
+    byte_list.append(hex(backaspace_bytes[1]))
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
