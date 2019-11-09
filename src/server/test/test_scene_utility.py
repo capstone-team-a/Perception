@@ -8,7 +8,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "cyan"
         expected = ['1026']
 
-        actual = utils.create_bytes_for_scene_background_color(color,False);
+        actual = utils.create_bytes_for_scene_background_color(color,False)
 
         self.assertEqual(expected, actual)
 
@@ -16,7 +16,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "Purple"
         expected = ['97ad']
 
-        actual = utils.create_bytes_for_scene_background_color(color,False);
+        actual = utils.create_bytes_for_scene_background_color(color,False)
 
         self.assertEqual(expected, actual)
 
@@ -24,7 +24,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "white"
         expected = ['10a1']
 
-        actual = utils.create_bytes_for_scene_background_color(color,True);
+        actual = utils.create_bytes_for_scene_background_color(color,True)
 
         self.assertEqual(expected, actual)
 
@@ -66,7 +66,7 @@ class TestSceneUtilities(unittest.TestCase):
     def test_create_byte_pairs_for_control_command_get_end_of_caption(self):
         expected = ['942f']
 
-        actual = utils.create_byte_pairs_for_control_command(get_end_of_caption_bytes())
+        actual = utils.create_byte_pairs_for_control_command(utils.get_end_of_caption_bytes())
 
         self.assertEqual(expected, actual)
 
