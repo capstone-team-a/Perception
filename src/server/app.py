@@ -1,10 +1,11 @@
 import json
+from datetime import datetime
 
 from flask import Flask, request, Response, send_from_directory
 from flask_cors import CORS
 
-import src.server.cea_608_encoder.byte_pair_generator as encoder
-
+from src.server.cea_608_encoder.byte_pair_generator import consume
+from src.server.config import path_to_schema_folder
 
 app = Flask(__name__, static_folder="../client/")
 CORS(app)
@@ -12,7 +13,7 @@ CORS(app)
 
 @app.route("/", methods=['GET'])
 def home():
-    return send_from_directory('../client','index.html')
+    return send_from_directory('../client', 'index.html')
 
 
 @app.route("/submit", methods=['POST'])
@@ -26,24 +27,32 @@ def submit():
     caption_data = request.get_json()
 
     try:
-        with open('data.json', 'w', encoding='utf-8') as file:
+        now = datetime.now()
+        date_time = now.strftime("%m.%d.%Y_%H-%M-%S")
+        file_name = f'output_{date_time}.json'
+
+        with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
-        encoder.consume(caption_data)
+        consume(caption_data)
         return Response(json.dumps({'Success': 'ok'}),
                         status=200,
                         mimetype='application/json')
     except IOError as err:
-        app.logger.error(f'Could not write JSON to file: {err}')
-        return Response(json.dumps({'Error': 'There was a problem trying to write the caption data to file'}),
+        error_message = {'Error': f'Writing JSON to file failed: {err}'}
+        app.logger.error(error_message)
+        return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
     except ValueError as err:
-        app.logger.error(f'Could not encode caption data to byte pairs, shutting down with error: {err}')
-        return Response(json.dumps({'Error': 'Received bad input for one or more values.'}),
+        error_message = {'Error': f'Received bad input for one or more values: {err}'}
+        app.logger.error(error_message)
+        return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
-    except Exception:
-        return Response(json.dumps({'Error': 'Could not create byte pairs for the specified caption data, try again'}),
+    except Exception as err:
+        error_message = {'Error': 'Could not create byte pairs for the specified caption data, try again'}
+        app.logger.error(f'Failed to create encode byte pairs: {err}')
+        return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
 

@@ -1,5 +1,4 @@
 import json
-import pathlib
 import logging
 from datetime import datetime
 
@@ -24,7 +23,7 @@ def write_caption_data_to_file(caption_data: dict):
     dt_string = now.strftime("%m.%d.%Y_%H-%M-%S")
 
     path = config.path_to_data_folder
-    file_name = 'output_' + dt_string + '.json'
+    file_name = f'output_{dt_string}.json'
     try:
         with open(path + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
@@ -134,12 +133,14 @@ def consume_captions(caption_list: list) -> dict:
     caption_metadata['caption_string'] = []
 
     for caption in caption_list:
-        if 'caption_id' not in caption or 'caption_string' not in caption:
-            raise ValueError('A caption ID and string list must be set for each caption')
+        if 'caption_id' not in caption:
+            raise ValueError('A caption ID must be set for each caption')
         
-        if 'caption_string' in caption:
+        if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
+        else:
+            raise ValueError('You must specify a caption string that is not null.')
 
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             caption_color = caption['foreground_color']['color']
