@@ -303,10 +303,7 @@ const Scene = {
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
 		try {
-          localStorage.setItem('file-data', e.target.result)
-          const loadedData = JSON.parse(localStorage.getItem('file-data'))
-          //const loadedData = JSON.parse(e.target.result)
-          Scene.loadSceneListFromFile(loadedData)
+          Scene.loadSceneListFromFile(JSON.parse(e.target.result))
         } catch (error) {
           localStorage.setItem('sucessful_load', false)
           alert("JSON file was malformed.\n" + error)
