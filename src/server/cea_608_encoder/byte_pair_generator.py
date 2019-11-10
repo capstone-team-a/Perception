@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime
+from collections import Counter
 
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
@@ -67,7 +68,6 @@ def consume_scenes(scene_list: list) -> list:
     :return: TODO
     """
     scene_data = []
-    validate_scene_ids(scene_list) 
 
     for scene in scene_list:
         current_scene_data = {}
@@ -76,6 +76,8 @@ def consume_scenes(scene_list: list) -> list:
 
         if 'scene_id' not in scene:
             raise ValueError('Every scene must have a scene ID.')
+        else:
+            validate_scene_ids(scene_list) 
 
         if 'start' not in scene: 
             raise ValueError('You must specify a starting time for a scene.')
@@ -133,7 +135,6 @@ def consume_captions(caption_list: list) -> dict:
     caption_metadata = {}
     caption_metadata['caption_string'] = []
 
-    validate_caption_ids(caption_list)
 
     for caption in caption_list:
         if 'caption_id' not in caption or 'caption_string' not in caption:
@@ -141,6 +142,8 @@ def consume_captions(caption_list: list) -> dict:
 
         if 'caption_id' not in caption:
             raise ValueError('A caption ID must be set for each caption')
+        else:
+            validate_caption_ids(caption_list)
         
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
@@ -175,28 +178,24 @@ def consume_captions(caption_list: list) -> dict:
     return caption_metadata
 
 
-def validate_scene_ids(scene_list: list)
+def validate_scene_ids(scene_list: list):
     """Validates the scene IDs to look for duplicate IDs
 
     :param scene_list:
     """
-    scene_ids = {}
-    for scene in scene_list:
-        scene_ids.update(scene['scene_id'] += 1)
+    scene_ids = Counter(scene_list)
 
     for id,number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
             raise ValueError('There are duplicate scene IDs.')
 
 
-def validate_caption_ids(caption_list: list)
+def validate_caption_ids(caption_list: list):
     """Validates the caption IDs to look for duplicate IDs
 
     :param caption_list:
     """
-    caption_ids = {}
-    for caption in caption_list:
-        caption_ids.update(caption['caption_id'] += 1)
+    caption_ids = Counter(caption_list)
 
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
