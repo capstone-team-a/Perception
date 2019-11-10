@@ -1,5 +1,4 @@
 import json
-import pathlib
 import logging
 from datetime import datetime
 
@@ -24,7 +23,7 @@ def write_caption_data_to_file(caption_data: dict):
     dt_string = now.strftime("%m.%d.%Y_%H-%M-%S")
 
     path = config.path_to_data_folder
-    file_name = 'output_' + dt_string + '.json'
+    file_name = f'output_{dt_string}.json'
     try:
         with open(path + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
@@ -68,8 +67,8 @@ def consume_scenes(scene_list: list) -> list:
     :return: TODO
     """
     scene_data = []
-    scene_id_check = []
-    
+    validate_scene_ids(scene_list) 
+
     for scene in scene_list:
         current_scene_data = {}
         current_scene_data['start'] = 0
@@ -77,10 +76,6 @@ def consume_scenes(scene_list: list) -> list:
 
         if 'scene_id' not in scene:
             raise ValueError('Every scene must have a scene ID.')
-        else if scene['scene_id'] in scene_id_check:
-            raise ValueError('This scene ID already exists.')
-        else:
-            scene_id_check.append(scene['scene_id'])
 
         if 'start' not in scene: 
             raise ValueError('You must specify a starting time for a scene.')
@@ -137,19 +132,21 @@ def consume_captions(caption_list: list) -> dict:
     """
     caption_metadata = {}
     caption_metadata['caption_string'] = []
-    caption_id_check = []
+
+    validate_caption_ids(caption_list)
 
     for caption in caption_list:
         if 'caption_id' not in caption or 'caption_string' not in caption:
             raise ValueError('A caption ID and string list must be set for each caption')
-        else if caption['caption_id'] in caption_id_check:
-            raise ValueError('This caption ID already exists in the current scene.')
-        else:
-            caption_id_check.append(caption['caption_id'])
+
+        if 'caption_id' not in caption:
+            raise ValueError('A caption ID must be set for each caption')
         
-        if 'caption_string' in caption:
+        if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
+        else:
+            raise ValueError('You must specify a caption string that is not null.')
 
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             caption_color = caption['foreground_color']['color']
@@ -176,3 +173,32 @@ def consume_captions(caption_list: list) -> dict:
             caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
 
     return caption_metadata
+
+
+def validate_scene_ids(scene_list: list)
+    """Validates the scene IDs to look for duplicate IDs
+
+    :param scene_list:
+    """
+    scene_ids = {}
+    for scene in scene_list:
+        scene_ids.update(scene['scene_id'] += 1)
+
+    for id,number_of_that_id in scene_ids.items():
+        if number_of_that_id > 1:
+            raise ValueError('There are duplicate scene IDs.')
+
+
+def validate_caption_ids(caption_list: list)
+    """Validates the caption IDs to look for duplicate IDs
+
+    :param caption_list:
+    """
+    caption_ids = {}
+    for caption in caption_list:
+        caption_ids.update(caption['caption_id'] += 1)
+
+    for id,number_of_that_id in caption_ids.items():
+        if number_of_that_id > 1:
+            raise ValueError('There are duplicate caption IDs.')
+
