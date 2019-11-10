@@ -8,16 +8,7 @@ const Scene = {
     // before initializing, make sure there isn't already data
     if (!localStorage.getItem('scene-list')) {
       // for now hard-coding in some example scenes
-      localStorage.setItem('scene-list', JSON.stringify([{
-        id: 1,
-        name: 'First scene',
-        captions: [{
-          id: 1
-        }]
-      }, {
-        id: 2,
-        captions: []
-      }]))
+      localStorage.setItem('scene-list', JSON.stringify([]))
     }
 
     if(!localStorage.getItem('input-format')) {
