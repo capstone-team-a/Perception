@@ -366,7 +366,22 @@ const Scene = {
     const blob = new Blob([JSON.stringify(Scene.constructJSON())], {type : 'application/json'})
 
     return URL.createObjectURL(blob)
-  }
+  },
+
+  // this is used to save a variable attribute so you don't have to know what attribute you are trying to save.
+  // currently it is used by the formBuilder so it can call the correct save function for each attribute.
+  saveCaptionAttr: function (attr) {
+    const attrToSaveFn = {
+      'name': Scene.saveCaptionName,
+      'text': Scene.saveCaptionText,
+    }
+
+    if (!attrToSaveFn[attr]) {
+      console.log(`No save function found for attribute: ${attr}`)
+    }
+
+    return attrToSaveFn[attr]()
+  },
 }
 
 

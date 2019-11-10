@@ -1,4 +1,5 @@
 const m = require('mithril')
+const Scene = require('../models/Scene')
 
 function formBuilder(schema) {
   // each key in the schema represents an attribute
@@ -38,7 +39,7 @@ function formBuilder(schema) {
       e.preventDefault()
       // call the save function for each attribute
       attributes.forEach(attr => {
-        Scene.saveCaptionAttr[attr]()
+        Scene.saveCaptionAttr(attr)
       })
     }
   }, [
@@ -46,3 +47,5 @@ function formBuilder(schema) {
     m("button.save-changes-button[type=submit]", 'Save all changes'),
   ])
 }
+
+module.exports = formBuilder
