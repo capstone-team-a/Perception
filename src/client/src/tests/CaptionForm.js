@@ -10,7 +10,12 @@ o.spec('CaptionForm', function() {
   o('things are working', function() {
 
     // before we do anything we need to initialize the data model
+    localStorage.clear()
     Scene.initialize()
+    Scene.addScene()
+    Scene.setCurrentScene(1)
+    Scene.addCaption()
+    Scene.saveCaptions()
 
     // also passing in the ids that the view expects as a route param
     var out = mq(CaptionForm, {sceneId: 1, captionId: 1})
@@ -22,7 +27,7 @@ o.spec('CaptionForm', function() {
     out.setValue('.new-name-input', 'new name') // trigger an input in the input form
     o(out.should.not.contain('Caption 1')).equals(true)
     o(out.should.contain('new name')).equals(true)
-    
+
     // make sure that change name form actually changes the name in the data model
     out.trigger('.save-changes-form', 'onsubmit', {preventDefault: () => {}}) // trigger a submit event on the form
     o(Scene.currentScene.captions.find(caption => caption.name === 'new name') !== undefined).equals(true)
