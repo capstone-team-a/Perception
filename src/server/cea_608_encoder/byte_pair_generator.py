@@ -160,10 +160,4 @@ def consume_captions(caption_list: list) -> dict:
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_metadata['text_alignment'] = caption_alignment_byte_encoded
 
-        if 'underline' in caption:
-            caption_metadata['underlined_text_bytes'] = utils.create_bytes_to_underline_text()
-
-        if 'italics' in caption:
-            caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
-
     return caption_metadata

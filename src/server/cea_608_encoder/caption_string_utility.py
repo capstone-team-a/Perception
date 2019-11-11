@@ -1,4 +1,5 @@
 from collections import deque
+import logging
 
 from src.server.character_sets.char_sets import char_sets
 
@@ -14,6 +15,9 @@ valid_special_character_sets_and_static_first_bytes = {
     'extended_we_port_set': 0x13,
     'extended_we_gd_set': 0x13
 }
+
+text_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
+    "red": 0x8, "yellow": 0xa, "magenta": 0xc, "italic white": 0xe}
 
 
 def check_parity(integer: int) -> int:
@@ -142,19 +146,57 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     return byte_pairs
 
 
+def create_byte_pairs_for_backspace() -> list:
+    # CC1 Backspace control command
+    # first_byte = 0x14 
+    # second_byte = 0x21
+    return [0x94, 0xa1] # parity bits included
+
+
+def create_byte_pairs_for_midrow_style(color: str, underline = False):
+    byte_list = []
+    
+    # Default: Do nothing, no change in style
+    first_byte = 0x00
+    second_byte = 0x00
+
+    if isinstance(color, str):
+        color = color.lower()
+    if color == "black":
+        first_byte = 0x17
+        second_byte = 0x2e
+    elif color in text_colors:
+        first_byte = 0x11 
+        second_byte = 0x20 + text_colors[color]
+    else:
+        logging.error(f'Could not change midrow style: \'{color}\' is not supported by CEA-608')
+
+    if underline == True and second_byte != 0x00: 
+        second_byte += 0x1  
+
+    if check_parity(first_byte) == 0:
+            first_byte = add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+    if check_parity(second_byte) == 0:
+        second_byte = add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
+
+    # To move the cursor one position back
+    if first_byte != 0x80:
+        backspace_bytes = create_byte_pairs_for_backspace()
+        byte_list.append(hex(backspace_bytes[0]))
+        byte_list.append(hex(backspace_bytes[1]))
+
+    raw_hex_values = parse_raw_hex_values(byte_list)
+    byte_pairs = bytes_to_byte_pairs(raw_hex_values)
+    return byte_pairs
+
+
 def create_byte_pairs_for_caption_color(color):
     pass
 
 
 def create_byte_pairs_for_text_alignment(alignment):
-    pass
-
-
-def create_bytes_to_underline_text():
-    pass
-
-
-def create_bytes_to_italicize_text():
     pass
 
 
