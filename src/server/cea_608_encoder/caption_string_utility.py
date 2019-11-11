@@ -192,10 +192,6 @@ def create_byte_pairs_for_midrow_style(color: str, underline = False):
     return byte_pairs
 
 
-def create_byte_pairs_for_caption_color(color):
-    pass
-
-
 def create_byte_pairs_for_text_alignment(alignment):
     pass
 
