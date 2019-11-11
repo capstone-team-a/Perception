@@ -174,9 +174,9 @@ def create_byte_pairs_for_midrow_style(color: str, underline = False):
     byte_list.append(hex(second_byte))
 
     # To move the cursor one position back
-    backaspace_bytes = create_byte_pairs_for_backspace()
-    byte_list.append(hex(backaspace_bytes[0]))
-    byte_list.append(hex(backaspace_bytes[1]))
+    backspace_bytes = create_byte_pairs_for_backspace()
+    byte_list.append(hex(backspace_bytes[0]))
+    byte_list.append(hex(backspace_bytes[1]))
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
