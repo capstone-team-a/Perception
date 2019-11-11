@@ -23,14 +23,15 @@ function formBuilder(schema) {
     const inputOptions = {
       id: `${item.attr}-input`,
       oninput: e => {
-        Scene.currentCaption[item.attr] = e.target.value
+        Scene.currentCaption[item.attr] = item.type === 'checkbox' ? e.target.checked : e.target.value
       },
-      value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : ''
+      value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : '',
+      checked: Scene.currentCaption[item.attr]
     }
     
     return [
       m('label', {for: `${item.attr}-input`}, item.label),
-      item.type === 'text'
+      item.type === 'text' || item.type === 'checkbox'
         ? m(`input.${item.attr}-input[type=${item.type}]`, inputOptions)
         : item.type === 'dropdown'
         ? m('select', inputOptions, item.options.map(option => m('option', option)))
