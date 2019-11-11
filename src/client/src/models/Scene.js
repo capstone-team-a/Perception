@@ -233,14 +233,12 @@ const Scene = {
     return JSON.parse(localStorage.getItem('input-format'))
   },
 
-  setFileName: function(fileName) {
-    var extensionCheck = fileName.substr(fileName.length - 4).toLowerCase()
-    if (extensionCheck !== 'json') {
+  jsonExtensionCheck: function(fileName) {
+	// creating new string with the extension of the file.
+    var check = fileName.substr(fileName.length - 4).toLowerCase()
+    if (check !== 'json') {
       return false
     }
-    const object = JSON.parse(localStorage.getItem('file-name'))
-    object['file-name'] = fileName.substring(0, fileName.length - 5)
-    localStorage.setItem('file-name', JSON.stringify(object))
     return true
   },
 
@@ -294,64 +292,69 @@ const Scene = {
   },
 
   loadFromFile: function(inputFile) {
-    if(!Scene.setFileName(inputFile.name)) {
+    if(!Scene.jsonExtensionCheck(inputFile.name)) {
       alert("File type to load from must be .json")
       return false
     }
     try {
+	  var success = true
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
 		try {
-          Scene.loadSceneListFromFile(JSON.parse(e.target.result))
+          success = Scene.loadSceneListFromFile(JSON.parse(e.target.result))
         } catch (error) {
-          localStorage.setItem('sucessful_load', false)
           alert("JSON file was malformed.\n" + error)
+		  success = false
         }
       }
       reader.onerror = function(e) {
         alert("There was an error while reading your file.")
-		return false
+		success = false
       }
       reader.readAsText(blob)
     } catch (error) {
       alert("Error while reading file. Please try again.\n Error info: " + error)
-      return false
+      success = false
     }
-    if(localStorage.getItem('sucessful_load') === "true"){
-      return true
-    } else {
-	  return false
-	}
+    if(success){
+	  m.route.set('/scenes')
+    }
   },
   
   loadSceneListFromFile: function(loadedData) {
+	localStorage.setItem('file-name', JSON.stringify({
+      'file-name': loadedData['file_name']
+    }))
     if (loadedData['caption_format'] === "CEA-608") {
-      var i
       var sceneList = []
-      for (i = 0; i < loadedData['scene_list'].length; i++) {
+      for (var i = 0; i < loadedData['scene_list'].length; i++) {
         newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i])
         sceneList.push(newScene)
       }
       Scene.setScenes(sceneList)
 	  Scene.setInputFormat(loadedData['caption_format'])
-      localStorage.setItem('sucessful_load', true)
+      return true
     } else {
-	  localStorage.setItem('sucessful_load', false)
       alert("The loaded Caption Format is not supported.")
-    }
+      return false
+	}
   },
 
   load608SceneFromFile: function(loadedScene, format) {
-    var i
-    var captionList = []
-    for (i = 0; i < loadedScene['caption_list'].length; i++) {
-      newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i])
-      captionList.push(newCaption)
-    }
+	// setting attributes default
 	var scene_name = ''
 	var start = ''
 	var position = ''
+    var captionList = []
+	
+	// initializing each caption by iterating throught the caption list
+    for (var i = 0; i < loadedScene['caption_list'].length; i++) {
+      newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i])
+      captionList.push(newCaption)
+    }
+	
+	//checking if each attribute is initialized
 	if (loadedScene['scene_name']) {
       scene_name = loadedScene['scene_name']
 	}
@@ -371,6 +374,7 @@ const Scene = {
   },
 
   load608CaptionFromFile: function(loadedCaption) {
+	// setting default values of attributes.
 	var caption_name = ''
 	var caption_string = ''
 	var background_color = ''
@@ -380,6 +384,7 @@ const Scene = {
 	var italics = false
 	var opacity = ''
 	
+	// checking if each attribute needed was passed in.
 	if (loadedCaption['caption_name']) {
       caption_name = loadedCaption['caption_name']
 	}

@@ -39,8 +39,8 @@ module.exports = {
           e.preventDefault()
           if (!inputFile) {
             alert("Must select file to load from")
-          } else if(Scene.loadFromFile(inputFile)) {
-            m.route.set('/scenes')
+          } else {
+            Scene.loadFromFile(inputFile)
           }
         }
       }, [
