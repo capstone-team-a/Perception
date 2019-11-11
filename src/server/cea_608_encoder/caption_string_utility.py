@@ -1,4 +1,5 @@
 from collections import deque
+import logging
 
 from src.server.character_sets.char_sets import char_sets
 
@@ -155,15 +156,22 @@ def create_byte_pairs_for_backspace() -> list:
 def create_byte_pairs_for_midrow_style(color: str, underline = False):
     byte_list = []
     
-    # Default: text color: white, no underline
-    first_byte = 0x11 
-    second_byte = 0x20
+    # Default: Do nothing, no change in style
+    first_byte = 0x00
+    second_byte = 0x00
 
     if isinstance(color, str):
         color = color.lower()
-    if color in text_colors:
-        second_byte += text_colors[color]
-    if underline == True: 
+    if color == "black":
+        first_byte = 0x17
+        second_byte = 0x2e
+    elif color in text_colors:
+        first_byte = 0x11 
+        second_byte = 0x20 + text_colors[color]
+    else:
+        logging.error(f'Could not change midrow style: \'{color}\' is not supported by CEA-608')
+
+    if underline == True and second_byte != 0x00: 
         second_byte += 0x1  
 
     if check_parity(first_byte) == 0:
@@ -174,9 +182,10 @@ def create_byte_pairs_for_midrow_style(color: str, underline = False):
     byte_list.append(hex(second_byte))
 
     # To move the cursor one position back
-    backspace_bytes = create_byte_pairs_for_backspace()
-    byte_list.append(hex(backspace_bytes[0]))
-    byte_list.append(hex(backspace_bytes[1]))
+    if first_byte != 0x80:
+        backspace_bytes = create_byte_pairs_for_backspace()
+        byte_list.append(hex(backspace_bytes[0]))
+        byte_list.append(hex(backspace_bytes[1]))
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
