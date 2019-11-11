@@ -387,7 +387,7 @@ const Scene = {
       id: loadedCaption['caption_id'],
       name: caption_name,
       text: caption_string,
-      background: background_color,
+      background_color: background_color,
       foreground_color: foreground_color,
       alignment: text_alignment,
       underline: underline,
