@@ -175,24 +175,6 @@ const Scene = {
     })
   },
 
-  // saves the current caption with its new name to localStorage
-  saveCaptionName: function() {
-    const list = Scene.getScenes()
-
-    list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].name = Scene.currentCaption.name
-
-    Scene.setScenes(list)
-  },
-
-  // saves the current caption with its new text to localStorage
-  saveCaptionText: function() {
-    const list = Scene.getScenes()
-
-    list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)].text = Scene.currentCaption.text
-
-    Scene.setScenes(list)
-  },
-
   deleteCaption: function(captionId) {
     // look for the caption
     const indexToRemove = Scene.currentScene.captions.findIndex(function(caption) {
@@ -405,7 +387,7 @@ const Scene = {
       id: loadedCaption['caption_id'],
       name: caption_name,
       text: caption_string,
-      background: background_color,
+      background_color: background_color,
       foreground_color: foreground_color,
       alignment: text_alignment,
       underline: underline,
@@ -419,9 +401,19 @@ const Scene = {
     const blob = new Blob([JSON.stringify(Scene.constructJSON())], {type : 'application/json'})
 
     return URL.createObjectURL(blob)
-  }
-}
+  },
 
+  // generic save function for saving an attribute without any custom validation
+  // this is used to save a variable attribute so you don't have to know what attribute you are trying to save.
+  // currently it is used by the formBuilder so it can call the correct save function for each attribute.
+  saveCaptionAttr: function (attr) {
+    const list = Scene.getScenes()
+
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)][attr] = Scene.currentCaption[attr]
+
+    Scene.setScenes(list)
+  },
+}
 
 
 module.exports = Scene
