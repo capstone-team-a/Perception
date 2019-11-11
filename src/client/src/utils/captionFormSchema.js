@@ -22,14 +22,26 @@ module.exports = {
     options: null
   },
 
+  'foreground_color': {
+    label: 'Foreground Color',
+    type: 'dropdown',
+    options: ['White', 'Black', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta']
+  },
+
   'background_color': {
     label: 'Background Color',
     type: 'dropdown',
-    options: ['White', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta', 'Black']
+    options: ['Black', 'White', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta', 'None']
   },
 
   'underline': {
-    label: 'Underline',
+    label: 'Underlined',
+    type: 'checkbox',
+    options: null
+  },
+
+  'italics': {
+    label: 'Italicized',
     type: 'checkbox',
     options: null
   }
