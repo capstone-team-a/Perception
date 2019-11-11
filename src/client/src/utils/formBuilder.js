@@ -19,15 +19,22 @@ function formBuilder(schema) {
   })
 
   const labelsAndInputs = attributeAndOptions.map(item => {
+
+    const inputOptions = {
+      id: `${item.attr}-input`,
+      oninput: e => {
+        Scene.currentCaption[item.attr] = e.target.value
+      },
+      value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : ''
+    }
+    
     return [
       m('label', {for: `${item.attr}-input`}, item.label),
-      m(`input.${item.attr}-input[type=${item.type}]`, {
-        id: `${item.attr}-input`,
-        oninput: e => {
-          Scene.currentCaption[item.attr] = e.target.value
-        },
-        value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : ''
-      })
+      item.type === 'text'
+        ? m(`input.${item.attr}-input[type=${item.type}]`, inputOptions)
+        : item.type === 'dropdown'
+        ? m('select', inputOptions, item.options.map(option => m('option', option)))
+        : null
     ]
   })
 
@@ -38,8 +45,12 @@ function formBuilder(schema) {
     onsubmit: e => {
       e.preventDefault()
       // call the save function for each attribute
-      attributes.forEach(attr => {
-        Scene.saveCaptionAttr(attr)
+      attributeAndOptions.forEach(item => {
+        if (item.customSaveFn) {
+          item.customSaveFn()
+        } else {
+          Scene.saveCaptionAttr(item.attr) 
+        }
       })
     }
   }, [

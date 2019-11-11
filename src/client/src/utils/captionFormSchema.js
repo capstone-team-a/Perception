@@ -18,5 +18,11 @@ module.exports = {
     label: 'Caption String',
     type: 'text',
     options: null
+  },
+
+  'background_color': {
+    label: 'Background Color',
+    type: 'dropdown',
+    options: ['White', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta', 'Black']
   }
 }
