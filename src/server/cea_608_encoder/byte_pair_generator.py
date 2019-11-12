@@ -136,18 +136,23 @@ def consume_captions(caption_list: list) -> dict:
         if 'caption_id' not in caption:
             raise ValueError('A caption ID must be set for each caption')
 
+		# Setting boolean to skip midrow if no midrow changes needed.
+        perform_midrow = False
 		# Setting the default background color to white if there is no background color passed in
         foreground_color = 'white'
 		# Setting the default test to be not underlined if no underline variable is passed in
         underlined = False
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
-            caption_color = caption['foreground_color']['color']
+            foreground_color = caption['foreground_color']['color']
+            perform_midrow = True
 			
         if 'underline' in caption:
             underlined = caption['underline']
+            perform_midrow = True
         
-        caption_metadata['caption_string'] += utils.create_byte_pairs_for_midrow_style(
-                        foreground_color, underlined)
+        if perform_midrow:
+            caption_metadata['caption_string'] += utils.create_byte_pairs_for_midrow_style(
+                            foreground_color, underlined)
         
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
