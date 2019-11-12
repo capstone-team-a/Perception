@@ -25,7 +25,7 @@ module.exports = {
   'foreground_color': {
     label: 'Foreground Color',
     type: 'dropdown',
-    options: ['White', 'Black', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta']
+    options: ['White', 'Black', 'Green', 'Blue', 'Cyan', 'Red', 'Yellow', 'Magenta', 'Italic White']
   },
 
   'background_color': {
@@ -36,12 +36,6 @@ module.exports = {
 
   'underline': {
     label: 'Underlined',
-    type: 'checkbox',
-    options: null
-  },
-
-  'italics': {
-    label: 'Italicized',
     type: 'checkbox',
     options: null
   }
