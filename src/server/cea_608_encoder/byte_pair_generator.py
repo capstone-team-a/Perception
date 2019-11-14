@@ -110,7 +110,7 @@ def consume_scenes(scene_list: list) -> list:
 
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        current_scene_data['data'] += consume_captions(caption_list)['caption_string']
+        current_scene_data['data'] += consume_captions(caption_list)
 
         # append EOC.
         current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
@@ -129,8 +129,8 @@ def consume_captions(caption_list: list) -> dict:
     :param caption_list:
     :return: TODO
     """
-    caption_metadata = {}
-    caption_metadata['caption_string'] = []
+
+    caption_bytes = []
 
     for caption in caption_list:
         if 'caption_id' not in caption:
@@ -151,12 +151,12 @@ def consume_captions(caption_list: list) -> dict:
             perform_midrow = True
         
         if perform_midrow:
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_midrow_style(
+            caption_bytes += utils.create_byte_pairs_for_midrow_style(
                             foreground_color, underlined)
         
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
+            caption_bytes += utils.create_byte_pairs_for_caption_string(string)
         else:
             raise ValueError('You must specify a caption string that is not null.')
         
@@ -171,6 +171,6 @@ def consume_captions(caption_list: list) -> dict:
         if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
             text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
-            caption_metadata['text_alignment'] = caption_alignment_byte_encoded
+            caption_bytes = caption_alignment_byte_encoded
 
-    return caption_metadata
+    return caption_bytes
