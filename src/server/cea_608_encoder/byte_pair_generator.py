@@ -64,7 +64,7 @@ def consume_scenes(scene_list: list) -> list:
     strings to return byte pairs for caption strings inside a scene.
 
     :param scene_list:
-    :return: TODO
+    :return: scene_data
     """
     scene_data = []
     
@@ -122,12 +122,12 @@ def consume_scenes(scene_list: list) -> list:
     return scene_data
 
 
-def consume_captions(caption_list: list) -> dict:
+def consume_captions(caption_list: list) -> list:
     """Iterate over the list of captions in a scene and create bytes pairs
     for the list of caption strings and properties that the strings have.
 
     :param caption_list:
-    :return: TODO
+    :return: caption_bytes
     """
 
     caption_bytes = []
