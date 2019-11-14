@@ -12,6 +12,7 @@ supported_caption_formats = [
     'CEA-608'
 ]
 
+
 def write_caption_data_to_file(caption_data: dict):
     """Writes caption data to file as json.
 
@@ -136,37 +137,39 @@ def consume_captions(caption_list: list) -> dict:
         if 'caption_id' not in caption:
             raise ValueError('A caption ID must be set for each caption')
 
-		# Setting boolean to skip midrow if no midrow changes needed.
-        perform_midrow = False
-		# Setting the default background color to white if there is no background color passed in
-        foreground_color = 'white'
-		# Setting the default test to be not underlined if no underline variable is passed in
-        underlined = False
+        foreground_color_and_underline_style_changes = {}
+
         if 'foreground_color' in caption and 'color' in caption['foreground_color']:
             foreground_color = caption['foreground_color']['color']
-            perform_midrow = True
-			
+            foreground_color_and_underline_style_changes['color'] = foreground_color
+
         if 'underline' in caption:
             underlined = caption['underline']
-            perform_midrow = True
-        
-        if perform_midrow:
+            foreground_color_and_underline_style_changes['underline'] = underlined
+
+        if foreground_color_and_underline_style_changes:
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_midrow_style(
-                            foreground_color, underlined)
-        
+                **foreground_color_and_underline_style_changes)
+
+        background_color_and_transparency_style_changes = {}
+
+        if 'background_color' in caption and 'color' in caption['background_color']:
+            color = caption['background_color']['color']
+            background_color_and_transparency_style_changes['color'] = color
+
+        if 'transparency' in caption:
+            transparency = caption['transparency']
+            background_color_and_transparency_style_changes['transparency'] = transparency
+
+        if background_color_and_transparency_style_changes:
+            utils.create_bytes_for_scene_background_color(
+                **background_color_and_transparency_style_changes)
+
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
             caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
         else:
             raise ValueError('You must specify a caption string that is not null.')
-        
-        if 'background_color' in caption and 'color' in caption['background_color']:
-            background_color = caption['background_color']['color']
-            scene_utils.create_bytes_for_scene_background_color(background_color)
-
-        if 'opacity' in caption:
-            opacity = caption['opacity']
-            scene_utils.create_bytes_for_scene_opacity(opacity)
 
         if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
             text_alignment = caption['text_alignment']['placement']
