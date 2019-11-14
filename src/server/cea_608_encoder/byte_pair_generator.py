@@ -76,8 +76,6 @@ def consume_scenes(scene_list: list) -> list:
 
         if 'scene_id' not in scene:
             raise ValueError('Every scene must have a scene ID.')
-        else:
-            validate_scene_ids(scene_list) 
 
         if 'start' not in scene: 
             raise ValueError('You must specify a starting time for a scene.')
@@ -122,6 +120,8 @@ def consume_scenes(scene_list: list) -> list:
 
         scene_data.append(current_scene_data)
 
+    validate_scene_ids(scene_list) 
+
     return scene_data
 
 
@@ -142,8 +142,6 @@ def consume_captions(caption_list: list) -> dict:
 
         if 'caption_id' not in caption:
             raise ValueError('A caption ID must be set for each caption')
-        else:
-            validate_caption_ids(caption_list)
         
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
@@ -174,6 +172,8 @@ def consume_captions(caption_list: list) -> dict:
 
         if 'italics' in caption:
             caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
+
+    validate_caption_ids(caption_list)
 
     return caption_metadata
 
