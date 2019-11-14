@@ -468,6 +468,7 @@ const Scene = {
     // add new scene object
     scene_list.push({
       id: Scene.uniqueSceneId(),
+      name: scene.scene_name,
       start: null,
       captions: scene.caption_list.map(caption => {
         return Scene.load608CaptionFromFile(caption)
