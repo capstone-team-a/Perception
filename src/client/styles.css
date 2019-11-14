@@ -72,5 +72,16 @@ form.save-changes-form > input {
 
 
 .download-link {
-  margin-left: 1em;
+ background: #fafafa; /* light grey */
+ text-decoration: none;
+ border: 1px solid #ddd;
+ border-radius:5px;
+ color: black;
+ padding: 4px 4px 4px 4px;
+}
+
+.download-link:hover {
+ color: #0000EE; /* blue color for links */
+ background: #cccccc; /* slightly darker grey to emphasize selection */
+ text-decoration: underline;
 }
