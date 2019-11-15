@@ -19,6 +19,24 @@ valid_special_character_sets_and_static_first_bytes = {
 text_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
     "red": 0x8, "yellow": 0xa, "magenta": 0xc, "italic white": 0xe}
 
+row_positioning = {
+    1: [0x1, 0x0],
+    2: [0x1, 0x20],
+    3: [0x2, 0x0],
+    4: [0x2, 0x20],
+    5: [0x5, 0x0],
+    6: [0x5, 0x20],
+    7: [0x6, 0x0],
+    8: [0x6, 0x20],
+    9: [0x7, 0x0],
+    10: [0x7, 0x20],
+    11: [0x0, 0x0],
+    12: [0x3, 0x0],
+    13: [0x3, 0x20],
+    14: [0x4, 0x0],
+    15: [0x4, 0x20]
+}
+
 
 def check_parity(integer: int) -> int:
     """Check the bit parity of the input
@@ -186,6 +204,57 @@ def create_byte_pairs_for_midrow_style(color: str, underline = False):
         backspace_bytes = create_byte_pairs_for_backspace()
         byte_list.append(hex(backspace_bytes[0]))
         byte_list.append(hex(backspace_bytes[1]))
+
+    raw_hex_values = parse_raw_hex_values(byte_list)
+    byte_pairs = bytes_to_byte_pairs(raw_hex_values)
+    return byte_pairs
+
+def create_byte_pairs_for_tab_offset(offset: int):
+    if offset < 1 or offset > 3:
+        raise ValueError(f'Cannot create byte pairs for tab offset. \'{offset}\' is not in the range of [1, 3]')
+    byte_list = []
+    first_byte = 0x17
+    second_byte = 0x20 + offset
+
+    if check_parity(first_byte) == 0:
+        first_byte = add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+    if check_parity(second_byte) == 0:
+        second_byte = add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
+    return byte_list
+
+def create_byte_pairs_for_preamble_address(row: int, cursr: int, underline = False):
+    if row < 1 or row > 15:
+        raise ValueError(f'Cannot create byte pairs for preamble address. \'{row}\' is not in the range of [1, 15]')
+    if cursr < 0 or cursr > 31:
+        raise ValueError(f'Cannot create byte pairs for preamble address. \'{cursr}\' is not in the range of [0, 31]')
+
+    byte_list = []
+    first_byte = 0x10
+    second_byte = 0x50
+
+    row_bytes = row_positioning[row]
+    first_byte += row_bytes[0]
+    second_byte += row_bytes[1]
+
+    tab_offset = cursr % 4
+    cursr_multiplier = cursr // 4
+    second_byte += cursr_multiplier * 2
+    if underline == True: 
+        second_byte += 0x1 
+
+    if check_parity(first_byte) == 0:
+        first_byte = add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+    if check_parity(second_byte) == 0:
+        second_byte = add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
+
+    if tab_offset > 0:
+        offset_bytes = create_byte_pairs_for_tab_offset(tab_offset)
+        byte_list.append(offset_bytes[0])
+        byte_list.append(offset_bytes[1])
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
