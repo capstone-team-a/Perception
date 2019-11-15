@@ -18,7 +18,16 @@ const CaptionForm = require('./views/CaptionForm')
 
 m.route(document.body, '/start', {
   '/start': Start,
-  '/scenes': Scenes,
+  '/scenes': {
+    onmatch: function() {
+      if (!Scene.getInputFormat()) {
+        m.route.set('/start')
+        alert('Must specify a caption format')
+      } else {
+        return Scenes
+      }
+    }
+  },
   '/scenes/scene-:sceneId': {
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
