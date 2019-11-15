@@ -38,6 +38,7 @@ def consume(caption_data: dict):
 
     :param caption_data: the full JSON blob from the front end
     """
+    print
     if 'caption_format' not in caption_data:
         raise ValueError('You must specify a caption format')
 
@@ -183,11 +184,17 @@ def validate_scene_ids(scene_list: list):
 
     :param scene_list:
     """
-    scene_ids = Counter(scene_list)
+    scene_ids = {}
+    for key,value in scene_list.items():
+        if key == "scene_id":
+            if value not in scene_ids:
+                scene_ids[value] = 1;
+            else:
+                scene_ids[value] = scene_ids.get(value) + 1;
 
     for id,number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
-            raise ValueError('There are duplicate scene IDs.')
+            raise ValueError(f'There are duplicate scene IDs {id}.')
 
 
 def validate_caption_ids(caption_list: list):
@@ -195,9 +202,15 @@ def validate_caption_ids(caption_list: list):
 
     :param caption_list:
     """
-    caption_ids = Counter(caption_list)
+    caption_ids = {}
+    for key,value in caption_list.items():
+        if key == "caption_id":
+            if value not in caption_ids:
+                caption_ids[value] = 1;
+            else:
+                caption_ids[value] = caption_ids.get(value) + 1;
 
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
-            raise ValueError('There are duplicate caption IDs.')
+            raise ValueError(f'There are duplicate caption IDs {id}.')
 
