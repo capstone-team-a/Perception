@@ -38,7 +38,7 @@ a:hover {
   cursor: pointer;
 }
 
-.delete-scene-button, .delete-caption-button {
+.delete-scene-button {
   margin-left: 2em;
 }
 
@@ -72,5 +72,13 @@ form.save-changes-form > input {
 
 
 .download-link {
+  margin-left: 1em;
+}
+
+.caption-preview {
+  margin-left: 1em;
+}
+
+.delete-caption-button {
   margin-left: 1em;
 }

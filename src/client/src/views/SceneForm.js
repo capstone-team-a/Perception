@@ -70,6 +70,7 @@ module.exports = {
               m.route.set(`/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`)
             }
           }, caption.name ? caption.name : `Caption ${caption.id}`),
+          getCaptionPreview(caption),
           m('button.delete-caption-button', {
             onclick: function() {
               //ask the user for confirmation.
@@ -82,4 +83,22 @@ module.exports = {
       })),
     ])
   }
+}
+
+function getCaptionPreview(caption) {
+  const foreground = caption.foreground_color
+        ? caption.foreground_color === 'Italic White'
+        ? 'white' : caption.foreground_color.toLowerCase()
+        : 'black'
+
+  const css =
+`color: ${foreground};
+background-color: ${caption.background_color ? caption.background_color.toLowerCase() : ''};
+font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
+text-decoration: ${caption.underline ? 'underline' : ''};
+`
+  
+  return m('span.caption-preview', {
+    style: css,
+  }, caption.text ? caption.text : '-')  
 }
