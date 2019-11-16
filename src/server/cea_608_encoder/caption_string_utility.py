@@ -16,8 +16,11 @@ valid_special_character_sets_and_static_first_bytes = {
     'extended_we_gd_set': 0x13
 }
 
-text_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6, 
-    "red": 0x8, "yellow": 0xa, "magenta": 0xc, "italic white": 0xe}
+text_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6,
+               "red": 0x8, "yellow": 0xa, "magenta": 0xc, "italic white": 0xe}
+
+background_colors = {"white": 0x0, "green": 0x2, "blue": 0x4, "cyan": 0x6,
+                     "red": 0x8, "yellow": 0xa, "magenta": 0xc, "black": 0xe}
 
 
 def check_parity(integer: int) -> int:
@@ -153,7 +156,47 @@ def create_byte_pairs_for_backspace() -> list:
     return [0x94, 0xa1] # parity bits included
 
 
-def create_byte_pairs_for_midrow_style(color: str, underline = False):
+def create_bytes_for_scene_background_color(color: str, transparency: bool = False):
+    """Creates byte pairs for a valid background color and transparency flag
+
+    :param color:
+    :param transparency:
+    :return: a list of byte pairs to set background color and transparency
+    """
+    byte_list = []
+
+    # Default: no background
+    first_byte = 0x17
+    second_byte = 0x2d
+
+    if isinstance(color, str):
+        color = color.lower()
+    if color in background_colors:
+        first_byte = 0x10
+        second_byte = 0x20 + background_colors[color]
+        if transparency:
+            second_byte += 0x1
+
+    if check_parity(first_byte) == 0:
+        first_byte = add_parity_to_byte(first_byte)
+    byte_list.append(hex(first_byte))
+
+    if check_parity(second_byte) == 0:
+        second_byte = add_parity_to_byte(second_byte)
+    byte_list.append(hex(second_byte))
+
+    raw_hex_values = parse_raw_hex_values(byte_list)
+    byte_pairs = bytes_to_byte_pairs(raw_hex_values)
+    return byte_pairs
+
+
+def create_byte_pairs_for_midrow_style(color: str, underline: bool = False):
+    """Creates byte pairs for a foreground color and underlines text
+
+    :param color:
+    :param underline:
+    :return: a list of byte pairs for changing text color and underlining text
+    """
     byte_list = []
     
     # Default: Do nothing, no change in style
