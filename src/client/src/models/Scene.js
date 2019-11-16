@@ -203,6 +203,13 @@ const Scene = {
   },
 
   getInputFormat: function() {
+    /*const format = JSON.parse(localStorage.getItem('input-format'))
+    if(typeof format === 'object') {
+      return null
+    }
+    else {
+      return format
+    }*/
     return JSON.parse(localStorage.getItem('input-format'))
   },
 

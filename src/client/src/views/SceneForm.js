@@ -3,6 +3,9 @@
 const m = require('mithril')
 const Scene = require('../models/Scene')
 
+
+var input_format = Scene.getInputFormat()
+
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
@@ -12,10 +15,10 @@ module.exports = {
     if(!Scene.currentScene) {
       return m('', [
         m(m.route.Link, {
-  	  href: `/scenes`,
+  	      href: `/scenes`,
         }, 'Return To Scenes'),
         m('h1', '404 - Scene Not found'),
-        ])
+      ])
     }
 
     const captions = Scene.currentScene.captions
