@@ -20,8 +20,7 @@ m.route(document.body, '/start', {
   '/start': Start,
   '/scenes': {
     onmatch: function() {
-      var format = Scene.getInputFormat()
-      if(format['input-format'] === 'Select your option') {
+      if(Scene.getInputFormat() === 'Select your option') {
         alert('Must specify caption format')
         m.route.set('/start')
       }
@@ -32,8 +31,7 @@ m.route(document.body, '/start', {
   },
   '/scenes/scene-:sceneId': {
     onmatch: function() {
-      var format = Scene.getInputFormat()
-      if(format['input-format'] === 'Select your option') {
+      if(Scene.getInputFormat() === 'Select your option') {
         alert('Must specify caption format')
         m.route.set('/start')
       }
@@ -44,8 +42,7 @@ m.route(document.body, '/start', {
   },
   '/scenes/scene-:sceneId/caption-:captionId': {
     onmatch: function() {
-      var format = Scene.getInputFormat()
-      if(format['input-format'] === 'Select your option') {
+      if(Scene.getInputFormat() === 'Select your option') {
         alert('Must specify caption format')
         m.route.set('/start')
       }

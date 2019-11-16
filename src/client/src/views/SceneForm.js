@@ -4,8 +4,6 @@ const m = require('mithril')
 const Scene = require('../models/Scene')
 
 
-var input_format = Scene.getInputFormat()
-
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
