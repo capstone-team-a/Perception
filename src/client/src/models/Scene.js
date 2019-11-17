@@ -448,6 +448,10 @@ const Scene = {
         return cb(err)
       }
 
+      if (fileData.caption_format !== Scene.getInputFormat()) {
+        return cb(`Caption format of file (${fileData.caption_format}) doesn't match expected format (${Scene.getInputFormat()})`)
+      }
+
       if (!fileData.scene_list || !Array.isArray(fileData.scene_list)) {
         return cb(`File doesn't contain a valid 'scene_list'.`)
       }

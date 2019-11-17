@@ -40,6 +40,9 @@ module.exports = {
                 alert(err)
               } else {
                 alert('Successfully appended file data to scene list.')
+                // clear the input
+                document.getElementById('appendFile').value = ''
+                inputFile = null
                 // redraw the DOM so we can see the new scenes
                 m.redraw()
               }
@@ -51,7 +54,7 @@ module.exports = {
         m("label", {
             class: "file",
           },
-          m("input", {
+          m("input#appendFile", {
             onchange: function(e){
               inputFile = e.target.files[0]
             },
