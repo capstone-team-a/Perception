@@ -28,6 +28,46 @@ module.exports = {
         download: 'scenes',
         href: Scene.getDownloadURL()
       }, 'Download JSON file'),
+
+      m('form.append-file-form', {
+        onsubmit: function(e) {
+          e.preventDefault()
+          if (!inputFile) {
+            alert("Must select file to load from")
+          } else {
+            Scene.appendFromFile(inputFile, err => {
+              if (err) {
+                alert(err)
+              } else {
+                alert('Successfully appended file data to scene list.')
+                // clear the input
+                document.getElementById('appendFile').value = ''
+                inputFile = null
+                // redraw the DOM so we can see the new scenes
+                m.redraw()
+              }
+            })
+          }
+        }
+      }, [
+        m('h3', 'Append Scenes From File'),
+        m("label", {
+            class: "file",
+          },
+          m("input#appendFile", {
+            onchange: function(e){
+              inputFile = e.target.files[0]
+            },
+            accept: ".json",
+            type: "file",
+          }),
+          m("span", {
+            class: "file-custom",
+          })
+        ),
+        m('button.load-file[type=submit]', 'Load File'),
+      ]),
+      
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
