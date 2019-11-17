@@ -277,28 +277,23 @@ const Scene = {
       return false
     }
     try {
-	  var success = true
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
 		try {
-          success = Scene.loadSceneListFromFile(JSON.parse(e.target.result))
+          if(Scene.loadSceneListFromFile(JSON.parse(e.target.result))) {
+	        m.route.set('/scenes')
+		  }
         } catch (error) {
           alert("JSON file was malformed.\n" + error)
-		  success = false
         }
       }
       reader.onerror = function(e) {
         alert("There was an error while reading your file.")
-		success = false
       }
       reader.readAsText(blob)
     } catch (error) {
       alert("Error while reading file. Please try again.\n Error info: " + error)
-      success = false
-    }
-    if(success){
-	  m.route.set('/scenes')
     }
   },
   
