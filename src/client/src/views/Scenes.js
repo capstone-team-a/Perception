@@ -37,6 +37,7 @@ module.exports = {
                 m.route.set(`/scenes/scene-${scene.id}`)
               }
             }, scene.name ? scene.name : `Scene ${scene.id}`),
+            getScenePreview(scene),
             // when maping the scenes the delete button is included.
             m('button.delete-scene-button', {
               onclick: function() {
@@ -64,4 +65,8 @@ module.exports = {
 
     ])
   }
+}
+
+function getScenePreview(scene) {
+  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : '-')
 }
