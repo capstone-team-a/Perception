@@ -178,7 +178,9 @@ const Scene = {
     }
     // Adds a new caption
     Scene.currentScene.captions.push({
-      id : caption_max_id + 1
+      id : caption_max_id + 1,
+      background_color: 'Black',
+      foreground_color: 'White',
     })
   },
 
