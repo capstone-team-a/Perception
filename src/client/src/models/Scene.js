@@ -117,7 +117,8 @@ const Scene = {
         if (list[i].start === null) {
           //do nothing
         } else if (Number(list[i].start) === start_check && i !== Scene.findSceneIndex(Scene.currentScene.id)) {
-          Scene.currentScene.start = `Collision Detected`
+          Scene.currentScene.start = null
+          alert('Collision detected. Choose a different start value.')
         }
       }
     }

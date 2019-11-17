@@ -68,5 +68,5 @@ module.exports = {
 }
 
 function getScenePreview(scene) {
-  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : '-')
+  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : 'Start: -')
 }
