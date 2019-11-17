@@ -3,6 +3,8 @@
 const m = require('mithril')
 const Scene = require('../models/Scene')
 
+let showStylizedPreview = false
+
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
@@ -61,6 +63,11 @@ module.exports = {
           Scene.saveCaptions()
         }
       }, 'New Caption'),
+      m('label.show-stylized-preview', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+      m('input#showStylizedPreview-input[type=checkbox]', {
+        oninput: e => {
+        showStylizedPreview = !showStylizedPreview
+      }}),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption) {
 
@@ -101,7 +108,7 @@ text-decoration: ${caption.underline ? 'underline' : ''};
   return m('span', [
     m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
     m('span.caption-preview', {
-      style: caption.text ? css : null,
+      style: (caption.text && showStylizedPreview) ? css : null,
     }, caption.text ? caption.text : '-')
   ])  
 }

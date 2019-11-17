@@ -67,7 +67,6 @@ form.save-changes-form > input {
 }
 
 .save-changes-button {
-  display: block;
 }
 
 
@@ -80,5 +79,13 @@ form.save-changes-form > input {
 }
 
 .delete-caption-button {
+  margin-left: 1em;
+}
+
+.new-start-input {
+  display: block;
+}
+
+.show-stylized-preview {
   margin-left: 1em;
 }
