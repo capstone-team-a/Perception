@@ -23,6 +23,7 @@
   margin: 0 0 1px;
   padding: 8px 15px;
   text-decoration: none;
+  word-break: break-word;
 }
 
 .scene-list-item:hover, .caption-list-item:hover {
