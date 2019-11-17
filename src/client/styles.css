@@ -16,7 +16,7 @@
 }
 
 .scene-list-item, .caption-list-item {
-  background: #fafafa; /* light grey */
+  background: #ccc; /* light grey */
   border: 1px solid #ddd;
   color: #333;
   display: block;
@@ -26,7 +26,7 @@
 }
 
 .scene-list-item:hover, .caption-list-item:hover {
-  background: #cccccc; /* slightly darker grey to emphasize selection */
+  background: #aaa; /* slightly darker grey to emphasize selection */
 }
 
 .scene-list-item a, .caption-list-item a {
