@@ -47,24 +47,30 @@ const Scene = {
   addScene: function() {
     // get current list
     const scene_list = Scene.getScenes()
-      // keeps tracks of id numbers in order to not crash into each other
-    var scene_max_id = 0
-    // Finds the max scene id in the list
-    if (scene_list.length > 0) {
-      for (i = 0; i < scene_list.length; i++) {
-        if (scene_max_id < scene_list[i].id) {
-          scene_max_id = scene_list[i].id
-        }
-      }
-    }
+   
     // add new scene object
     scene_list.push({
-      id: scene_max_id + 1,
+      id: Scene.uniqueSceneId(),
       start: null,
       captions: []
     })
     // saves the current list
     Scene.setScenes(scene_list)
+  },
+
+  uniqueSceneId: function() {
+    const scene_list = Scene.getScenes()
+    let scene_max_id = 0
+    // Finds the max scene id in the list
+    if (scene_list.length > 0) {
+      for (let i = 0; i < scene_list.length; i++) {
+        if (scene_max_id < scene_list[i].id) {
+          scene_max_id = scene_list[i].id
+        }
+      }
+    }
+
+    return scene_max_id + 1
   },
 
   deleteScene: function(sceneid) {
@@ -117,7 +123,8 @@ const Scene = {
         if (list[i].start === null) {
           //do nothing
         } else if (Number(list[i].start) === start_check && i !== Scene.findSceneIndex(Scene.currentScene.id)) {
-          Scene.currentScene.start = `Collision Detected`
+          Scene.currentScene.start = null
+          alert('Collision detected. Choose a different start value.')
         }
       }
     }
@@ -415,6 +422,68 @@ const Scene = {
 
     Scene.setScenes(list)
   },
+
+  loadFile: function(file, cb) {
+    if(!Scene.jsonExtensionCheck(file.name)) {
+      return cb("File type to load from must be .json")
+    }
+
+      const reader = new FileReader()
+      const blob = file.slice(0, file.size)
+      reader.onload = function(e) {
+		try {
+          const fileData = JSON.parse(e.target.result)
+          return cb(null, fileData)
+        } catch (error) {
+          return cb("JSON file was malformed.\n" + error)
+        }
+      }
+      reader.onerror = function(e) {
+        return cb("There was an error while reading your file.")
+      }
+      
+      reader.readAsText(blob)
+  },
+
+  appendFromFile: function(file, cb) {
+    Scene.loadFile(file, (err, fileData) => {
+      if (err) {
+        return cb(err)
+      }
+
+      if (fileData.caption_format !== Scene.getInputFormat()) {
+        return cb(`Caption format of file (${fileData.caption_format}) doesn't match expected format (${Scene.getInputFormat()})`)
+      }
+
+      if (!fileData.scene_list || !Array.isArray(fileData.scene_list)) {
+        return cb(`File doesn't contain a valid 'scene_list'.`)
+      }
+
+      const newScenes = fileData.scene_list.forEach(scene => {
+        Scene.appendScene(scene)
+      })
+
+      return cb(null)
+    })
+  },
+
+  // similar to addScene, except this function takes in scene data instead of creating an empty scene.
+  // This funciton is used in the appendFromFile function.
+  appendScene: function(scene) {
+    const scene_list = Scene.getScenes()
+   
+    // add new scene object
+    scene_list.push({
+      id: Scene.uniqueSceneId(),
+      name: scene.scene_name,
+      start: null,
+      captions: scene.caption_list.map(caption => {
+        return Scene.load608CaptionFromFile(caption)
+      })
+    })
+    // saves the current list
+    Scene.setScenes(scene_list)
+  }
 }
 
 
