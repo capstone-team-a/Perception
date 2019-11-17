@@ -98,7 +98,10 @@ font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
 text-decoration: ${caption.underline ? 'underline' : ''};
 `
   
-  return m('span.caption-preview', {
-    style: css,
-  }, caption.text ? caption.text : '-')  
+  return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
+    m('span.caption-preview', {
+      style: caption.text ? css : null,
+    }, caption.text ? caption.text : '-')
+  ])  
 }
