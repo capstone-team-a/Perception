@@ -136,9 +136,6 @@ def consume_captions(caption_list: list) -> dict:
 
 
     for caption in caption_list:
-        if 'caption_id' not in caption or 'caption_string' not in caption:
-            raise ValueError('A caption ID and string list must be set for each caption')
-
         if 'caption_id' not in caption:
             raise ValueError('A caption ID must be set for each caption')
         
