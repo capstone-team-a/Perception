@@ -2,10 +2,15 @@
 // Clicking on a scene will route the application to that scene's edit form, which is
 // the list of captions in that scene.
 const m = require('mithril')
-
 const Scene = require('../models/Scene')
+const getCaptionPreview = require('../utils/captionPreview')
+
+let showStylizedPreview = false
 
 module.exports = {
+  oninit: function() {
+    showStylizedPreview = false
+  },
   view: function() {
     return m('.scenes', [
       m('h1', 'Scenes'),
@@ -67,7 +72,11 @@ module.exports = {
         ),
         m('button.load-file[type=submit]', 'Load File'),
       ]),
-      
+      m('label.show-stylized-preview-scenes', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+      m('input#showStylizedPreview-input[type=checkbox]', {
+        oninput: e => {
+        showStylizedPreview = !showStylizedPreview
+      }}),
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {
@@ -77,7 +86,7 @@ module.exports = {
                 m.route.set(`/scenes/scene-${scene.id}`)
               }
             }, scene.name ? scene.name : `Scene ${scene.id}`),
-            getScenePreview(scene),
+            getScenePreview(scene, showStylizedPreview),
             // when maping the scenes the delete button is included.
             m('button.delete-scene-button', {
               onclick: function() {
@@ -107,6 +116,11 @@ module.exports = {
   }
 }
 
-function getScenePreview(scene) {
-  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : 'Start: -')
+function getScenePreview(scene, showStylizedPreview) {
+  return m('span.scene-preview', [
+    m('span', scene.start ? 'Start: ' + scene.start : 'Start: -'),
+    m('span', {style: 'margin: 0 1em 0 1em;'}, scene.captions.length ? 'Caption String Preview:' : 'Caption String Preview: -'),
+  ].concat(scene.captions.map(caption => {
+    return getCaptionPreview(caption, showStylizedPreview)
+  })))
 }

@@ -76,7 +76,6 @@ form.save-changes-form > input {
 }
 
 .caption-preview {
-  margin-left: 1em;
 }
 
 .delete-caption-button {
@@ -91,6 +90,10 @@ form.save-changes-form > input {
   margin-left: 1em;
 }
 
+.show-stylized-preview-scenes {
+  display: inline-block;
+  margin-top: 1em;
+}
 
 .scene-preview {
   margin-left: 1em;
