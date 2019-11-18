@@ -29,10 +29,22 @@ module.exports = {
             value: opt,
             selected: opt === format ? true : false
           }, opt)
-        }) 
+        })
       ]),
-      m(m.route.Link, {
-	      href: '/scenes',
+      m('button.scene_list', {
+        onclick: function() {
+          if (Number(Scene.getScenes().length) === 0) {
+            m.route.set(`/scenes`)
+          } else {
+            if (confirm("Overwrite exisiting Scene List Data?")) {
+              if (confirm("Are you sure?")) {
+                localStorage.clear()
+                Scene.initialize()
+              }
+            }
+            m.route.set(`/scenes`)
+          }
+        }
       }, 'New Scene List'),
       m('form.load-file-form', {
         onsubmit: function(e) {
