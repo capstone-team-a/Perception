@@ -249,17 +249,22 @@ const Scene = {
         scene_id: scene.id,
         scene_name: scene.name,
         start: {time: scene.start},
-        position: {row: scene.position},
         caption_list: scene.captions.map(function(caption) {
           return {
             caption_id: caption.id,
             caption_name: caption.name,
             caption_string: caption.text,
-            background_color: {color: caption.background_color},
-            foreground_color: {color: caption.foreground_color},
-            text_alignment: {placement: caption.text_alignment},
+            background_color: {
+			  color: caption.background_color ? caption.background_color: ''
+			},
+            foreground_color: {
+			  color: caption.foreground_color ? caption.background_color: ''
+			},
+            position: {
+			  row: caption.row ? caption.row: '' , 
+			  column: caption.column ? caption.column: ''
+			},
             underline: caption.underline,
-            italics: caption.italics,
             opacity: caption.opacity,
           }
         })
@@ -322,7 +327,6 @@ const Scene = {
 	// setting attributes default
 	var scene_name = ''
 	var start = ''
-	var position = ''
     var captionList = []
 	
 	// initializing each caption by iterating throught the caption list
@@ -338,14 +342,10 @@ const Scene = {
 	if (loadedScene['start']) {
       start = loadedScene['start'].time.toString()
 	}
-	if (loadedScene['position']) {
-      position = loadedScene['position'].row
-	}
     return {
       id: loadedScene['scene_id'],
       name: scene_name,
       start: start,
-      position: position,
       captions: captionList,
     }
   },
@@ -356,9 +356,9 @@ const Scene = {
 	var caption_string = ''
 	var background_color = ''
 	var foreground_color = ''
-	var text_alignment = ''
+	var row = ''
+	var column = ''
 	var underline = false
-	var italics = false
 	var opacity = ''
 	
 	// checking if each attribute needed was passed in.
@@ -380,8 +380,9 @@ const Scene = {
 	if (loadedCaption['underline']) {
       underline = loadedCaption['underline']
 	}
-	if (loadedCaption['italics']) {
-      italics = loadedCaption['italics']
+	if (loadedCaption['position']) {
+      row = loadedCaption['position'].row
+	  column = loadedCaption['position'].column
 	}
 	if (loadedCaption['opacity']) {
       opacity = loadedCaption['opacity']
@@ -393,9 +394,9 @@ const Scene = {
       text: caption_string,
       background_color: background_color,
       foreground_color: foreground_color,
-      alignment: text_alignment,
+      row: row,
+      column: column,
       underline: underline,
-      italics: italics,
       opacity: opacity,
     }
   },
