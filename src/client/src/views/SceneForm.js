@@ -76,11 +76,11 @@ module.exports = {
         return m('div.caption-list-item', {key: caption.id}, [
           m('i.arrow-up', {
             class: upArrow ? 'arrow-enabled' : 'arrow-disabled',
-            onclick: upArrow ? e => {console.log(e)} : () => {},
+            onclick: upArrow ? e => {Scene.moveCaptionUp(captionIndex)} : () => {},
           }),
           m('i.arrow-down', {
             class: downArrow ? 'arrow-enabled' : 'arrow-disabled',
-            onclick: downArrow ? e => {console.log(e)} : () => {},
+            onclick: downArrow ? e => {Scene.moveCaptionDown(captionIndex)} : () => {},
           }),
           m('a', {
             onclick: function() {

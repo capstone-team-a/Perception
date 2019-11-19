@@ -100,7 +100,7 @@ i {
   border: solid;
   border-width: 0 3px 3px 0;
   display: inline-block;
-  padding: 5px;
+  padding: 6px;
   margin-right: 1em;
 }
 
@@ -120,4 +120,8 @@ i {
 
 .arrow-disabled {
   border-color: grey;
+}
+
+.arrow-enabled:hover {
+  border-color: chartreuse;
 }
