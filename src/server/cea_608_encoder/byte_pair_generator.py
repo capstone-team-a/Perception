@@ -149,6 +149,26 @@ def consume_captions(caption_list: list) -> list:
             underlined = caption['underline']
             foreground_color_and_underline_style_changes['underline'] = underlined
 
+        if 'position' in caption and 'row' in caption['position'] and 'column' in caption['position']:
+            text_position = caption['position']
+            if text_position['row'] == "":
+                text_row_position = 11 #Default row positioning.
+            else:
+                text_row_position = text_position['row']
+            if text_position['column'] == "":
+                text_column_position = 1 #Default column positioning.
+            else:
+                text_column_position = text_position['column']
+            if 'underline' in foreground_color_and_underline_style_changes \
+            and foreground_color_and_underline_style_changes['underline'] == "true":
+                text_underlined = True
+            else:
+                text_underlined = False
+            caption_position_bytes = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
+                                                                                  int(text_column_position),
+                                                                                  text_underlined)
+            caption_bytes += caption_position_bytes
+
         if foreground_color_and_underline_style_changes:
             caption_bytes += utils.create_byte_pairs_for_midrow_style(
                 **foreground_color_and_underline_style_changes)
@@ -177,6 +197,8 @@ def consume_captions(caption_list: list) -> list:
             text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_bytes = caption_alignment_byte_encoded
+
+                                                                           
 
     validate_caption_ids(caption_list)
 
