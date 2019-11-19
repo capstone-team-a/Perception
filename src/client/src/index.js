@@ -20,21 +20,12 @@ m.route(document.body, '/start', {
   '/start': Start,
   '/scenes': {
     onmatch: function() {
-      if(Scene.getInputFormat() === 'Select your option') {
-        alert('Must specify caption format')
-        m.route.set('/start')
-      }
-      else {
-        return Scenes
-      }
+      return Scene.isCaptionFormatSet(Scenes)
     }
   },
   '/scenes/scene-:sceneId': {
     onmatch: function() {
-      if(Scene.getInputFormat() === 'Select your option') {
-        alert('Must specify caption format')
-        m.route.set('/start')
-      }
+      Scene.isCaptionFormatSet()
     },
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
@@ -42,10 +33,7 @@ m.route(document.body, '/start', {
   },
   '/scenes/scene-:sceneId/caption-:captionId': {
     onmatch: function() {
-      if(Scene.getInputFormat() === 'Select your option') {
-        alert('Must specify caption format')
-        m.route.set('/start')
-      }
+      Scene.isCaptionFormatSet()
     },
     render: function(vnode) {
       return m(CaptionForm, vnode.attrs)
