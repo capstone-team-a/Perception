@@ -513,7 +513,21 @@ const Scene = {
     })
     // saves the current list
     Scene.setScenes(scene_list)
-  }
+  },
+
+  moveCaptionUp: function(index) {
+    const captionToMove = Scene.currentScene.captions[index]
+    Scene.currentScene.captions[index] = Scene.currentScene.captions[index-1]
+    Scene.currentScene.captions[index-1] = captionToMove
+    Scene.saveCaptions()
+  },
+
+  moveCaptionDown: function(index) {
+    const captionToMove = Scene.currentScene.captions[index]
+    Scene.currentScene.captions[index] = Scene.currentScene.captions[index+1]
+    Scene.currentScene.captions[index+1] = captionToMove
+    Scene.saveCaptions()
+  },
 }
 
 
