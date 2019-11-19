@@ -416,9 +416,9 @@ const Scene = {
 
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)][attr] = Scene.currentCaption[attr]
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions.sort(function(a, b){
-      if (b.row === null && a.row === null) {return 0} // If both are null don't touch anything
-      if(b.row === null) {return -1} // undefined starts are sorted at the end
-      if(a.row === null) {return 1} // undefined starts are sorted at the end
+      if (!b.row && !a.row) {return 0} // If both are null don't touch anything
+      if(!b.row) {return -1} // undefined starts are sorted at the end
+      if(!a.row) {return 1} // undefined starts are sorted at the end
       if(Number(a.row) < Number(b.row)) {return -1} // a comes before b
       if(Number(b.row) < Number(a.row)) {return 1} // b comes before a
       return 0 // should never hit this case
