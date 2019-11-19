@@ -68,7 +68,7 @@ def consume_scenes(scene_list: list) -> list:
     :return: scene_data
     """
     scene_data = []
-    
+
     for scene in scene_list:
         current_scene_data = {}
         current_scene_data['start'] = 0
@@ -119,6 +119,8 @@ def consume_scenes(scene_list: list) -> list:
                               )
 
         scene_data.append(current_scene_data)
+
+    validate_scene_ids(scene_list)
 
     return scene_data
 
@@ -177,3 +179,42 @@ def consume_captions(caption_list: list) -> list:
             caption_bytes = caption_alignment_byte_encoded
 
     return caption_bytes
+
+
+def validate_scene_ids(scene_list: list):
+    """Validates the scene IDs to look for duplicate IDs
+
+    :param scene_list:
+    """
+    scene_ids = {}
+    for scene in scene_list:
+        for key,value in scene.items():
+            if key == "scene_id":
+                if value not in scene_ids:
+                    scene_ids[value] = 1;
+                else:
+                    scene_ids[value] = scene_ids.get(value) + 1;
+
+    for id,number_of_that_id in scene_ids.items():
+        if number_of_that_id > 1:
+            raise ValueError(f'There are duplicate scene IDs {id}.')
+
+
+def validate_caption_ids(caption_list: list):
+    """Validates the caption IDs to look for duplicate IDs
+
+    :param caption_list:
+    """
+    caption_ids = {}
+    for caption in caption_list:
+        for key,value in caption.items():
+            if key == "caption_id":
+                if value not in caption_ids:
+                    caption_ids[value] = 1;
+                else:
+                    caption_ids[value] = caption_ids.get(value) + 1;
+
+    for id,number_of_that_id in caption_ids.items():
+        if number_of_that_id > 1:
+            raise ValueError(f'There are duplicate caption IDs {id}.')
+
