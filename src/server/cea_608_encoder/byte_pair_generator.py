@@ -191,9 +191,9 @@ def validate_scene_ids(scene_list: list):
         for key,value in scene.items():
             if key == "scene_id":
                 if value not in scene_ids:
-                    scene_ids[value] = 1;
+                    scene_ids[value] = 1
                 else:
-                    scene_ids[value] = scene_ids.get(value) + 1;
+                    scene_ids[value] = scene_ids.get(value) + 1
 
     for id,number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
@@ -210,9 +210,9 @@ def validate_caption_ids(caption_list: list):
         for key,value in caption.items():
             if key == "caption_id":
                 if value not in caption_ids:
-                    caption_ids[value] = 1;
+                    caption_ids[value] = 1
                 else:
-                    caption_ids[value] = caption_ids.get(value) + 1;
+                    caption_ids[value] = caption_ids.get(value) + 1
 
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
