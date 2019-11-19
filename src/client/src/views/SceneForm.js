@@ -69,9 +69,19 @@ module.exports = {
         showStylizedPreview = !showStylizedPreview
       }}),
       m('h2', 'List of captions'),
-      m('.caption-list', captions.map(function(caption) {
-
+      m('.caption-list', captions.map(function(caption, captionIndex) {
+        const upArrow = isUpArrowEnabled(captions, caption, captionIndex)
+        const downArrow = isDownArrowEnabled(captions, caption, captionIndex)
+        
         return m('div.caption-list-item', {key: caption.id}, [
+          m('i.arrow-up', {
+            class: upArrow ? 'arrow-enabled' : 'arrow-disabled',
+            onclick: upArrow ? e => {console.log(e)} : () => {},
+          }),
+          m('i.arrow-down', {
+            class: downArrow ? 'arrow-enabled' : 'arrow-disabled',
+            onclick: downArrow ? e => {console.log(e)} : () => {},
+          }),
           m('a', {
             onclick: function() {
               m.route.set(`/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`)
@@ -90,6 +100,32 @@ module.exports = {
       })),
     ])
   }
+}
+
+function isUpArrowEnabled(captions, caption, index) {
+  // the up arrow is only enabled if there is a caption with the same row value above the current caption.
+
+  function getCaptionAbove(captions, index) {
+    if (index === 0) return null
+
+    return captions[index - 1]
+  }
+  
+  const captionAbove = getCaptionAbove(captions, index)
+  return captionAbove ? captionAbove.row === caption.row : false
+}
+
+function isDownArrowEnabled(captions, caption, index) {
+  // the down arrow is only enabled if there is a caption with the same row value below the current caption.
+
+  function getCaptionBelow(captions, index) {
+    if (index === captions.length-1) return null
+
+    return captions[index + 1]
+  }
+  
+  const captionBelow = getCaptionBelow(captions, index)
+  return captionBelow ? captionBelow.row === caption.row : false
 }
 
 function getCaptionPreview(caption) {
