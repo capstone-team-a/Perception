@@ -18,13 +18,23 @@ const CaptionForm = require('./views/CaptionForm')
 
 m.route(document.body, '/start', {
   '/start': Start,
-  '/scenes': Scenes,
+  '/scenes': {
+    onmatch: function() {
+      return Scene.isCaptionFormatSet(Scenes)
+    }
+  },
   '/scenes/scene-:sceneId': {
+    onmatch: function() {
+      Scene.isCaptionFormatSet()
+    },
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
     }
   },
   '/scenes/scene-:sceneId/caption-:captionId': {
+    onmatch: function() {
+      Scene.isCaptionFormatSet()
+    },
     render: function(vnode) {
       return m(CaptionForm, vnode.attrs)
     }
