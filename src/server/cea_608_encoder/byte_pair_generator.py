@@ -65,7 +65,7 @@ def consume_scenes(scene_list: list) -> list:
     strings to return byte pairs for caption strings inside a scene.
 
     :param scene_list:
-    :return: TODO
+    :return: scene_data
     """
     scene_data = []
 
@@ -111,7 +111,7 @@ def consume_scenes(scene_list: list) -> list:
 
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        current_scene_data['data'] += consume_captions(caption_list)['caption_string']
+        current_scene_data['data'] += consume_captions(caption_list)
 
         # append EOC.
         current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
@@ -120,21 +120,20 @@ def consume_scenes(scene_list: list) -> list:
 
         scene_data.append(current_scene_data)
 
-    validate_scene_ids(scene_list) 
+    validate_scene_ids(scene_list)
 
     return scene_data
 
 
-def consume_captions(caption_list: list) -> dict:
+def consume_captions(caption_list: list) -> list:
     """Iterate over the list of captions in a scene and create bytes pairs
     for the list of caption strings and properties that the strings have.
 
     :param caption_list:
-    :return: TODO
+    :return: caption_bytes
     """
-    caption_metadata = {}
-    caption_metadata['caption_string'] = []
 
+    caption_bytes = []
 
     for caption in caption_list:
         if 'caption_id' not in caption:
@@ -151,7 +150,7 @@ def consume_captions(caption_list: list) -> dict:
             foreground_color_and_underline_style_changes['underline'] = underlined
 
         if foreground_color_and_underline_style_changes:
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_midrow_style(
+            caption_bytes += utils.create_byte_pairs_for_midrow_style(
                 **foreground_color_and_underline_style_changes)
 
         background_color_and_transparency_style_changes = {}
@@ -170,24 +169,18 @@ def consume_captions(caption_list: list) -> dict:
 
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
-            caption_metadata['caption_string'] += utils.create_byte_pairs_for_caption_string(string)
+            caption_bytes += utils.create_byte_pairs_for_caption_string(string)
         else:
             raise ValueError('You must specify a caption string that is not null.')
 
         if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
             text_alignment = caption['text_alignment']['placement']
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
-            caption_metadata['text_alignment'] = caption_alignment_byte_encoded
-
-        if 'underline' in caption:
-            caption_metadata['underlined_text_bytes'] = utils.create_bytes_to_underline_text()
-
-        if 'italics' in caption:
-            caption_metadata['italicized_bytes'] = utils.create_bytes_to_italicize_text()
+            caption_bytes = caption_alignment_byte_encoded
 
     validate_caption_ids(caption_list)
 
-    return caption_metadata
+    return caption_bytes
 
 
 def validate_scene_ids(scene_list: list):
@@ -200,9 +193,9 @@ def validate_scene_ids(scene_list: list):
         for key,value in scene.items():
             if key == "scene_id":
                 if value not in scene_ids:
-                    scene_ids[value] = 1;
+                    scene_ids[value] = 1
                 else:
-                    scene_ids[value] = scene_ids.get(value) + 1;
+                    scene_ids[value] = scene_ids.get(value) + 1
 
     for id,number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
@@ -219,9 +212,9 @@ def validate_caption_ids(caption_list: list):
         for key,value in caption.items():
             if key == "caption_id":
                 if value not in caption_ids:
-                    caption_ids[value] = 1;
+                    caption_ids[value] = 1
                 else:
-                    caption_ids[value] = caption_ids.get(value) + 1;
+                    caption_ids[value] = caption_ids.get(value) + 1
 
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
