@@ -47,13 +47,15 @@ const Scene = {
     const scene_list = Scene.getScenes()
    
     // add new scene object
-    scene_list.push({
+	new_scene = {
       id: Scene.uniqueSceneId(),
       start: null,
       captions: []
-    })
+    }
+    scene_list.push(new_scene)
     // saves the current list
     Scene.setScenes(scene_list)
+	m.route.set('/scenes/scene-' + new_scene.id)
   },
 
   uniqueSceneId: function() {
@@ -174,12 +176,15 @@ const Scene = {
         }
       }
     }
-    // Adds a new caption
-    Scene.currentScene.captions.push({
+	new_caption = {
       id : caption_max_id + 1,
       background_color: 'Black',
       foreground_color: 'White',
-    })
+    }
+    // Adds a new caption
+    Scene.currentScene.captions.push(new_caption)
+	Scene.saveCaptions()
+	m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + new_caption.id)
   },
 
   deleteCaption: function(captionId) {
