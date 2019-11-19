@@ -3,6 +3,7 @@
 const m = require('mithril')
 const Scene = require('../models/Scene')
 
+let showStylizedPreview = false
 
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
@@ -62,6 +63,11 @@ module.exports = {
           Scene.saveCaptions()
         }
       }, 'New Caption'),
+      m('label.show-stylized-preview', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+      m('input#showStylizedPreview-input[type=checkbox]', {
+        oninput: e => {
+        showStylizedPreview = !showStylizedPreview
+      }}),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption) {
 
@@ -71,6 +77,7 @@ module.exports = {
               m.route.set(`/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`)
             }
           }, caption.name ? caption.name : `Caption ${caption.id}`),
+          getCaptionPreview(caption),
           m('button.delete-caption-button', {
             onclick: function() {
               //ask the user for confirmation.
@@ -83,4 +90,25 @@ module.exports = {
       })),
     ])
   }
+}
+
+function getCaptionPreview(caption) {
+  const foreground = caption.foreground_color
+        ? caption.foreground_color === 'Italic White'
+        ? 'white' : caption.foreground_color.toLowerCase()
+        : 'black'
+
+  const css =
+`color: ${foreground};
+background-color: ${caption.background_color ? caption.background_color.toLowerCase() : ''};
+font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
+text-decoration: ${caption.underline ? 'underline' : ''};
+`
+  
+  return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
+    m('span.caption-preview', {
+      style: (caption.text && showStylizedPreview) ? css : null,
+    }, caption.text ? caption.text : '-')
+  ])  
 }

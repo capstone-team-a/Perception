@@ -45,24 +45,30 @@ const Scene = {
   addScene: function() {
     // get current list
     const scene_list = Scene.getScenes()
-      // keeps tracks of id numbers in order to not crash into each other
-    var scene_max_id = 0
-    // Finds the max scene id in the list
-    if (scene_list.length > 0) {
-      for (i = 0; i < scene_list.length; i++) {
-        if (scene_max_id < scene_list[i].id) {
-          scene_max_id = scene_list[i].id
-        }
-      }
-    }
+   
     // add new scene object
     scene_list.push({
-      id: scene_max_id + 1,
+      id: Scene.uniqueSceneId(),
       start: null,
       captions: []
     })
     // saves the current list
     Scene.setScenes(scene_list)
+  },
+
+  uniqueSceneId: function() {
+    const scene_list = Scene.getScenes()
+    let scene_max_id = 0
+    // Finds the max scene id in the list
+    if (scene_list.length > 0) {
+      for (let i = 0; i < scene_list.length; i++) {
+        if (scene_max_id < scene_list[i].id) {
+          scene_max_id = scene_list[i].id
+        }
+      }
+    }
+
+    return scene_max_id + 1
   },
 
   deleteScene: function(sceneid) {
@@ -115,7 +121,8 @@ const Scene = {
         if (list[i].start === null) {
           //do nothing
         } else if (Number(list[i].start) === start_check && i !== Scene.findSceneIndex(Scene.currentScene.id)) {
-          Scene.currentScene.start = `Collision Detected`
+          Scene.currentScene.start = null
+          alert('Collision detected. Choose a different start value.')
         }
       }
     }
@@ -169,7 +176,9 @@ const Scene = {
     }
     // Adds a new caption
     Scene.currentScene.captions.push({
-      id : caption_max_id + 1
+      id : caption_max_id + 1,
+      background_color: 'Black',
+      foreground_color: 'White',
     })
   },
 
@@ -262,17 +271,22 @@ const Scene = {
         scene_id: scene.id,
         scene_name: scene.name,
         start: {time: scene.start},
-        position: {row: scene.position},
         caption_list: scene.captions.map(function(caption) {
           return {
             caption_id: caption.id,
             caption_name: caption.name,
             caption_string: caption.text,
-            background_color: {color: caption.background_color},
-            foreground_color: {color: caption.foreground_color},
-            text_alignment: {placement: caption.text_alignment},
+            background_color: {
+			  color: caption.background_color ? caption.background_color: ''
+			},
+            foreground_color: {
+			  color: caption.foreground_color ? caption.background_color: ''
+			},
+            position: {
+			  row: caption.row ? caption.row: '' , 
+			  column: caption.column ? caption.column: ''
+			},
             underline: caption.underline,
-            italics: caption.italics,
             opacity: caption.opacity,
           }
         })
@@ -292,28 +306,23 @@ const Scene = {
       return false
     }
     try {
-	  var success = true
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
 		try {
-          success = Scene.loadSceneListFromFile(JSON.parse(e.target.result))
+          if(Scene.loadSceneListFromFile(JSON.parse(e.target.result))) {
+	        m.route.set('/scenes')
+		  }
         } catch (error) {
           alert("JSON file was malformed.\n" + error)
-		  success = false
         }
       }
       reader.onerror = function(e) {
         alert("There was an error while reading your file.")
-		success = false
       }
       reader.readAsText(blob)
     } catch (error) {
       alert("Error while reading file. Please try again.\n Error info: " + error)
-      success = false
-    }
-    if(success){
-	  m.route.set('/scenes')
     }
   },
   
@@ -340,7 +349,6 @@ const Scene = {
 	// setting attributes default
 	var scene_name = ''
 	var start = ''
-	var position = ''
     var captionList = []
 	
 	// initializing each caption by iterating throught the caption list
@@ -356,14 +364,10 @@ const Scene = {
 	if (loadedScene['start']) {
       start = loadedScene['start'].time.toString()
 	}
-	if (loadedScene['position']) {
-      position = loadedScene['position'].row
-	}
     return {
       id: loadedScene['scene_id'],
       name: scene_name,
       start: start,
-      position: position,
       captions: captionList,
     }
   },
@@ -374,9 +378,9 @@ const Scene = {
 	var caption_string = ''
 	var background_color = ''
 	var foreground_color = ''
-	var text_alignment = ''
+	var row = ''
+	var column = ''
 	var underline = false
-	var italics = false
 	var opacity = ''
 	
 	// checking if each attribute needed was passed in.
@@ -398,8 +402,9 @@ const Scene = {
 	if (loadedCaption['underline']) {
       underline = loadedCaption['underline']
 	}
-	if (loadedCaption['italics']) {
-      italics = loadedCaption['italics']
+	if (loadedCaption['position']) {
+      row = loadedCaption['position'].row
+	  column = loadedCaption['position'].column
 	}
 	if (loadedCaption['opacity']) {
       opacity = loadedCaption['opacity']
@@ -411,9 +416,9 @@ const Scene = {
       text: caption_string,
       background_color: background_color,
       foreground_color: foreground_color,
-      alignment: text_alignment,
+      row: row,
+      column: column,
       underline: underline,
-      italics: italics,
       opacity: opacity,
     }
   },
@@ -435,6 +440,68 @@ const Scene = {
 
     Scene.setScenes(list)
   },
+
+  loadFile: function(file, cb) {
+    if(!Scene.jsonExtensionCheck(file.name)) {
+      return cb("File type to load from must be .json")
+    }
+
+      const reader = new FileReader()
+      const blob = file.slice(0, file.size)
+      reader.onload = function(e) {
+		try {
+          const fileData = JSON.parse(e.target.result)
+          return cb(null, fileData)
+        } catch (error) {
+          return cb("JSON file was malformed.\n" + error)
+        }
+      }
+      reader.onerror = function(e) {
+        return cb("There was an error while reading your file.")
+      }
+      
+      reader.readAsText(blob)
+  },
+
+  appendFromFile: function(file, cb) {
+    Scene.loadFile(file, (err, fileData) => {
+      if (err) {
+        return cb(err)
+      }
+
+      if (fileData.caption_format !== Scene.getInputFormat()) {
+        return cb(`Caption format of file (${fileData.caption_format}) doesn't match expected format (${Scene.getInputFormat()})`)
+      }
+
+      if (!fileData.scene_list || !Array.isArray(fileData.scene_list)) {
+        return cb(`File doesn't contain a valid 'scene_list'.`)
+      }
+
+      const newScenes = fileData.scene_list.forEach(scene => {
+        Scene.appendScene(scene)
+      })
+
+      return cb(null)
+    })
+  },
+
+  // similar to addScene, except this function takes in scene data instead of creating an empty scene.
+  // This funciton is used in the appendFromFile function.
+  appendScene: function(scene) {
+    const scene_list = Scene.getScenes()
+   
+    // add new scene object
+    scene_list.push({
+      id: Scene.uniqueSceneId(),
+      name: scene.scene_name,
+      start: null,
+      captions: scene.caption_list.map(caption => {
+        return Scene.load608CaptionFromFile(caption)
+      })
+    })
+    // saves the current list
+    Scene.setScenes(scene_list)
+  }
 }
 
 
