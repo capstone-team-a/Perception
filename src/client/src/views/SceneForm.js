@@ -106,6 +106,8 @@ text-decoration: ${caption.underline ? 'underline' : ''};
 `
   
   return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'Row:'),
+    m('span.caption-preview', caption.row ? caption.row: '-'),
     m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
     m('span.caption-preview', {
       style: (caption.text && showStylizedPreview) ? css : null,

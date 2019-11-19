@@ -91,7 +91,7 @@ const Scene = {
 
     // update the current scene in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions = Scene.currentScene.captions
-
+    
     Scene.setScenes(list)
   },
 
@@ -442,7 +442,14 @@ const Scene = {
     const list = Scene.getScenes()
 
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions[Scene.findCaptionIndex(Scene.currentCaption.id)][attr] = Scene.currentCaption[attr]
-
+    list[Scene.findSceneIndex(Scene.currentScene.id)].captions.sort(function(a, b){
+      if (!b.row && !a.row) {return 0} // If both are null don't touch anything
+      if(!b.row) {return -1} // undefined starts are sorted at the end
+      if(!a.row) {return 1} // undefined starts are sorted at the end
+      if(Number(a.row) < Number(b.row)) {return -1} // a comes before b
+      if(Number(b.row) < Number(a.row)) {return 1} // b comes before a
+      return 0 // should never hit this case
+    })
     Scene.setScenes(list)
   },
 
