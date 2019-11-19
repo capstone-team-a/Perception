@@ -178,6 +178,8 @@ def consume_captions(caption_list: list) -> list:
             caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
             caption_bytes = caption_alignment_byte_encoded
 
+    validate_caption_ids(caption_list)
+
     return caption_bytes
 
 
