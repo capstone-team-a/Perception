@@ -15,7 +15,6 @@ module.exports = {
         id: 'language-input',
         onchange: function(e) {
           Scene.setInputFormat(e.target.value)
-          select = e.target.value
         }
       }, [
         m('option', {

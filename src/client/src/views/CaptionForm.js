@@ -18,10 +18,10 @@ module.exports = {
     if(!Scene.currentCaption) {
       return m('', [
         m(m.route.Link, {
-  	  href: `/scenes`,
+  	      href: `/scenes`,
         }, 'Return To Scenes'),
         m('h1', '404 - Caption Not Found'),
-        ])
+      ])
     }
     return m('', [
       m(m.route.Link, {

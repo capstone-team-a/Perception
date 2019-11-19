@@ -12,9 +12,7 @@ const Scene = {
     }
 
     if(!localStorage.getItem('input-format')) {
-      localStorage.setItem('input-format', JSON.stringify({
-        'input-format': 'Select your option'
-      }))
+      localStorage.setItem('input-format', JSON.stringify('Select your option'))
     }
 
     if(!localStorage.getItem('file-name')) {
@@ -215,6 +213,30 @@ const Scene = {
     return JSON.parse(localStorage.getItem('input-format'))
   },
 
+  checkInputFormat: function() {
+    if(Scene.getInputFormat() === 'Select your option')
+      return true
+    else
+      return false
+  },
+
+  alertAndRouteToStart: function() {
+    alert('Please specify a caption format before proceeding to scene list')
+    m.route.set('/start')
+  },
+
+  // This function will mimicking the overloading behavior of C++ functions
+  // The 'obj' argument is an optional parameter
+  isCaptionFormatSet: function(obj) {
+    if(Scene.checkInputFormat()) {
+      Scene.alertAndRouteToStart()
+    }
+    else {
+      if(typeof obj !== "undefined")
+        return obj
+    }
+  }
+  ,
   jsonExtensionCheck: function(fileName) {
 	// creating new string with the extension of the file.
     var check = fileName.substr(fileName.length - 4).toLowerCase()
