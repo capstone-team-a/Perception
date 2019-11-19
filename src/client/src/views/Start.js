@@ -15,7 +15,6 @@ module.exports = {
         id: 'language-input',
         onchange: function(e) {
           Scene.setInputFormat(e.target.value)
-          select = e.target.value
         }
       }, [
         m('option', {
@@ -37,10 +36,10 @@ module.exports = {
       m('form.load-file-form', {
         onsubmit: function(e) {
           e.preventDefault()
-          if(inputFile !== null && Scene.loadFromFile(inputFile)) {
-            m.route.set('/scenes')
-          } else if (inputFile === null) {
+          if (!inputFile) {
             alert("Must select file to load from")
+          } else {
+            Scene.loadFromFile(inputFile)
           }
         }
       }, [
