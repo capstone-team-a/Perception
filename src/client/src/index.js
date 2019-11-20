@@ -17,14 +17,29 @@ const CaptionForm = require('./views/CaptionForm')
 // define routes, and map routes (urls) to views
 
 m.route(document.body, '/start', {
-  '/start': Start,
-  '/scenes': Scenes,
+  '/start': {
+    onmatch: function() {
+      Scene.isSceneDatainUse()
+      return Start
+    }
+  },
+  '/scenes': {
+    onmatch: function() {
+      return Scene.isCaptionFormatSet(Scenes)
+    }
+  },
   '/scenes/scene-:sceneId': {
+    onmatch: function() {
+      Scene.isCaptionFormatSet()
+    },
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
     }
   },
   '/scenes/scene-:sceneId/caption-:captionId': {
+    onmatch: function() {
+      Scene.isCaptionFormatSet()
+    },
     render: function(vnode) {
       return m(CaptionForm, vnode.attrs)
     }

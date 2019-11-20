@@ -15,7 +15,6 @@ module.exports = {
         id: 'language-input',
         onchange: function(e) {
           Scene.setInputFormat(e.target.value)
-          select = e.target.value
         }
       }, [
         m('option', {
@@ -29,18 +28,20 @@ module.exports = {
             value: opt,
             selected: opt === format ? true : false
           }, opt)
-        }) 
+        })
       ]),
-      m(m.route.Link, {
-	      href: '/scenes',
+      m('button.scene_list', {
+        onclick: function() {
+          Scene.checkExisitingSceneData(null)
+        }
       }, 'New Scene List'),
       m('form.load-file-form', {
         onsubmit: function(e) {
           e.preventDefault()
-          if(inputFile !== null && Scene.loadFromFile(inputFile)) {
-            m.route.set('/scenes')
-          } else if (inputFile === null) {
+          if (!inputFile) {
             alert("Must select file to load from")
+          } else {
+            Scene.checkExisitingSceneData(inputFile)
           }
         }
       }, [

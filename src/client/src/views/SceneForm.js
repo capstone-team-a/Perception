@@ -3,19 +3,22 @@
 const m = require('mithril')
 const Scene = require('../models/Scene')
 
+let showStylizedPreview = false
+
 module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
     Scene.setCurrentScene(vnode.attrs.sceneId)
+    // showStylizedPreview = false
   },
   view: function(vnode) {
     if(!Scene.currentScene) {
       return m('', [
         m(m.route.Link, {
-  	  href: `/scenes`,
+  	      href: `/scenes`,
         }, 'Return To Scenes'),
         m('h1', '404 - Scene Not found'),
-        ])
+      ])
     }
 
     const captions = Scene.currentScene.captions
@@ -61,15 +64,33 @@ module.exports = {
           Scene.saveCaptions()
         }
       }, 'New Caption'),
+      m('label.show-stylized-preview', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+      m('input#showStylizedPreview-input[type=checkbox]', {
+        oninput: e => {
+          showStylizedPreview = !showStylizedPreview
+        },
+        checked: showStylizedPreview
+      }),
       m('h2', 'List of captions'),
-      m('.caption-list', captions.map(function(caption) {
-
+      m('.caption-list', captions.map(function(caption, captionIndex) {
+        const upArrow = isUpArrowEnabled(captions, caption, captionIndex)
+        const downArrow = isDownArrowEnabled(captions, caption, captionIndex)
+        
         return m('div.caption-list-item', {key: caption.id}, [
+          m('i.arrow-up', {
+            class: upArrow ? 'arrow-enabled' : 'arrow-disabled',
+            onclick: upArrow ? e => {Scene.moveCaptionUp(captionIndex)} : () => {},
+          }),
+          m('i.arrow-down', {
+            class: downArrow ? 'arrow-enabled' : 'arrow-disabled',
+            onclick: downArrow ? e => {Scene.moveCaptionDown(captionIndex)} : () => {},
+          }),
           m('a', {
             onclick: function() {
               m.route.set(`/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`)
             }
           }, caption.name ? caption.name : `Caption ${caption.id}`),
+          getCaptionPreview(caption),
           m('button.delete-caption-button', {
             onclick: function() {
               //ask the user for confirmation.
@@ -82,4 +103,53 @@ module.exports = {
       })),
     ])
   }
+}
+
+function isUpArrowEnabled(captions, caption, index) {
+  // the up arrow is only enabled if there is a caption with the same row value above the current caption.
+
+  function getCaptionAbove(captions, index) {
+    if (index === 0) return null
+
+    return captions[index - 1]
+  }
+  
+  const captionAbove = getCaptionAbove(captions, index)
+  return captionAbove ? captionAbove.row === caption.row : false
+}
+
+function isDownArrowEnabled(captions, caption, index) {
+  // the down arrow is only enabled if there is a caption with the same row value below the current caption.
+
+  function getCaptionBelow(captions, index) {
+    if (index === captions.length-1) return null
+
+    return captions[index + 1]
+  }
+  
+  const captionBelow = getCaptionBelow(captions, index)
+  return captionBelow ? captionBelow.row === caption.row : false
+}
+
+function getCaptionPreview(caption) {
+  const foreground = caption.foreground_color
+        ? caption.foreground_color === 'Italic White'
+        ? 'white' : caption.foreground_color.toLowerCase()
+        : 'black'
+
+  const css =
+`color: ${foreground};
+background-color: ${caption.background_color ? caption.background_color.toLowerCase() : ''};
+font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
+text-decoration: ${caption.underline ? 'underline' : ''};
+`
+  
+  return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'Row:'),
+    m('span.caption-preview', caption.row ? caption.row: '-'),
+    m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
+    m('span.caption-preview', {
+      style: (caption.text && showStylizedPreview) ? css : null,
+    }, caption.text ? caption.text : '-')
+  ])  
 }

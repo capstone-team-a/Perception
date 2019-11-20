@@ -1,5 +1,6 @@
 # data that Perception generates
 src/server/data.json
+data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
