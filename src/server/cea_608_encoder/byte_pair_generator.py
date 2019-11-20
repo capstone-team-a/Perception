@@ -121,6 +121,7 @@ def consume_scenes(scene_list: list) -> list:
         scene_data.append(current_scene_data)
 
     validate_scene_ids(scene_list)
+    validate_start_times(scene_list)
 
     return scene_data
 
@@ -219,4 +220,27 @@ def validate_caption_ids(caption_list: list):
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
             raise ValueError(f'There are duplicate caption IDs {id}.')
+
+def validate_start_times(scene_list: list):
+    """Checks if multiple scenes have the same start time
+
+    :param scene_list:
+    """
+    start_times = {}
+    for scene in scene_list:
+        for key,value in scene.items():
+            if key == "start":
+                scene_time = value["time"]
+                if scene_time not in start_times:
+                    start_times[scene_time] = [1,[scene["scene_id"]]]
+                else:
+                    start_times[scene_time] = start_times.get(scene_time)[0] + 1
+                    start_times[scene_time] = start_times[scene_time][1].append(scene["scene_id"])
+
+    for time,number_and_ids in start_times.items():
+        if number_and_ids[0] > 1:
+            raise ValueError(f'Scenes with the IDs {number_and_ids[1]} are starting at the same time of {time}.')
+
+with open('scenes.json') as f:
+    consume(f)
 
