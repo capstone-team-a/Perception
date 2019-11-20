@@ -24,6 +24,11 @@ module.exports = {
             })
         }
       }, 'Export'),
+      m('button.back_start', {
+        onclick: function() {
+          m.route.set(`/start`)
+        }
+      }, 'Back to Start'),
       m('a.download-link', {
         download: 'scenes',
         href: Scene.getDownloadURL()
@@ -67,7 +72,7 @@ module.exports = {
         ),
         m('button.load-file[type=submit]', 'Load File'),
       ]),
-      
+
       m('h2', 'List of scenes'),
       m('.scene-list', Scene.getScenes()
         .map(function(scene) {

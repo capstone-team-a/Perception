@@ -45,7 +45,7 @@ const Scene = {
   addScene: function() {
     // get current list
     const scene_list = Scene.getScenes()
-   
+
     // add new scene object
 	new_scene = {
       id: Scene.uniqueSceneId(),
@@ -91,7 +91,7 @@ const Scene = {
 
     // update the current scene in the scene list
     list[Scene.findSceneIndex(Scene.currentScene.id)].captions = Scene.currentScene.captions
-    
+
     Scene.setScenes(list)
   },
 
@@ -240,8 +240,12 @@ const Scene = {
       if(typeof obj !== "undefined")
         return obj
     }
-  }
-  ,
+  },
+  isSceneDatainUse: function() {
+    if (Number(Scene.getScenes().length) !== 0) {
+      alert("Going to start page could result in loss of data")
+    }
+  },
   jsonExtensionCheck: function(fileName) {
 	// creating new string with the extension of the file.
     var check = fileName.substr(fileName.length - 4).toLowerCase()
@@ -288,7 +292,7 @@ const Scene = {
 			  color: caption.foreground_color ? caption.background_color: ''
 			},
             position: {
-			  row: caption.row ? caption.row: '' , 
+			  row: caption.row ? caption.row: '' ,
 			  column: caption.column ? caption.column: ''
 			},
             underline: caption.underline,
@@ -302,6 +306,19 @@ const Scene = {
       file_name: 'test_file',
       caption_format: caption_format,
       scene_list: scenes
+    }
+  },
+
+  checkExisitingSceneData: function(inputFile) {
+    if (Number(Scene.getScenes().length) === 0) {
+      Scene.loadFromFile(inputFile)
+    } else {
+      if (confirm("Overwrite exisiting Scene List Data?")) {
+        localStorage.setItem('scene-list', JSON.stringify([]))
+        Scene.loadFromFile(inputFile)
+      } else {
+        m.route.set(`/scenes`)
+      }
     }
   },
 
@@ -330,7 +347,7 @@ const Scene = {
       alert("Error while reading file. Please try again.\n Error info: " + error)
     }
   },
-  
+
   loadSceneListFromFile: function(loadedData) {
 	localStorage.setItem('file-name', JSON.stringify({
       'file-name': loadedData['file_name']
@@ -355,13 +372,13 @@ const Scene = {
 	var scene_name = ''
 	var start = ''
     var captionList = []
-	
+
 	// initializing each caption by iterating throught the caption list
     for (var i = 0; i < loadedScene['caption_list'].length; i++) {
       newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i])
       captionList.push(newCaption)
     }
-	
+
 	//checking if each attribute is initialized
 	if (loadedScene['scene_name']) {
       scene_name = loadedScene['scene_name']
@@ -387,7 +404,7 @@ const Scene = {
 	var column = ''
 	var underline = false
 	var opacity = ''
-	
+
 	// checking if each attribute needed was passed in.
 	if (loadedCaption['caption_name']) {
       caption_name = loadedCaption['caption_name']
@@ -414,7 +431,7 @@ const Scene = {
 	if (loadedCaption['opacity']) {
       opacity = loadedCaption['opacity']
 	}
-	
+
     return {
       id: loadedCaption['caption_id'],
       name: caption_name,
@@ -471,7 +488,7 @@ const Scene = {
       reader.onerror = function(e) {
         return cb("There was an error while reading your file.")
       }
-      
+
       reader.readAsText(blob)
   },
 
@@ -501,7 +518,7 @@ const Scene = {
   // This funciton is used in the appendFromFile function.
   appendScene: function(scene) {
     const scene_list = Scene.getScenes()
-   
+
     // add new scene object
     scene_list.push({
       id: Scene.uniqueSceneId(),

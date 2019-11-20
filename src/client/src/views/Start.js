@@ -28,10 +28,19 @@ module.exports = {
             value: opt,
             selected: opt === format ? true : false
           }, opt)
-        }) 
+        })
       ]),
-      m(m.route.Link, {
-	      href: '/scenes',
+      m('button.scene_list', {
+        onclick: function() {
+          if (Number(Scene.getScenes().length) === 0) {
+            m.route.set(`/scenes`)
+          } else {
+            if (confirm("Overwrite exisiting Scene List Data?")) {
+              localStorage.setItem('scene-list', JSON.stringify([]))
+            }
+            m.route.set(`/scenes`)
+          }
+        }
       }, 'New Scene List'),
       m('form.load-file-form', {
         onsubmit: function(e) {
@@ -39,7 +48,7 @@ module.exports = {
           if (!inputFile) {
             alert("Must select file to load from")
           } else {
-            Scene.loadFromFile(inputFile)
+            Scene.checkExisitingSceneData(inputFile)
           }
         }
       }, [
