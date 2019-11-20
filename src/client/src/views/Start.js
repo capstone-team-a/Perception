@@ -28,10 +28,12 @@ module.exports = {
             value: opt,
             selected: opt === format ? true : false
           }, opt)
-        }) 
+        })
       ]),
-      m(m.route.Link, {
-	      href: '/scenes',
+      m('button.scene_list', {
+        onclick: function() {
+          Scene.checkExisitingSceneData(null)
+        }
       }, 'New Scene List'),
       m('form.load-file-form', {
         onsubmit: function(e) {
@@ -39,7 +41,7 @@ module.exports = {
           if (!inputFile) {
             alert("Must select file to load from")
           } else {
-            Scene.loadFromFile(inputFile)
+            Scene.checkExisitingSceneData(inputFile)
           }
         }
       }, [
