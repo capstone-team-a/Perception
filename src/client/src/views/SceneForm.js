@@ -9,6 +9,7 @@ module.exports = {
   // on initialization of this component, set the current scene to the corresponding "current scene"
   oninit: function(vnode) {
     Scene.setCurrentScene(vnode.attrs.sceneId)
+    // showStylizedPreview = false
   },
   view: function(vnode) {
     if(!Scene.currentScene) {
@@ -66,8 +67,10 @@ module.exports = {
       m('label.show-stylized-preview', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
       m('input#showStylizedPreview-input[type=checkbox]', {
         oninput: e => {
-        showStylizedPreview = !showStylizedPreview
-      }}),
+          showStylizedPreview = !showStylizedPreview
+        },
+        checked: showStylizedPreview
+      }),
       m('h2', 'List of captions'),
       m('.caption-list', captions.map(function(caption, captionIndex) {
         const upArrow = isUpArrowEnabled(captions, caption, captionIndex)
