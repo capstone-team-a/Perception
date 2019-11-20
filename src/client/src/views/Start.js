@@ -32,14 +32,7 @@ module.exports = {
       ]),
       m('button.scene_list', {
         onclick: function() {
-          if (Number(Scene.getScenes().length) === 0) {
-            m.route.set(`/scenes`)
-          } else {
-            if (confirm("Overwrite exisiting Scene List Data?")) {
-              localStorage.setItem('scene-list', JSON.stringify([]))
-            }
-            m.route.set(`/scenes`)
-          }
+          Scene.checkExisitingSceneData(null)
         }
       }, 'New Scene List'),
       m('form.load-file-form', {

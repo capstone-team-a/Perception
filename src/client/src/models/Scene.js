@@ -311,11 +311,19 @@ const Scene = {
 
   checkExisitingSceneData: function(inputFile) {
     if (Number(Scene.getScenes().length) === 0) {
-      Scene.loadFromFile(inputFile)
+      if (inputFile === null) {
+        m.route.set(`/scenes`)
+      } else {
+        Scene.loadFromFile(inputFile)
+      }
     } else {
       if (confirm("Overwrite exisiting Scene List Data?")) {
         localStorage.setItem('scene-list', JSON.stringify([]))
-        Scene.loadFromFile(inputFile)
+        if (inputFile === null) {
+          m.route.set(`/scenes`)
+        } else {
+          Scene.loadFromFile(inputFile)
+        }
       } else {
         m.route.set(`/scenes`)
       }
