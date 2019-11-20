@@ -1,5 +1,6 @@
 import unittest
 import src.server.cea_608_encoder.scene_utility as utils
+import src.server.cea_608_encoder.caption_string_utility as caption_utils
 
 
 class TestSceneUtilities(unittest.TestCase):
@@ -8,7 +9,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "cyan"
         expected = ['1026']
 
-        actual = utils.create_bytes_for_scene_background_color(color,False)
+        actual = caption_utils.create_bytes_for_scene_background_color(color,False)
 
         self.assertEqual(expected, actual)
 
@@ -16,7 +17,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "Purple"
         expected = ['97ad']
 
-        actual = utils.create_bytes_for_scene_background_color(color,False)
+        actual = caption_utils.create_bytes_for_scene_background_color(color,False)
 
         self.assertEqual(expected, actual)
 
@@ -24,7 +25,7 @@ class TestSceneUtilities(unittest.TestCase):
         color = "white"
         expected = ['10a1']
 
-        actual = utils.create_bytes_for_scene_background_color(color,True)
+        actual = caption_utils.create_bytes_for_scene_background_color(color,True)
 
         self.assertEqual(expected, actual)
 

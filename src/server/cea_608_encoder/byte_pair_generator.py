@@ -88,35 +88,35 @@ def consume_scenes(scene_list: list) -> list:
             scene_utils.create_bytes_for_scene_position(position)
 
         # append RCL.
-        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_resume_caption_loading_bytes()
-                        )
+                        ))
 
         # append ENM.
-        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_erase_non_displayed_memory_bytes()
-                        )
+                        ))
 
         # append Default Style Bytepairs.
         # TODO This will have to be reworked when we add proper style support.
-        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_default_preamble_style_bytes()
-                        )
+                        ))
 
         # append Default Style Bytepairs.
         # TODO This will have to be reworked when we add proper position support
-        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
                         scene_utils.get_default_preamble_address_bytes()
-                        )
+                        ))
 
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        current_scene_data['data'] += consume_captions(caption_list)
+        current_scene_data['data'].extend(consume_captions(caption_list))
 
         # append EOC.
-        current_scene_data['data'] += scene_utils.create_byte_pairs_for_control_command(
+        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
                               scene_utils.get_end_of_caption_bytes()
-                              )
+                              ))
 
         scene_data.append(current_scene_data)
 
@@ -150,8 +150,8 @@ def consume_captions(caption_list: list) -> list:
             foreground_color_and_underline_style_changes['underline'] = underlined
 
         if foreground_color_and_underline_style_changes:
-            caption_bytes += utils.create_byte_pairs_for_midrow_style(
-                **foreground_color_and_underline_style_changes)
+            caption_bytes.extend(utils.create_byte_pairs_for_midrow_style(
+                **foreground_color_and_underline_style_changes))
 
         background_color_and_transparency_style_changes = {}
 
@@ -164,12 +164,12 @@ def consume_captions(caption_list: list) -> list:
             background_color_and_transparency_style_changes['transparency'] = transparency
 
         if background_color_and_transparency_style_changes:
-            utils.create_bytes_for_scene_background_color(
-                **background_color_and_transparency_style_changes)
+            caption_bytes.extend(utils.create_bytes_for_scene_background_color(
+                **background_color_and_transparency_style_changes))
 
         if 'caption_string' in caption and caption['caption_string']:
             string = caption['caption_string']
-            caption_bytes += utils.create_byte_pairs_for_caption_string(string)
+            caption_bytes.extend(utils.create_byte_pairs_for_caption_string(string))
         else:
             raise ValueError('You must specify a caption string that is not null.')
 
