@@ -289,7 +289,7 @@ const Scene = {
 			  color: caption.background_color ? caption.background_color: ''
 			},
             foreground_color: {
-			  color: caption.foreground_color ? caption.background_color: ''
+			  color: caption.foreground_color ? caption.foreground_color: ''
 			},
             position: {
 			  row: caption.row ? caption.row: '' ,
