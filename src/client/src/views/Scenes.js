@@ -6,9 +6,30 @@ const m = require('mithril')
 const Scene = require('../models/Scene')
 
 module.exports = {
+  oninit: function(vnode) {
+    Scene.setFileName()
+  },
   view: function() {
     return m('.scenes', [
-      m('h1', 'Scenes'),
+	  m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
+	  m('form.save-changes-form', {
+        onsubmit: function(e) {
+          e.preventDefault()
+		  Scene.saveFileName()
+        }
+      }, [
+        m('label', {
+          for: 'file-name-input'
+        }, 'File Name'),
+        m("input.file-name-input[type=text]", {
+          id: 'file-name-input',
+          oninput: function (e) {
+            Scene.fileName = e.target.value
+          },
+          value: Scene.fileName ? Scene.fileName : ''
+        }),
+        m("button.save-file-name-button[type=submit]", 'Save'),
+      ]),
       m('button.add-scene', {
         onclick: Scene.addScene
       }, 'New Scene'),
