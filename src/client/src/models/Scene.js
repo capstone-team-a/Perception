@@ -16,9 +16,8 @@ const Scene = {
     }
 
     if(!localStorage.getItem('file-name')) {
-      localStorage.setItem('file-name', JSON.stringify({
-        'file-name': ''
-      }))
+      localStorage.setItem('file-name', JSON.stringify('Scenes'))
+	  Scene.fileName = 'Scenes'
     }
   },
 
@@ -254,9 +253,19 @@ const Scene = {
     }
     return true
   },
-
+  
+  fileName: null,
+  
   getFileName: function() {
     return JSON.parse(localStorage.getItem('file-name'))
+  },
+  
+  setFileName: function() {
+    Scene.fileName = JSON.parse(localStorage.getItem('file-name'))
+  },
+  
+  saveFileName: function() {
+    localStorage.setItem('file-name', JSON.stringify(Scene.fileName))
   },
 
   exportToServer: function() {
@@ -296,14 +305,14 @@ const Scene = {
 			  column: caption.column ? caption.column: ''
 			},
             underline: caption.underline,
-            opacity: caption.opacity,
+            transparency: caption.transparency,
           }
         })
       }
     })
 
     return {
-      file_name: 'test_file',
+      file_name: Scene.getFileName(),
       caption_format: caption_format,
       scene_list: scenes
     }
@@ -357,9 +366,8 @@ const Scene = {
   },
 
   loadSceneListFromFile: function(loadedData) {
-	localStorage.setItem('file-name', JSON.stringify({
-      'file-name': loadedData['file_name']
-    }))
+	localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
+	Scene.setFileName()
     if (loadedData['caption_format'] === "CEA-608") {
       var sceneList = []
       for (var i = 0; i < loadedData['scene_list'].length; i++) {
@@ -411,7 +419,7 @@ const Scene = {
 	var row = ''
 	var column = ''
 	var underline = false
-	var opacity = ''
+	var transparency = ''
 
 	// checking if each attribute needed was passed in.
 	if (loadedCaption['caption_name']) {
@@ -436,8 +444,8 @@ const Scene = {
       row = loadedCaption['position'].row
 	  column = loadedCaption['position'].column
 	}
-	if (loadedCaption['opacity']) {
-      opacity = loadedCaption['opacity']
+	if (loadedCaption['transparency']) {
+      transparency = loadedCaption['transparency']
 	}
 
     return {
@@ -449,7 +457,7 @@ const Scene = {
       row: row,
       column: column,
       underline: underline,
-      opacity: opacity,
+      transparency: transparency,
     }
   },
 
