@@ -149,10 +149,16 @@ def consume_captions(caption_list: list) -> list:
             underlined = caption['underline']
             foreground_color_and_underline_style_changes['underline'] = underlined
 
-        if 'position' in caption and 'row' in caption['position'] and 'column' in caption['position']:
+        if 'position' in caption:
             text_position = caption['position']
-            text_row_position = text_position['row']
-            text_column_position = text_position['column']
+            if 'row' in text_position and not (text_position['row'] == ""):
+                text_row_position = text_position['row']
+            else:
+                text_row_position = 11 #Default row position
+            if 'column' in text_position and not (text_position['column'] == ""):
+                text_column_position = text_position['column']
+            else:
+                text_column_position = 0 #Default row position
             if 'underline' in foreground_color_and_underline_style_changes \
             and foreground_color_and_underline_style_changes['underline'] == "true":
                 text_underlined = True
