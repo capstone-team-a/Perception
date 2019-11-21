@@ -97,18 +97,6 @@ def consume_scenes(scene_list: list) -> list:
                         scene_utils.get_erase_non_displayed_memory_bytes()
                         ))
 
-        # append Default Style Bytepairs.
-        # TODO This will have to be reworked when we add proper style support.
-        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
-                        scene_utils.get_default_preamble_style_bytes()
-                        ))
-
-        # append Default Style Bytepairs.
-        # TODO This will have to be reworked when we add proper position support
-        current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
-                        scene_utils.get_default_preamble_address_bytes()
-                        ))
-
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
         current_scene_data['data'].extend(consume_captions(caption_list))
