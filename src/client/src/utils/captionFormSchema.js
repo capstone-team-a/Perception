@@ -40,7 +40,7 @@ module.exports = {
     options: null
   },
 
-  'opacity': {
+  'transparency': {
     label: 'Partially Transparent',
     type: 'checkbox',
     options: null
