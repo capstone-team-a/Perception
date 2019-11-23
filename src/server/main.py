@@ -21,7 +21,10 @@ def main():
     try:
         with open(args.file_path, 'r') as file:
             caption_data = json.load(file)
-            consume(caption_data)
+            optional_errors = consume(caption_data)
+
+            if optional_errors is not None:
+                print(optional_errors)
        
     except IOError as err:
         logging.error('Error trying to read in the file.', exc_info=err)

@@ -268,10 +268,12 @@ def create_byte_pairs_for_tab_offset(offset: int):
     return byte_list
 
 def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = False):
+    errors = []
+
     if row < 1 or row > 15:
-        raise ValueError(f'Cannot create byte pairs for preamble address. \'{row}\' is not in the range of [1, 15]')
+        errors.extend(f'Cannot create byte pairs for preamble address. \'{row}\' is not in the range of [1, 15]')
     if cursor < 0 or cursor > 31:
-        raise ValueError(f'Cannot create byte pairs for preamble address. \'{cursor}\' is not in the range of [0, 31]')
+        errors.extend(f'Cannot create byte pairs for preamble address. \'{cursor}\' is not in the range of [0, 31]')
 
     byte_list = []
     first_byte = 0x10
@@ -301,7 +303,7 @@ def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = Fa
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    return byte_pairs
+    return byte_pairs, errors
 
 
 def create_byte_pairs_for_text_alignment(alignment):

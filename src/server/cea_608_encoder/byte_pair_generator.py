@@ -38,28 +38,34 @@ def consume(caption_data: dict):
 
     :param caption_data: the full JSON blob from the front end
     """
+    errors = []
+
     if 'caption_format' not in caption_data:
-        raise ValueError('You must specify a caption format')
+        errors.extend('You must specify a caption format')
 
     if caption_data['caption_format'] not in supported_caption_formats:
         caption_format = caption_data['caption_format']
-        raise ValueError(f'The supplied caption format {caption_format} is not supported.')
+        errors.extend(f'The supplied caption format {caption_format} is not supported.')
 
     if 'scene_list' not in caption_data:
-        raise ValueError('Cannot encode byte pairs with an empty scene list.')
+        errors.extend('Cannot encode byte pairs with an empty scene list.')
 
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
 
+    scene_bytes, errors = consume_scenes(scene_data)
     caption_data = {
         'type': caption_format,
-        'scenes': consume_scenes(scene_data)
+        'scenes': scene_bytes
     }
+
+    if errors:
+        return errors
 
     write_caption_data_to_file(caption_data)
 
 
-def consume_scenes(scene_list: list) -> list:
+def consume_scenes(scene_list: list) -> tuple:
     """Iterate over the list of scenes and create bytes for fields that
     are set in the scene data. Call the consume function for caption
     strings to return byte pairs for caption strings inside a scene.
@@ -68,24 +74,22 @@ def consume_scenes(scene_list: list) -> list:
     :return: scene_data
     """
     scene_data = []
+    errors = []
 
     for scene in scene_list:
-        current_scene_data = {}
-        current_scene_data['start'] = 0
-        current_scene_data['data'] = []
+        current_scene_data = {
+            'start': 0,
+            'data': []
+        }
 
         if 'scene_id' not in scene:
-            raise ValueError('Every scene must have a scene ID.')
+            errors.append('Every scene must have a scene ID')
 
         if 'start' not in scene: 
-            raise ValueError('You must specify a starting time for a scene.')
+            errors.append(f'Scene with ID: {scene["scene_id"]} does not have a start time')
         else:
             start = scene['start']
             current_scene_data['start'] = start
-
-        if 'position' in scene:
-            position = scene['position']
-            scene_utils.create_bytes_for_scene_position(position)
 
         # append RCL.
         current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
@@ -99,7 +103,7 @@ def consume_scenes(scene_list: list) -> list:
 
         # append the Char Bytepairs.
         caption_list = scene['caption_list']
-        current_scene_data['data'].extend(consume_captions(caption_list))
+        current_scene_data['data'].extend(consume_captions(caption_list)), errors
 
         # append EOC.
         current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
@@ -108,12 +112,12 @@ def consume_scenes(scene_list: list) -> list:
 
         scene_data.append(current_scene_data)
 
-    validate_scene_ids(scene_list)
+    errors.append(validate_scene_ids(scene_list))
 
-    return scene_data
+    return scene_data, errors
 
 
-def consume_captions(caption_list: list) -> list:
+def consume_captions(caption_list: list) -> tuple:
     """Iterate over the list of captions in a scene and create bytes pairs
     for the list of caption strings and properties that the strings have.
 
@@ -122,10 +126,11 @@ def consume_captions(caption_list: list) -> list:
     """
 
     caption_bytes = []
+    errors = []
 
     for caption in caption_list:
         if 'caption_id' not in caption:
-            raise ValueError('A caption ID must be set for each caption')
+            errors.append('Every caption must have a caption ID')
 
         foreground_color_and_underline_style_changes = {}
 
@@ -152,9 +157,11 @@ def consume_captions(caption_list: list) -> list:
                 text_underlined = True
             else:
                 text_underlined = False
-            caption_position_bytes = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
+            caption_position_bytes, preamble_errors = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
+            errors.append(preamble_errors)
+
             caption_bytes += caption_position_bytes
 
         if foreground_color_and_underline_style_changes:
@@ -179,16 +186,11 @@ def consume_captions(caption_list: list) -> list:
             string = caption['caption_string']
             caption_bytes.extend(utils.create_byte_pairs_for_caption_string(string))
         else:
-            raise ValueError('You must specify a caption string that is not null.')
+            errors.append(f'Caption with ID: {caption["caption_id"]} must specify a caption string')
 
-        if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
-            text_alignment = caption['text_alignment']['placement']
-            caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
-            caption_bytes = caption_alignment_byte_encoded
+    errors.append(validate_caption_ids(caption_list))
 
-    validate_caption_ids(caption_list)
-
-    return caption_bytes
+    return caption_bytes, errors
 
 
 def validate_scene_ids(scene_list: list):
@@ -197,6 +199,7 @@ def validate_scene_ids(scene_list: list):
     :param scene_list:
     """
     scene_ids = {}
+    conflicting_id_errors = []
     for scene in scene_list:
         for key,value in scene.items():
             if key == "scene_id":
@@ -207,7 +210,9 @@ def validate_scene_ids(scene_list: list):
 
     for id,number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
-            raise ValueError(f'There are duplicate scene IDs {id}.')
+            conflicting_id_errors.append(f'There are duplicate scene IDs {id}.')
+
+    return conflicting_id_errors
 
 
 def validate_caption_ids(caption_list: list):
@@ -216,6 +221,7 @@ def validate_caption_ids(caption_list: list):
     :param caption_list:
     """
     caption_ids = {}
+    conflicting_id_errors = []
     for caption in caption_list:
         for key,value in caption.items():
             if key == "caption_id":
@@ -226,5 +232,7 @@ def validate_caption_ids(caption_list: list):
 
     for id,number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
-            raise ValueError(f'There are duplicate caption IDs {id}.')
+            conflicting_id_errors.append(f'There are duplicate caption IDs {id}.')
+
+    return conflicting_id_errors
 
