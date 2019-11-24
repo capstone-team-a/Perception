@@ -127,3 +127,7 @@ i {
 .arrow-enabled:hover {
   border-color: chartreuse;
 }
+
+.clear-cache-section {
+  margin-top: 3em;
+}

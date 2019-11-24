@@ -71,7 +71,7 @@ module.exports = {
             ]),
           ]),
         ]),
-        m('.row.justify-content-md-center', [
+        m('.row.justify-content-md-center.clear-cache-section', [
           m('.col-med-auto', [
             m('h4', 'Want to clear all existing data?'),
             m('button.clear-cache.btn.btn-danger.d-block.mx-auto', {
