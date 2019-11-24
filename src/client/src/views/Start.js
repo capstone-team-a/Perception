@@ -7,7 +7,10 @@ var inputFile = null
 module.exports = {
   view: function() {
     return m('.start', [
-      m('h1.jumbotron.text-center', 'Welcome to Perception!'),
+      m('.jumbotron.text-center', [
+        m('h1', 'Welcome to Perception!'),
+        m('p.lead', 'Caption generation will never be the same.')
+      ]),
       m('.container', [        
         m('.row', [
           m('.col-sm', [
