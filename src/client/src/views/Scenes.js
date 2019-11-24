@@ -54,7 +54,7 @@ module.exports = {
         m('.row', [
           m('.col-sm', [
             m('h3', 'Create a new scene'),
-            m('button.add-scene', {
+            m('button.add-scene.btn.btn-success', {
               onclick: Scene.addScene
             }, 'New Scene'),            
           ]),
@@ -95,7 +95,7 @@ module.exports = {
                 class: "file-custom",
               })
               ),
-              m('button.load-file[type=submit]', 'Load File'),
+              m('button.load-file.btn.btn-primary[type=submit]', 'Load File'),
             ]),
           ])
         ]),
@@ -123,7 +123,7 @@ module.exports = {
           })),
 
 
-      m('button.delete-all-scenes', {
+      m('button.delete-all-scenes.btn.btn-danger', {
         onclick: function() {
           //ask the user for confirmation.
           if (confirm("Delete all scenes?")) {
