@@ -24,10 +24,19 @@ module.exports = {
       ])
     }
     return m('', [
-      m(m.route.Link, {
-        href: `/scenes/scene-${Scene.currentScene.id}`,
-      }, 'Back To Scene'),
-      m('h1', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
+
+      m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
+        m('ul.navbar-nav.mr-auto', [
+          m('li.nav-item', [
+            m(m.route.Link, {
+              href: `/scenes/scene-${Scene.currentScene.id}`,
+              class: 'nav-link',
+            }, 'Back to Scene'),          
+          ]),
+        ]),        
+      ]),
+      
+      m('h1.jumbotron', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
       formBuilder(schema),
     ])
   }
