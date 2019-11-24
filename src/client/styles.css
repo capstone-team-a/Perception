@@ -48,8 +48,10 @@ a:hover {
 }
 
 .language-input {
-  display: block;
+  /* display: block; */
   margin-bottom: 2em;
+  margin-right: 2em;
+  margin-left: 1em;
 }
 
 form.save-changes-form {
