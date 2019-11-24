@@ -80,15 +80,6 @@ form.save-changes-form > input {
   margin-left: 1em;
 }
 
-.new-start-input {
-  display: block;
-}
-
-.show-stylized-preview {
-  margin-left: 1em;
-}
-
-
 .scene-preview {
   margin-left: 1em;
 }
@@ -121,8 +112,13 @@ i {
 
 .arrow-enabled:hover {
   border-color: chartreuse;
+  cursor: pointer;
 }
 
 .clear-cache-section {
   margin-top: 3em;
+}
+
+.show-stylized-preview:hover {
+  cursor: pointer;
 }

@@ -23,59 +23,88 @@ module.exports = {
 
     const captions = Scene.currentScene.captions
 
-
+    
     return m('', [
-      m(m.route.Link, {
-        href: '/scenes',
-      }, 'Back To Scene List'),
-      m('h1', Scene.currentScene.name ? Scene.currentScene.name : `Scene ${Scene.currentScene.id}`),
-      m('form.save-changes-form', {
-        onsubmit: function(e) {
-          e.preventDefault()
-          Scene.saveName()
-          Scene.saveStart()
-        }
-      }, [
-        m('label', {
-          for: 'new-name-input'
-        }, 'Scene Name'),
-        m("input.new-name-input[type=text]", {
-          id: 'new-name-input',
-          oninput: function (e) {
-            Scene.currentScene.name = e.target.value
-          },
-          value: Scene.currentScene.name ? Scene.currentScene.name : ''
-        }),
-        m('label', {
-          for: 'new-start-input'
-        }, 'Start'),
-        m("input.new-start-input[type=text]", {
-          id: 'new-start-input',
-          oninput: function (e) {
-            Scene.currentScene.start = e.target.value
-          },
-          value: Scene.currentScene.start ? Scene.currentScene.start : ``
-        }),
-        m("button.save-changes-button[type=submit]", 'Save all changes'),
+      m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
+        m('ul.navbar-nav.mr-auto', [
+          m('li.nav-item', [
+            m(m.route.Link, {
+              href: `/scenes`,
+              class: 'nav-link',
+            }, 'Back to Scene List'),          
+          ]),
+        ]),        
       ]),
-      m('button.add-caption', {
-        onclick: function() {
-          Scene.addCaption()
-          Scene.saveCaptions()
-        }
-      }, 'New Caption'),
-      m('label.show-stylized-preview', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
-      m('input#showStylizedPreview-input[type=checkbox]', {
-        oninput: e => {
-          showStylizedPreview = !showStylizedPreview
-        },
-        checked: showStylizedPreview
-      }),
-      m('h2', 'List of captions'),
-      m('.caption-list', captions.map(function(caption, captionIndex) {
+      m('h1.jumbotron', Scene.currentScene.name ? Scene.currentScene.name : `Scene ${Scene.currentScene.id}`),
+      m('.container', [
+        m('.row', [
+          m('.col-sm', [
+            m('h3', 'Edit scene'),
+          ]),
+        ]),
+        m('form.save-changes-form', {
+          onsubmit: function(e) {
+            e.preventDefault()
+            Scene.saveName()
+            Scene.saveStart()
+          }
+        }, [
+          m('.form-group', [
+            m('label', {
+              for: 'new-name-input'
+            }, 'Scene Name'),
+            m("input.new-name-input.form-control[type=text]", {
+              id: 'new-name-input',
+              placeholder: 'Scene ' + Scene.currentScene.id,
+              oninput: function (e) {
+                Scene.currentScene.name = e.target.value
+              },
+              value: Scene.currentScene.name ? Scene.currentScene.name : ''
+            }),
+          ]),
+          m('.form-group', [
+            m('label', {
+              for: 'new-start-input'
+            }, 'Start'),
+            m("input.new-start-input.form-control[type=text]", {
+              id: 'new-start-input',
+              oninput: function (e) {
+                Scene.currentScene.start = e.target.value
+              },
+              value: Scene.currentScene.start ? Scene.currentScene.start : ``
+            }),
+          ]),
+          m("button.save-changes-button.btn.btn-success[type=submit]", 'Save all changes'),
+        ]),
+      ]),
+      
+      m('h2.m-4', 'Caption List'),
+      m('.container', [
+        m('.row', [
+          m('.col-sm', [
+            m('button.add-caption.btn.btn-success', {
+              onclick: function() {
+                Scene.addCaption()
+                Scene.saveCaptions()
+              }
+            }, 'Add New Caption'),            
+          ]),
+          m('.col-sm.show-stylized-preview', [
+            m('input#showStylizedPreview-input.form-check-input[type=checkbox]', {
+              oninput: e => {
+                showStylizedPreview = !showStylizedPreview
+              },
+              checked: showStylizedPreview
+            }),
+            m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+          ]), 
+        ]),
+      ]),
+
+      m('.caption-list.mt-4', captions.map(function(caption, captionIndex) {
         const upArrow = isUpArrowEnabled(captions, caption, captionIndex)
         const downArrow = isDownArrowEnabled(captions, caption, captionIndex)
-        
+          
         return m('div.caption-list-item', {key: caption.id}, [
           m('i.arrow-up', {
             class: upArrow ? 'arrow-enabled' : 'arrow-disabled',
@@ -85,13 +114,11 @@ module.exports = {
             class: downArrow ? 'arrow-enabled' : 'arrow-disabled',
             onclick: downArrow ? e => {Scene.moveCaptionDown(captionIndex)} : () => {},
           }),
-          m('a', {
-            onclick: function() {
-              m.route.set(`/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`)
-            }
+          m(m.route.Link, {
+            href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
           getCaptionPreview(caption),
-          m('button.delete-caption-button', {
+          m('button.delete-caption-button.btn.btn-danger', {
             onclick: function() {
               //ask the user for confirmation.
               if (confirm("Are you sure?")) {

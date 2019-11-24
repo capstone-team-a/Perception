@@ -20,7 +20,7 @@ o.spec('SceneForm', function() {
     var out = mq(SceneForm, {sceneId: 1})
 
     // here we are simply checking if it correctly renders the text we expected
-    o(out.should.contain('List of captions')).equals(true)
+    o(out.should.contain('Caption List')).equals(true)
 
     // make sure that change name form changes the name in the view
     o(out.should.contain("")).equals(true)
