@@ -241,6 +241,3 @@ def validate_start_times(scene_list: list):
         if number_and_ids[0] > 1:
             raise ValueError(f'Scenes with the IDs {number_and_ids[1]} are starting at the same time of {time}.')
 
-with open('scenes.json') as f:
-    consume(f)
-
