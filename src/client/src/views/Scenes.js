@@ -17,7 +17,6 @@ module.exports = {
         m('hr.my-4'),
         m('p', 'Using the bar at the top, export the current scene list to compile to byte pairs, or download the JSON file which can be imported back.')
       ]),
-
       m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
         m('ul.navbar-nav.mr-auto', [
           m('li.nav-item', [
