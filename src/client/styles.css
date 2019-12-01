@@ -48,8 +48,10 @@ a:hover {
 }
 
 .language-input {
-  display: block;
+  /* display: block; */
   margin-bottom: 2em;
+  margin-right: 2em;
+  margin-left: 1em;
 }
 
 form.save-changes-form {
@@ -70,11 +72,6 @@ form.save-changes-form > input {
 .save-changes-button {
 }
 
-
-.download-link {
-  margin-left: 1em;
-}
-
 .caption-preview {
   margin-left: 1em;
 }
@@ -82,15 +79,6 @@ form.save-changes-form > input {
 .delete-caption-button {
   margin-left: 1em;
 }
-
-.new-start-input {
-  display: block;
-}
-
-.show-stylized-preview {
-  margin-left: 1em;
-}
-
 
 .scene-preview {
   margin-left: 1em;
@@ -124,4 +112,13 @@ i {
 
 .arrow-enabled:hover {
   border-color: chartreuse;
+  cursor: pointer;
+}
+
+.clear-cache-section {
+  margin-top: 3em;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
 }
