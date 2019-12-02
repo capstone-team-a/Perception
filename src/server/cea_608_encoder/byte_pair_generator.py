@@ -13,10 +13,11 @@ supported_caption_formats = [
 ]
 
 
-def write_caption_data_to_file(caption_data: dict):
+def write_caption_data_to_file(caption_data: dict, file_name: str):
     """Writes caption data to file as json.
 
        :param caption_data: json with byte pairs
+       :param file_name: used for saving resulting file
     """
     # datetime object containing current date and time
     now = datetime.now()
@@ -24,7 +25,7 @@ def write_caption_data_to_file(caption_data: dict):
     dt_string = now.strftime("%m.%d.%Y_%H-%M-%S")
 
     path = config.path_to_data_folder
-    file_name = f'output_{dt_string}.json'
+    file_name = file_name + f'output_{dt_string}.json'
     try:
         with open(path + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
@@ -50,13 +51,14 @@ def consume(caption_data: dict):
 
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
+    file_name = caption_data['file_name']
 
     caption_data = {
         'type': caption_format,
         'scenes': consume_scenes(scene_data)
     }
 
-    write_caption_data_to_file(caption_data)
+    write_caption_data_to_file(caption_data,file_name)
 
 
 def consume_scenes(scene_list: list) -> list:
