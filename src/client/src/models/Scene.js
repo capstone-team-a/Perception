@@ -84,6 +84,23 @@ const Scene = {
     }
   },
 
+  duplicateScene: function(sceneid) {
+    const scene_list = Scene.getScenes()
+    const scene_index = Scene.findSceneIndex(sceneid)
+    if (scene_index == -1) {
+      alert("Scene Does not Exist")
+    } else {
+      // Using JSON to Deep Copy Object
+      const new_scene = JSON.parse(JSON.stringify(scene_list[scene_index]))
+      new_scene.id = Scene.uniqueSceneId()
+      new_scene.start = null
+      scene_list.push(new_scene)
+      // saves the current list
+      Scene.setScenes(scene_list)
+  	m.route.set('/scenes/scene-' + new_scene.id)
+    }
+  },
+
   // this function will save the current scene to the localStorage
   saveCaptions: function() {
     const list = Scene.getScenes()
@@ -253,17 +270,17 @@ const Scene = {
     }
     return true
   },
-  
+
   fileName: null,
-  
+
   getFileName: function() {
     return JSON.parse(localStorage.getItem('file-name'))
   },
-  
+
   setFileName: function() {
     Scene.fileName = JSON.parse(localStorage.getItem('file-name'))
   },
-  
+
   saveFileName: function() {
     localStorage.setItem('file-name', JSON.stringify(Scene.fileName))
   },

@@ -23,9 +23,9 @@ module.exports = {
             m(m.route.Link, {
               href: `/start`,
               class: 'nav-link',
-            }, 'Back to Start'),          
+            }, 'Back to Start'),
           ]),
-          
+
           m('li.nav-item', [
             m('a.nav-link', {
               download: 'scenes',
@@ -47,18 +47,18 @@ module.exports = {
               }
             }, 'Export'),
           ]),
-        ]),        
+        ]),
       ]),
 
 
-      
+
       m('.container', [
         m('.row', [
           m('.col-sm', [
             m('h3', 'Create a new scene'),
             m('button.add-scene.btn.btn-success', {
               onclick: Scene.addScene
-            }, 'New Scene'),            
+            }, 'New Scene'),
           ]),
           m('.col-sm', [
 	        m('form.save-changes-form', {
@@ -78,7 +78,7 @@ module.exports = {
                 value: Scene.fileName ? Scene.fileName : ''
                }),
              m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save'),
-            ]),            
+            ]),
           ]),
           m('.col-sm', [
             m('form.append-file-form', {
@@ -133,6 +133,11 @@ module.exports = {
               }, scene.name ? scene.name : `Scene ${scene.id}`),
               getScenePreview(scene),
               // when maping the scenes the delete button is included.
+                m('button.duplicate-scene-button.btn.btn-success', {
+                onclick: function() {
+                  Scene.duplicateScene(scene.id)
+                }
+              }, 'Duplicate'),
                 m('button.delete-scene-button.btn.btn-danger', {
                 onclick: function() {
                   //ask the user for confirmation.
