@@ -6,15 +6,17 @@ const m = require('mithril')
 const Scene = require('../models/Scene')
 
 module.exports = {
+  oninit: function(vnode) {
+    Scene.setFileName()
+  },
   view: function() {
     return m('.scenes', [
       m('.jumbotron', [
-        m('h1', 'Scenes'),
+	    m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
         m('p.lead', 'Scenes contain lists of captions. Create a new scene or load existing scenes from a file.'),
         m('hr.my-4'),
         m('p', 'Using the bar at the top, export the current scene list to compile to byte pairs, or download the JSON file which can be imported back.')
       ]),
-
       m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
         m('ul.navbar-nav.mr-auto', [
           m('li.nav-item', [
@@ -57,6 +59,26 @@ module.exports = {
             m('button.add-scene.btn.btn-success', {
               onclick: Scene.addScene
             }, 'New Scene'),            
+          ]),
+          m('.col-sm', [
+	        m('form.save-changes-form', {
+              onsubmit: function(e) {
+                e.preventDefault()
+      		  Scene.saveFileName()
+              }
+            }, [
+              m('label', {
+                for: 'file-name-input'
+               }, 'File Name'),
+              m("input.file-name-input[type=text]", {
+                id: 'file-name-input',
+                oninput: function (e) {
+                  Scene.fileName = e.target.value
+                },
+                value: Scene.fileName ? Scene.fileName : ''
+               }),
+             m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save'),
+            ]),            
           ]),
           m('.col-sm', [
             m('form.append-file-form', {
