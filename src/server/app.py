@@ -27,10 +27,6 @@ def submit():
     caption_data = request.get_json()
 
     try:
-        #now = datetime.now()
-        #date_time = now.strftime("%m.%d.%Y_%H-%M-%S")
-        #file_name = f'output_{date_time}.json'
-
         file_name = caption_data["file_name"] + '.json'
 
         with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
