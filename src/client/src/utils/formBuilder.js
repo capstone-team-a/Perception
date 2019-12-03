@@ -24,6 +24,7 @@ function formBuilder(schema) {
       id: `${item.attr}-input`,
       oninput: e => {
         Scene.currentCaption[item.attr] = item.type === 'checkbox' ? e.target.checked : e.target.value
+		Scene.Dirty = true
       },
       value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : '',
       checked: Scene.currentCaption[item.attr]
@@ -65,6 +66,7 @@ function formBuilder(schema) {
             Scene.saveCaptionAttr(item.attr) 
           }
         })
+		Scene.Dirty = false
       }
     }, [
       ...formItems,

@@ -4,6 +4,8 @@ const m = require('mithril')
 // Basically, this is our key "JSON object"
 // We use localStorage for persistence
 const Scene = {
+  Dirty: false,
+  CurrentArea: null,
   initialize: function() {
     // before initializing, make sure there isn't already data
     if (!localStorage.getItem('scene-list')) {
@@ -239,6 +241,25 @@ const Scene = {
       if(typeof obj !== "undefined")
         return obj
     }
+  },
+  isCleanCheck: function() {
+    if(Scene.Dirty && confirm('You have unsaved data that will be lost, would you like to save before continuing?')) {
+	  switch (Scene.CurrentArea) {
+		  case 'scene':
+	        Scene.saveName()
+	        Scene.saveStart()
+		  break
+		  case 'caption':
+	        Scene.saveCaptionAttr()
+		  break
+		  case 'scenes':
+	        Scene.saveFileName()
+		  break
+		  default:
+		  break
+	  }
+	}
+	Scene.Dirty = false
   },
   isSceneDatainUse: function() {
     if (Number(Scene.getScenes().length) !== 0) {

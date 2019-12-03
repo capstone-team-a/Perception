@@ -64,7 +64,8 @@ module.exports = {
 	        m('form.save-changes-form', {
               onsubmit: function(e) {
                 e.preventDefault()
-      		  Scene.saveFileName()
+      		    Scene.saveFileName()
+		        Scene.Dirty = false
               }
             }, [
               m('label', {
@@ -74,6 +75,7 @@ module.exports = {
                 id: 'file-name-input',
                 oninput: function (e) {
                   Scene.fileName = e.target.value
+		          Scene.Dirty = true
                 },
                 value: Scene.fileName ? Scene.fileName : ''
                }),
