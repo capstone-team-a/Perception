@@ -12,6 +12,10 @@ module.exports = {
     // showStylizedPreview = false
   },
   view: function(vnode) {
+    if (Scene.reloadScene) {
+      document.location.reload()
+    }
+
     if(!Scene.currentScene) {
       return m('', [
         m(m.route.Link, {

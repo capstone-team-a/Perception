@@ -84,6 +84,8 @@ const Scene = {
     }
   },
 
+  reloadScene: false,
+
   duplicateScene: function(sceneid) {
     const scene_list = Scene.getScenes()
     const scene_index = Scene.findSceneIndex(sceneid)
@@ -97,6 +99,7 @@ const Scene = {
       scene_list.push(new_scene)
       // saves the current list
       Scene.setScenes(scene_list)
+      Scene.reloadScene = true
   	m.route.set('/scenes/scene-' + new_scene.id)
     }
   },
