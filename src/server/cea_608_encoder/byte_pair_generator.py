@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import datetime
 
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
@@ -32,6 +31,7 @@ def consume(caption_data: dict, time_stamp: str):
     there are scenes to create byte pairs for.
 
     :param caption_data: the full JSON blob from the front end
+    :param time_stamp: the date time the request is received
     """
     if 'caption_format' not in caption_data:
         raise ValueError('You must specify a caption format')
@@ -52,7 +52,7 @@ def consume(caption_data: dict, time_stamp: str):
         'scenes': consume_scenes(scene_data)
     }
 
-    write_caption_data_to_file(caption_data,file_name)
+    write_caption_data_to_file(caption_data, file_name)
 
 
 def consume_scenes(scene_list: list) -> list:
