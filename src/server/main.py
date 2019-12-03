@@ -22,7 +22,7 @@ def main():
     try:
         now = datetime.now()
         time_stamp = now.strftime("%m.%d.%Y_%H-%M-%S")
-        file_name = args.f + f'output_{time_stamp}.json'
+        file_name = args.f - '.json' + f'output_{time_stamp}.json'
         with open(args.file_path, 'r') as file:
             caption_data = json.load(file)
             consume(caption_data,file_name)

@@ -37,6 +37,12 @@ def submit():
         return Response(json.dumps({'Success': 'ok'}),
                         status=200,
                         mimetype='application/json')
+    except KeyError as err:
+        error_message = {'Error': 'No filename provided: {err}'}
+        app.logger.error(error_message)
+        return Response(json.dumps(error_message),
+                        status=500,
+                        mimetype='application/json')
     except IOError as err:
         error_message = {'Error': f'Writing JSON to file failed: {err}'}
         app.logger.error(error_message)
