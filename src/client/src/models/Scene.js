@@ -368,10 +368,10 @@ const Scene = {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
-		try {
+		    try {
           if(Scene.loadSceneListFromFile(JSON.parse(e.target.result))) {
-	        m.route.set('/scenes')
-		  }
+	          m.route.set('/scenes')
+		      }
         } catch (error) {
           alert("JSON file was malformed.\n" + error)
         }
@@ -386,21 +386,35 @@ const Scene = {
   },
 
   loadSceneListFromFile: function(loadedData) {
-	localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
-	Scene.setFileName()
-    if (loadedData['caption_format'] === "CEA-608") {
+	  localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
+    Scene.setFileName()
+    var isValidCaptionFormat = Scene.checkCaptionFormatOfLoadedFile(loadedData)
+    if(isValidCaptionFormat === true) {
       var sceneList = []
       for (var i = 0; i < loadedData['scene_list'].length; i++) {
         newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i])
         sceneList.push(newScene)
       }
       Scene.setScenes(sceneList)
-	  Scene.setInputFormat(loadedData['caption_format'])
+	    Scene.setInputFormat(loadedData['caption_format'])
       return true
     } else {
-      alert("The loaded Caption Format is not supported.")
       return false
-	}
+	  }
+  },
+  checkCaptionFormatOfLoadedFile: function(loadedData) {
+    if(loadedData['caption_format'] === "CEA-608") {
+      return true
+    } else if (!loadedData.hasOwnProperty('caption_format')) {
+      alert("The file doesn't have a Caption Format field. Please specify a caption format in your file before proceeding.")
+      return false
+    } else if(loadedData['caption_format'] === "" || loadedData['caption_format'] === null) {
+      alert("Caption format is not specified. Please specify a caption format in your file before proceeding.")
+      return false
+    } else {
+      alert("The file contains unsupported caption format.")
+      return false
+    }
   },
 
   load608SceneFromFile: function(loadedScene, format) {
