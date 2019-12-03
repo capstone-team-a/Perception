@@ -28,14 +28,20 @@ def submit():
 
     try:
         now = datetime.now()
-        date_time = now.strftime("%m.%d.%Y_%H-%M-%S")
-        file_name = f'output_{date_time}.json'
+        time_stamp = now.strftime("%m.%d.%Y_%H-%M-%S")
+        file_name = caption_data["file_name"] + f'_output_{time_stamp}.json'
 
         with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
-        consume(caption_data)
+        consume(caption_data,time_stamp)
         return Response(json.dumps({'Success': 'ok'}),
                         status=200,
+                        mimetype='application/json')
+    except KeyError as err:
+        error_message = {'Error': 'No filename provided: {err}'}
+        app.logger.error(error_message)
+        return Response(json.dumps(error_message),
+                        status=500,
                         mimetype='application/json')
     except IOError as err:
         error_message = {'Error': f'Writing JSON to file failed: {err}'}
