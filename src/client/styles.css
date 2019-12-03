@@ -43,8 +43,12 @@ a:hover {
   cursor: pointer;
 }
 
-.delete-scene-button {
+.duplicate-scene-button {
   margin-left: 2em;
+}
+
+.delete-scene-button {
+  margin-left: 1em;
 }
 
 .save-name-form {
