@@ -29,7 +29,7 @@ def submit():
     try:
         now = datetime.now()
         time_stamp = now.strftime("%m.%d.%Y_%H-%M-%S")
-        file_name = caption_data["file_name"] + f'output_{time_stamp}.json'
+        file_name = caption_data["file_name"] + f'_output_{time_stamp}.json'
 
         with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)

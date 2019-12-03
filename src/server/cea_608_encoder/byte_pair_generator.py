@@ -45,7 +45,7 @@ def consume(caption_data: dict, time_stamp: str):
 
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
-    file_name = caption_data['file_name'] + f'output_{time_stamp}.json'
+    file_name = caption_data['file_name'] + f'_output_{time_stamp}.json'
 
     caption_data = {
         'type': caption_format,
