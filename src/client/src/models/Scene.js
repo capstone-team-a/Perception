@@ -423,6 +423,10 @@ const Scene = {
 	var start = ''
     var captionList = []
 
+  if (!(loadedScene['scene_id'])){
+    throw "Each scene must have a Scene ID."
+  }
+
 	// initializing each caption by iterating throught the caption list
     for (var i = 0; i < loadedScene['caption_list'].length; i++) {
       newCaption = Scene.load608CaptionFromFile(loadedScene['caption_list'][i])
@@ -436,6 +440,7 @@ const Scene = {
 	if (loadedScene['start']) {
       start = loadedScene['start'].time.toString()
 	}
+
     return {
       id: loadedScene['scene_id'],
       name: scene_name,
@@ -456,6 +461,11 @@ const Scene = {
 	var transparency = ''
 
 	// checking if each attribute needed was passed in.
+    
+  if (!(loadedCaption['caption_id'])){
+    throw "All captions must have a Caption ID."
+  }
+
 	if (loadedCaption['caption_name']) {
       caption_name = loadedCaption['caption_name']
 	}
