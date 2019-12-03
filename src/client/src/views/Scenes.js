@@ -12,7 +12,7 @@ module.exports = {
   view: function() {
     return m('.scenes', [
       m('.jumbotron', [
-	    m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
+        m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
         m('p.lead', 'Scenes contain lists of captions. Create a new scene or load existing scenes from a file.'),
         m('hr.my-4'),
         m('p', 'Using the bar at the top, export the current scene list to compile to byte pairs, or download the JSON file which can be imported back.')
@@ -52,35 +52,36 @@ module.exports = {
 
 
       
-      m('.container', [
+      m('.container-fluid.scene-utility', [
         m('.row', [
-          m('.col-sm', [
+          m('.col-sm-4', [
             m('h3', 'Create a new scene'),
             m('button.add-scene.btn.btn-success', {
               onclick: Scene.addScene
             }, 'New Scene'),            
           ]),
-          m('.col-sm', [
+          m('.col-sm-4', [
 	        m('form.save-changes-form', {
               onsubmit: function(e) {
                 e.preventDefault()
       		  Scene.saveFileName()
               }
             }, [
+              m('h3', 'File Name'),
               m('label', {
                 for: 'file-name-input'
-               }, 'File Name'),
-              m("input.file-name-input[type=text]", {
+               }, ''),
+              m("input.file-name-input.form-control.col-sm-8[type=text]", {
                 id: 'file-name-input',
                 oninput: function (e) {
                   Scene.fileName = e.target.value
                 },
                 value: Scene.fileName ? Scene.fileName : ''
                }),
-             m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save'),
+              m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save')
             ]),            
           ]),
-          m('.col-sm', [
+          m('.col-sm-4', [
             m('form.append-file-form', {
               onsubmit: function(e) {
                 e.preventDefault()
