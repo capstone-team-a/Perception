@@ -229,6 +229,39 @@ const Scene = {
 
   },
 
+  reloadCaption: false,
+
+  duplicateCaption: function(captionId) {
+    const indexToCopy = Scene.currentScene.captions.findIndex(function(caption) {
+      return caption.id === captionId
+    })
+
+    if (captionId === -1) {
+      console.log('Cannot find the caption you are trying to delete.')
+      return
+    }
+
+    const list = Scene.getScenes()
+    const captionFound = list[Scene.findSceneIndex(Scene.currentScene.id)].captions[indexToCopy]
+    const captionToCopy = JSON.parse(JSON.stringify(captionFound))
+
+
+    var caption_max_id = 0
+    // Finds the max caption id in the list
+    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+      if (caption_max_id < Scene.currentScene.captions[i].id) {
+        caption_max_id = Scene.currentScene.captions[i].id
+      }
+    }
+    captionToCopy.id = caption_max_id + 1
+    // Adds a new caption
+    Scene.currentScene.captions.push(captionToCopy)
+    Scene.reloadCaption = true
+    console.log("Hi")
+  Scene.saveCaptions()
+  m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + captionToCopy.id)
+  },
+
   setInputFormat: function(format) {
     localStorage.setItem('input-format', JSON.stringify(format))
   },

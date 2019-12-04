@@ -130,6 +130,11 @@ module.exports = {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
           getCaptionPreview(caption),
+          m('button.duplicate-caption-button.btn.btn-success', {
+          onclick: function() {
+            Scene.duplicateCaption(caption.id)
+          }
+        }, 'Duplicate'),
           m('button.delete-caption-button.btn.btn-danger', {
             onclick: function() {
               //ask the user for confirmation.
