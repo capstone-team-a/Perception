@@ -257,8 +257,6 @@ const Scene = {
     // Adds a new caption
     Scene.currentScene.captions.push(captionToCopy)
     Scene.reloadCaption = true
-    console.log("Hi")
-  Scene.saveCaptions()
   m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + captionToCopy.id)
   },
 
