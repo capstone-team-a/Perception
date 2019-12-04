@@ -49,7 +49,7 @@ module.exports = {
           ]),
         ]),
       ]),
-      
+
       m('.container-fluid.scene-utility', [
         m('.row', [
           m('.col-sm-4', [
@@ -132,7 +132,7 @@ module.exports = {
               }, scene.name ? scene.name : `Scene ${scene.id}`),
               getScenePreview(scene),
               // when maping the scenes the delete button is included.
-                m('button.duplicate-scene-button.btn.btn-success', {
+                m('button.duplicate-scene-button.btn.btn-primary', {
                 onclick: function() {
                   Scene.duplicateScene(scene.id)
                 }
