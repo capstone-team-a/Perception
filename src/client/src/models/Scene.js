@@ -237,14 +237,14 @@ const Scene = {
     })
 
     if (captionId === -1) {
-      console.log('Cannot find the caption you are trying to delete.')
+      console.log('Cannot find the caption you are trying to duplicate.')
       return
     }
 
     const list = Scene.getScenes()
-    const captionFound = list[Scene.findSceneIndex(Scene.currentScene.id)].captions[indexToCopy]
+    const sceneId = Scene.findSceneIndex(Scene.currentScene.id)
+    const captionFound = list[sceneId].captions[indexToCopy]
     const captionToCopy = JSON.parse(JSON.stringify(captionFound))
-
 
     var caption_max_id = 0
     // Finds the max caption id in the list
@@ -256,6 +256,9 @@ const Scene = {
     captionToCopy.id = caption_max_id + 1
     // Adds a new caption
     Scene.currentScene.captions.push(captionToCopy)
+    list[sceneId].captions.push(captionToCopy)
+    // saves the current list
+    Scene.setScenes(list)
     Scene.reloadCaption = true
   m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + captionToCopy.id)
   },
