@@ -167,5 +167,10 @@ module.exports = {
 }
 
 function getScenePreview(scene) {
-  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : 'Start: -')
+	return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'ID:'),
+    m('span.caption-preview', scene.id),
+    m('span', {style: 'margin-left: 1em;'}, 'Start Frame:'),
+    m('span.caption-preview', scene.start ? scene.start: '-'),
+  ])
 }

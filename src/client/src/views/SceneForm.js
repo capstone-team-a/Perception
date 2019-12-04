@@ -77,7 +77,7 @@ module.exports = {
           m('.form-group', [
             m('label', {
               for: 'new-start-input'
-            }, 'Start'),
+            }, 'Start Frame'),
             m("input.new-start-input.form-control[type=text]", {
               id: 'new-start-input',
               oninput: function (e) {
@@ -189,6 +189,8 @@ text-decoration: ${caption.underline ? 'underline' : ''};
 `
 
   return m('span', [
+    m('span', {style: 'margin-left: 1em;'}, 'ID:'),
+    m('span.caption-preview', caption.id),
     m('span', {style: 'margin-left: 1em;'}, 'Row:'),
     m('span.caption-preview', caption.row ? caption.row: '-'),
     m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
