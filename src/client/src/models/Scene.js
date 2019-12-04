@@ -244,13 +244,13 @@ const Scene = {
   },
   isCleanCheck: function() {
     if(Scene.Dirty && confirm('You have unsaved data that will be lost, would you like to save before continuing?')) {
-	  switch (Scene.CurrentArea) {
+	    switch (Scene.CurrentArea) {
 		  case 'scene':
 	        Scene.saveName()
 	        Scene.saveStart()
 		  break
 		  case 'caption':
-	        Scene.saveCaptionAttr()
+	        Scene.saveCaptions()
 		  break
 		  case 'scenes':
 	        Scene.saveFileName()
