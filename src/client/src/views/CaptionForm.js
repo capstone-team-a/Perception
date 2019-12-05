@@ -39,7 +39,7 @@ module.exports = {
           ]),
 
           m('li.nav-item', [
-              m('button.btn.my-2.my-sm-0.btn-outline-success', {
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
                 onclick: function() {
                   Scene.duplicateCaption(Scene.currentCaption.id)
                 }

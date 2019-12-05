@@ -151,3 +151,11 @@ i {
 .delete-all-scenes {
   margin-left: 1.5rem;
 }
+
+.scene-preview li span {
+  margin-right: 1em;
+}
+
+.left-1 {
+  margin-left: 1em;
+}

@@ -2,6 +2,7 @@
 
 const m = require('mithril')
 const Scene = require('../models/Scene')
+const getCaptionPreview = require('../utils/captionPreview')
 
 let showStylizedPreview = false
 
@@ -39,7 +40,7 @@ module.exports = {
 
 
           m('li.nav-item', [
-              m('button.btn.my-2.my-sm-0.btn-outline-success', {
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
                 onclick: function() {
                   Scene.duplicateScene(Scene.currentScene.id)
                 }
@@ -59,6 +60,7 @@ module.exports = {
             e.preventDefault()
             Scene.saveName()
             Scene.saveStart()
+		    Scene.Dirty = false
           }
         }, [
           m('.form-group', [
@@ -70,6 +72,7 @@ module.exports = {
               placeholder: 'Scene ' + Scene.currentScene.id,
               oninput: function (e) {
                 Scene.currentScene.name = e.target.value
+		        Scene.Dirty = true
               },
               value: Scene.currentScene.name ? Scene.currentScene.name : ''
             }),
@@ -82,6 +85,7 @@ module.exports = {
               id: 'new-start-input',
               oninput: function (e) {
                 Scene.currentScene.start = e.target.value
+		        Scene.Dirty = true
               },
               value: Scene.currentScene.start ? Scene.currentScene.start : ``
             }),
@@ -129,8 +133,8 @@ module.exports = {
           m(m.route.Link, {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
-          getCaptionPreview(caption),
-          m('button.duplicate-caption-button.btn.btn-success', {
+          getCaptionPreview(caption, showStylizedPreview),
+          m('button.duplicate-caption-button.btn.btn-primary', {
           onclick: function() {
             Scene.duplicateCaption(caption.id)
           }

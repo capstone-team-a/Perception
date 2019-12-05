@@ -6,6 +6,7 @@ var inputFile = null
 
 module.exports = {
   view: function() {
+	Scene.CurrentArea = 'start'
     return m('.start', [
       m('.jumbotron.text-center', [
         m('h1', 'Welcome to Perception!'),

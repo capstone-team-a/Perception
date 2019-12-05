@@ -4,6 +4,8 @@ const m = require('mithril')
 // Basically, this is our key "JSON object"
 // We use localStorage for persistence
 const Scene = {
+  Dirty: false,
+  CurrentArea: null,
   initialize: function() {
     // before initializing, make sure there isn't already data
     if (!localStorage.getItem('scene-list')) {
@@ -237,14 +239,14 @@ const Scene = {
     })
 
     if (captionId === -1) {
-      console.log('Cannot find the caption you are trying to delete.')
+      console.log('Cannot find the caption you are trying to duplicate.')
       return
     }
 
     const list = Scene.getScenes()
-    const captionFound = list[Scene.findSceneIndex(Scene.currentScene.id)].captions[indexToCopy]
+    const sceneId = Scene.findSceneIndex(Scene.currentScene.id)
+    const captionFound = list[sceneId].captions[indexToCopy]
     const captionToCopy = JSON.parse(JSON.stringify(captionFound))
-
 
     var caption_max_id = 0
     // Finds the max caption id in the list
@@ -256,6 +258,9 @@ const Scene = {
     captionToCopy.id = caption_max_id + 1
     // Adds a new caption
     Scene.currentScene.captions.push(captionToCopy)
+    list[sceneId].captions.push(captionToCopy)
+    // saves the current list
+    Scene.setScenes(list)
     Scene.reloadCaption = true
   m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + captionToCopy.id)
   },
@@ -290,6 +295,25 @@ const Scene = {
       if(typeof obj !== "undefined")
         return obj
     }
+  },
+  isCleanCheck: function() {
+    if(Scene.Dirty && confirm('You have unsaved data that will be lost, would you like to save before continuing?')) {
+	    switch (Scene.CurrentArea) {
+		  case 'scene':
+	        Scene.saveName()
+	        Scene.saveStart()
+		  break
+		  case 'caption':
+	        Scene.saveCaptions()
+		  break
+		  case 'scenes':
+	        Scene.saveFileName()
+		  break
+		  default:
+		  break
+	  }
+	}
+	Scene.Dirty = false
   },
   isSceneDatainUse: function() {
     if (Number(Scene.getScenes().length) !== 0) {
