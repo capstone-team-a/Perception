@@ -2,6 +2,7 @@
 
 const m = require('mithril')
 const Scene = require('../models/Scene')
+const getCaptionPreview = require('../utils/captionPreview')
 
 let showStylizedPreview = false
 
@@ -129,7 +130,7 @@ module.exports = {
           m(m.route.Link, {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
-          getCaptionPreview(caption),
+          getCaptionPreview(caption, showStylizedPreview),
           m('button.duplicate-caption-button.btn.btn-primary', {
           onclick: function() {
             Scene.duplicateCaption(caption.id)
@@ -175,25 +176,3 @@ function isDownArrowEnabled(captions, caption, index) {
   return captionBelow ? captionBelow.row === caption.row : false
 }
 
-function getCaptionPreview(caption) {
-  const foreground = caption.foreground_color
-        ? caption.foreground_color === 'Italic White'
-        ? 'white' : caption.foreground_color.toLowerCase()
-        : 'black'
-
-  const css =
-`color: ${foreground};
-background-color: ${caption.background_color ? caption.background_color.toLowerCase() : ''};
-font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
-text-decoration: ${caption.underline ? 'underline' : ''};
-`
-
-  return m('span', [
-    m('span', {style: 'margin-left: 1em;'}, 'Row:'),
-    m('span.caption-preview', caption.row ? caption.row: '-'),
-    m('span', {style: 'margin-left: 1em;'}, 'Caption String Preview:'),
-    m('span.caption-preview', {
-      style: (caption.text && showStylizedPreview) ? css : null,
-    }, caption.text ? caption.text : '-')
-  ])
-}

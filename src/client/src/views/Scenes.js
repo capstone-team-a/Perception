@@ -4,10 +4,16 @@
 const m = require('mithril')
 
 const Scene = require('../models/Scene')
+const getCaptionPreview = require('../utils/captionPreview')
+
+let showStylizedPreview = false
+let expandAll = false
 
 module.exports = {
   oninit: function(vnode) {
     Scene.setFileName()
+    showStylizedPreview = false
+    expandAll = false
   },
   view: function() {
     return m('.scenes', [
@@ -52,13 +58,7 @@ module.exports = {
 
       m('.container-fluid.scene-utility', [
         m('.row', [
-          m('.col-sm-4', [
-            m('h3', 'Create a new scene'),
-            m('button.add-scene.btn.btn-success', {
-              onclick: Scene.addScene
-            }, 'New Scene'),
-          ]),
-          m('.col-sm-4', [
+          m('.col-sm', [
 	        m('form.save-changes-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -79,7 +79,7 @@ module.exports = {
               m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save')
             ]),
           ]),
-          m('.col-sm-4', [
+          m('.col-sm', [
             m('form.append-file-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -122,15 +122,45 @@ module.exports = {
         ]),
       ]),
 
-
-        m('h2.m-4', 'List of scenes'),
-        m('.scene-list', Scene.getScenes()
+      m('h2.m-4', 'Scene List'),
+      m('.container', [
+        m('.row', [
+          m('.col-sm-4', [
+            m('button.add-scene.btn.btn-success', {
+              onclick: Scene.addScene
+            }, 'Add New Scene'),
+          ]),
+          m('.col-sm.show-stylized-preview', [
+            m('input#showStylizedPreview-input.form-check-input[type=checkbox]', {
+              oninput: e => {
+                showStylizedPreview = !showStylizedPreview
+              },
+              checked: showStylizedPreview
+            }),
+            m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+          ]),
+          m('.col-sm.expand-all', [
+            m('button.btn.btn-primary', {
+              onclick: e => {
+                expandAll = !expandAll
+              },
+            }, 'Expand/Collapse All'),
+          ]),
+        ]),
+      ]),
+        m('.scene-list.mt-4', Scene.getScenes()
           .map(function(scene) {
             return m('div.scene-list-item', {key: scene.id}, [
               m(m.route.Link, {
                 href: `/scenes/scene-${scene.id}`,
               }, scene.name ? scene.name : `Scene ${scene.id}`),
-              getScenePreview(scene),
+              m('span.left-1', scene.start ? 'Start: ' + scene.start : 'Start: -'),
+              m('span.left-1', `number of captions: ${scene.captions.length}`),
+              m('button.btn.btn-outline-primary.left-1', {
+                'data-target': `#collapse-${scene.id}`,
+                'data-toggle': 'collapse',
+              }, 'show/hide captions'),
+              getSceneCaptionsPreview(scene),
               // when maping the scenes the delete button is included.
                 m('button.duplicate-scene-button.btn.btn-primary', {
                 onclick: function() {
@@ -166,6 +196,23 @@ module.exports = {
   }
 }
 
-function getScenePreview(scene) {
-  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : 'Start: -')
+function getSceneCaptionsPreview(scene) {
+  return m(`div.scene-preview.collapse${expandAll ? '.show' : ''}#collapse-${scene.id}`, [
+    m('div', 'Captions:'),
+    m('ul', [
+      scene.captions.map(caption => {
+        return m('li', [
+          m(m.route.Link, {
+            href: `/scenes/scene-${scene.id}/caption-${caption.id}`,
+            style: 'margin-right: 1em',
+          }, caption.name ? caption.name : 'caption ' + caption.id),
+          m('span', `id: ${caption.id}`),
+          m('span', `row: ${caption.row ? caption.row : 'none'}`),
+          m('span', `col: ${caption.column ? caption.column : 'none'}`),
+          m('span', `text-preview:`),
+          getCaptionPreview(caption, showStylizedPreview),
+        ])
+      })
+    ])
+  ])
 }
