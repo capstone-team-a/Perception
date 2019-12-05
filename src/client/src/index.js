@@ -19,18 +19,23 @@ const CaptionForm = require('./views/CaptionForm')
 m.route(document.body, '/start', {
   '/start': {
     onmatch: function() {
+	  Scene.isCleanCheck()
       Scene.isSceneDatainUse()
       return Start
     }
   },
   '/scenes': {
     onmatch: function() {
+	  Scene.isCleanCheck()
+	  Scene.CurrentArea = 'scenes'
       return Scene.isCaptionFormatSet(Scenes)
     }
   },
   '/scenes/scene-:sceneId': {
     onmatch: function() {
       Scene.isCaptionFormatSet()
+	  Scene.isCleanCheck()
+	  Scene.CurrentArea = 'scene'
     },
     render: function(vnode) {
       return m(SceneForm, vnode.attrs)
@@ -39,6 +44,8 @@ m.route(document.body, '/start', {
   '/scenes/scene-:sceneId/caption-:captionId': {
     onmatch: function() {
       Scene.isCaptionFormatSet()
+	  Scene.isCleanCheck()
+	  Scene.CurrentArea = 'caption'
     },
     render: function(vnode) {
       return m(CaptionForm, vnode.attrs)

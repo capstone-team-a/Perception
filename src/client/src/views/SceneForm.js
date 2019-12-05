@@ -60,6 +60,7 @@ module.exports = {
             e.preventDefault()
             Scene.saveName()
             Scene.saveStart()
+		    Scene.Dirty = false
           }
         }, [
           m('.form-group', [
@@ -71,6 +72,7 @@ module.exports = {
               placeholder: 'Scene ' + Scene.currentScene.id,
               oninput: function (e) {
                 Scene.currentScene.name = e.target.value
+		        Scene.Dirty = true
               },
               value: Scene.currentScene.name ? Scene.currentScene.name : ''
             }),
@@ -83,6 +85,7 @@ module.exports = {
               id: 'new-start-input',
               oninput: function (e) {
                 Scene.currentScene.start = e.target.value
+		        Scene.Dirty = true
               },
               value: Scene.currentScene.start ? Scene.currentScene.start : ``
             }),
