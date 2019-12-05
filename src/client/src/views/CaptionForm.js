@@ -11,10 +11,14 @@ module.exports = {
     Scene.setCurrentScene(vnode.attrs.sceneId)
 
     if (Scene.currentScene) {
-      Scene.setCurrentCaption(vnode.attrs.captionId)      
+      Scene.setCurrentCaption(vnode.attrs.captionId)
     }
   },
   view: function(vnode) {
+    if (Scene.reloadCaption) {
+      document.location.reload()
+    }
+
     if(!Scene.currentCaption) {
       return m('', [
         m(m.route.Link, {
@@ -31,11 +35,19 @@ module.exports = {
             m(m.route.Link, {
               href: `/scenes/scene-${Scene.currentScene.id}`,
               class: 'nav-link',
-            }, 'Back to Scene'),          
+            }, 'Back to Scene'),
           ]),
-        ]),        
+
+          m('li.nav-item', [
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
+                onclick: function() {
+                  Scene.duplicateCaption(Scene.currentCaption.id)
+                }
+              }, 'Duplicate'),
+            ]),
+        ]),
       ]),
-      
+
       m('h1.jumbotron', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
       formBuilder(schema),
     ])

@@ -12,6 +12,10 @@ module.exports = {
     // showStylizedPreview = false
   },
   view: function(vnode) {
+    if (Scene.reloadScene) {
+      document.location.reload()
+    }
+
     if(!Scene.currentScene) {
       return m('', [
         m(m.route.Link, {
@@ -23,7 +27,6 @@ module.exports = {
 
     const captions = Scene.currentScene.captions
 
-    
     return m('', [
       m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
         m('ul.navbar-nav.mr-auto', [
@@ -31,9 +34,18 @@ module.exports = {
             m(m.route.Link, {
               href: `/scenes`,
               class: 'nav-link',
-            }, 'Back to Scene List'),          
+            }, 'Back to Scene List'),
           ]),
-        ]),        
+
+
+          m('li.nav-item', [
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
+                onclick: function() {
+                  Scene.duplicateScene(Scene.currentScene.id)
+                }
+              }, 'Duplicate'),
+            ]),
+        ]),
       ]),
       m('h1.jumbotron', Scene.currentScene.name ? Scene.currentScene.name : `Scene ${Scene.currentScene.id}`),
       m('.container', [
@@ -80,7 +92,7 @@ module.exports = {
           m("button.save-changes-button.btn.btn-success[type=submit]", 'Save all changes'),
         ]),
       ]),
-      
+
       m('h2.m-4', 'Caption List'),
       m('.container', [
         m('.row', [
@@ -90,7 +102,7 @@ module.exports = {
                 Scene.addCaption()
                 Scene.saveCaptions()
               }
-            }, 'Add New Caption'),            
+            }, 'Add New Caption'),
           ]),
           m('.col-sm.show-stylized-preview', [
             m('input#showStylizedPreview-input.form-check-input[type=checkbox]', {
@@ -100,14 +112,14 @@ module.exports = {
               checked: showStylizedPreview
             }),
             m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
-          ]), 
+          ]),
         ]),
       ]),
 
       m('.caption-list.mt-4', captions.map(function(caption, captionIndex) {
         const upArrow = isUpArrowEnabled(captions, caption, captionIndex)
         const downArrow = isDownArrowEnabled(captions, caption, captionIndex)
-          
+
         return m('div.caption-list-item', {key: caption.id}, [
           m('i.arrow-up', {
             class: upArrow ? 'arrow-enabled' : 'arrow-disabled',
@@ -121,6 +133,11 @@ module.exports = {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
           getCaptionPreview(caption),
+          m('button.duplicate-caption-button.btn.btn-primary', {
+          onclick: function() {
+            Scene.duplicateCaption(caption.id)
+          }
+        }, 'Duplicate'),
           m('button.delete-caption-button.btn.btn-danger', {
             onclick: function() {
               //ask the user for confirmation.
@@ -143,7 +160,7 @@ function isUpArrowEnabled(captions, caption, index) {
 
     return captions[index - 1]
   }
-  
+
   const captionAbove = getCaptionAbove(captions, index)
   return captionAbove ? captionAbove.row === caption.row : false
 }
@@ -156,7 +173,7 @@ function isDownArrowEnabled(captions, caption, index) {
 
     return captions[index + 1]
   }
-  
+
   const captionBelow = getCaptionBelow(captions, index)
   return captionBelow ? captionBelow.row === caption.row : false
 }
@@ -173,7 +190,7 @@ background-color: ${caption.background_color ? caption.background_color.toLowerC
 font-style: ${caption.foreground_color === 'Italic White' ? 'italic' : ''};
 text-decoration: ${caption.underline ? 'underline' : ''};
 `
-  
+
   return m('span', [
     m('span', {style: 'margin-left: 1em;'}, 'Row:'),
     m('span.caption-preview', caption.row ? caption.row: '-'),
@@ -181,5 +198,5 @@ text-decoration: ${caption.underline ? 'underline' : ''};
     m('span.caption-preview', {
       style: (caption.text && showStylizedPreview) ? css : null,
     }, caption.text ? caption.text : '-')
-  ])  
+  ])
 }

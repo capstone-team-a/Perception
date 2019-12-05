@@ -7,6 +7,10 @@
   overflow: scroll;
 }
 
+.jumbotron {
+  margin-top: 2rem;
+}
+
 .caption-list {
   margin: 0 0 10px;
   padding: 0;
@@ -39,8 +43,12 @@ a:hover {
   cursor: pointer;
 }
 
-.delete-scene-button {
+.duplicate-scene-button {
   margin-left: 2em;
+}
+
+.delete-scene-button {
+  margin-left: 1em;
 }
 
 .save-name-form {
@@ -66,13 +74,17 @@ form.save-changes-form > label, .start > label {
 }
 
 form.save-changes-form > input {
-  margin-bottom: 1rem;
+  margin-bottom: 5px;
 }
 
 .save-changes-button {
 }
 
 .caption-preview {
+  margin-left: 1em;
+}
+
+.duplicate-caption-button {
   margin-left: 1em;
 }
 
@@ -121,4 +133,21 @@ i {
 
 .form-check-label:hover {
   cursor: pointer;
+}
+
+.save-file-name-button {
+  margin-left: 5px;
+  margin-bottom: 4px;
+}
+
+.file-name-input {
+  display: inline-block;
+}
+
+.scene-utility {
+  margin-left: 0.7rem;
+}
+
+.delete-all-scenes {
+  margin-left: 1.5rem;
 }

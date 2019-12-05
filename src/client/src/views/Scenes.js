@@ -12,7 +12,7 @@ module.exports = {
   view: function() {
     return m('.scenes', [
       m('.jumbotron', [
-	    m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
+        m('h1', Scene.fileName ? Scene.fileName : 'Scenes'),
         m('p.lead', 'Scenes contain lists of captions. Create a new scene or load existing scenes from a file.'),
         m('hr.my-4'),
         m('p', 'Using the bar at the top, export the current scene list to compile to byte pairs, or download the JSON file which can be imported back.')
@@ -23,9 +23,9 @@ module.exports = {
             m(m.route.Link, {
               href: `/start`,
               class: 'nav-link',
-            }, 'Back to Start'),          
+            }, 'Back to Start'),
           ]),
-          
+
           m('li.nav-item', [
             m('a.nav-link', {
               download: 'scenes',
@@ -47,20 +47,18 @@ module.exports = {
               }
             }, 'Export'),
           ]),
-        ]),        
+        ]),
       ]),
 
-
-      
-      m('.container', [
+      m('.container-fluid.scene-utility', [
         m('.row', [
-          m('.col-sm', [
+          m('.col-sm-4', [
             m('h3', 'Create a new scene'),
             m('button.add-scene.btn.btn-success', {
               onclick: Scene.addScene
-            }, 'New Scene'),            
+            }, 'New Scene'),
           ]),
-          m('.col-sm', [
+          m('.col-sm-4', [
 	        m('form.save-changes-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -68,10 +66,11 @@ module.exports = {
 		        Scene.Dirty = false
               }
             }, [
+              m('h3', 'File Name'),
               m('label', {
                 for: 'file-name-input'
-               }, 'File Name'),
-              m("input.file-name-input[type=text]", {
+               }, ''),
+              m("input.file-name-input.form-control.col-sm-8[type=text]", {
                 id: 'file-name-input',
                 oninput: function (e) {
                   Scene.fileName = e.target.value
@@ -79,10 +78,10 @@ module.exports = {
                 },
                 value: Scene.fileName ? Scene.fileName : ''
                }),
-             m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save'),
-            ]),            
+              m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save')
+            ]),
           ]),
-          m('.col-sm', [
+          m('.col-sm-4', [
             m('form.append-file-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -135,6 +134,11 @@ module.exports = {
               }, scene.name ? scene.name : `Scene ${scene.id}`),
               getScenePreview(scene),
               // when maping the scenes the delete button is included.
+                m('button.duplicate-scene-button.btn.btn-primary', {
+                onclick: function() {
+                  Scene.duplicateScene(scene.id)
+                }
+              }, 'Duplicate'),
                 m('button.delete-scene-button.btn.btn-danger', {
                 onclick: function() {
                   //ask the user for confirmation.

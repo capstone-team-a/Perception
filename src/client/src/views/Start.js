@@ -51,8 +51,9 @@ module.exports = {
                 e.preventDefault()
                 if (!inputFile) {
                   alert("Must select file to load from")
-                } else {
-                Scene.checkExisitingSceneData(inputFile)
+                } 
+                else {
+                  Scene.checkExisitingSceneData(inputFile)
                 }
               }
             }, [

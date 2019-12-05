@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import datetime
 
 import src.server.cea_608_encoder.caption_string_utility as utils
 import src.server.cea_608_encoder.scene_utility as scene_utils
@@ -13,18 +12,13 @@ supported_caption_formats = [
 ]
 
 
-def write_caption_data_to_file(caption_data: dict):
+def write_caption_data_to_file(caption_data: dict, file_name: str):
     """Writes caption data to file as json.
 
        :param caption_data: json with byte pairs
+       :param file_name: used for saving resulting file
     """
-    # datetime object containing current date and time
-    now = datetime.now()
-    # mm.dd.YY_H:M:S
-    dt_string = now.strftime("%m.%d.%Y_%H-%M-%S")
-
     path = config.path_to_data_folder
-    file_name = f'output_{dt_string}.json'
     try:
         with open(path + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
@@ -32,11 +26,12 @@ def write_caption_data_to_file(caption_data: dict):
         logging.error(f'Could not write JSON to file: {err}')
 
 
-def consume(caption_data: dict):
+def consume(caption_data: dict, time_stamp: str):
     """Perform error handling around caption format and ensure
     there are scenes to create byte pairs for.
 
     :param caption_data: the full JSON blob from the front end
+    :param time_stamp: the date time the request is received
     """
     if 'caption_format' not in caption_data:
         raise ValueError('You must specify a caption format')
@@ -50,13 +45,14 @@ def consume(caption_data: dict):
 
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
+    file_name = caption_data['file_name'] + f'_output_{time_stamp}.json'
 
     caption_data = {
         'type': caption_format,
         'scenes': consume_scenes(scene_data)
     }
 
-    write_caption_data_to_file(caption_data)
+    write_caption_data_to_file(caption_data, file_name)
 
 
 def consume_scenes(scene_list: list) -> list:
@@ -70,9 +66,9 @@ def consume_scenes(scene_list: list) -> list:
     scene_data = []
 
     for scene in scene_list:
-        current_scene_data = {}
-        current_scene_data['start'] = 0
-        current_scene_data['data'] = []
+        current_scene_data = {
+            'data': []
+        }
 
         if 'scene_id' not in scene:
             raise ValueError('Every scene must have a scene ID.')
@@ -82,10 +78,6 @@ def consume_scenes(scene_list: list) -> list:
         else:
             start = scene['start']
             current_scene_data['start'] = start
-
-        if 'position' in scene:
-            position = scene['position']
-            scene_utils.create_bytes_for_scene_position(position)
 
         # append RCL.
         current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
@@ -156,7 +148,7 @@ def consume_captions(caption_list: list) -> list:
             caption_position_bytes = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
-            caption_bytes += caption_position_bytes
+            caption_bytes.extend(caption_position_bytes)
 
         if foreground_color_and_underline_style_changes:
             caption_bytes.extend(utils.create_byte_pairs_for_midrow_style(
@@ -182,11 +174,6 @@ def consume_captions(caption_list: list) -> list:
         else:
             raise ValueError('You must specify a caption string that is not null.')
 
-        if 'text_alignment' in caption and 'placement' in caption['text_alignment']:
-            text_alignment = caption['text_alignment']['placement']
-            caption_alignment_byte_encoded = utils.create_byte_pairs_for_text_alignment(text_alignment)
-            caption_bytes = caption_alignment_byte_encoded
-
     validate_caption_ids(caption_list)
 
     return caption_bytes
@@ -206,7 +193,7 @@ def validate_scene_ids(scene_list: list):
                 else:
                     scene_ids[value] = scene_ids.get(value) + 1
 
-    for id,number_of_that_id in scene_ids.items():
+    for id, number_of_that_id in scene_ids.items():
         if number_of_that_id > 1:
             raise ValueError(f'There are duplicate scene IDs {id}.')
 
@@ -218,16 +205,17 @@ def validate_caption_ids(caption_list: list):
     """
     caption_ids = {}
     for caption in caption_list:
-        for key,value in caption.items():
+        for key, value in caption.items():
             if key == "caption_id":
                 if value not in caption_ids:
                     caption_ids[value] = 1
                 else:
                     caption_ids[value] = caption_ids.get(value) + 1
 
-    for id,number_of_that_id in caption_ids.items():
+    for id, number_of_that_id in caption_ids.items():
         if number_of_that_id > 1:
             raise ValueError(f'There are duplicate caption IDs {id}.')
+
 
 def validate_start_times(scene_list: list):
     """Checks if multiple scenes have the same start time
@@ -236,7 +224,7 @@ def validate_start_times(scene_list: list):
     """
     start_times = {}
     for scene in scene_list:
-        for key,value in scene.items():
+        for key, value in scene.items():
             if key == "start":
                 scene_time = value["time"]
                 if scene_time not in start_times:
@@ -245,7 +233,7 @@ def validate_start_times(scene_list: list):
                     start_times[scene_time] = start_times.get(scene_time)[0] + 1
                     start_times[scene_time] = start_times[scene_time][1].append(scene["scene_id"])
 
-    for time,number_and_ids in start_times.items():
+    for time, number_and_ids in start_times.items():
         if number_and_ids[0] > 1:
             raise ValueError(f'Scenes with the IDs {number_and_ids[1]} are starting at the same time of {time}.')
 
