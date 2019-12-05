@@ -55,7 +55,7 @@ module.exports = {
           ]),
         ]),
       ]),
-      
+
       m('.container-fluid.scene-utility', [
         m('.row', [
           m('.col-sm', [
@@ -162,7 +162,7 @@ module.exports = {
               }, 'show/hide captions'),
               getSceneCaptionsPreview(scene),
               // when maping the scenes the delete button is included.
-                m('button.duplicate-scene-button.btn.btn-success', {
+                m('button.duplicate-scene-button.btn.btn-primary', {
                 onclick: function() {
                   Scene.duplicateScene(scene.id)
                 }

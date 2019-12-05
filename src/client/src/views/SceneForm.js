@@ -40,7 +40,7 @@ module.exports = {
 
 
           m('li.nav-item', [
-              m('button.btn.my-2.my-sm-0.btn-outline-success', {
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
                 onclick: function() {
                   Scene.duplicateScene(Scene.currentScene.id)
                 }
@@ -131,6 +131,11 @@ module.exports = {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
           getCaptionPreview(caption, showStylizedPreview),
+          m('button.duplicate-caption-button.btn.btn-primary', {
+          onclick: function() {
+            Scene.duplicateCaption(caption.id)
+          }
+        }, 'Duplicate'),
           m('button.delete-caption-button.btn.btn-danger', {
             onclick: function() {
               //ask the user for confirmation.
