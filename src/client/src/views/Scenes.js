@@ -184,7 +184,7 @@ function getSceneCaptionsPreview(scene) {
           }, caption.name ? caption.name : 'caption ' + caption.id),
           m('span', `id: ${caption.id}`),
           m('span', `row: ${caption.row ? caption.row : 'none'}`),
-          m('span', `col: ${caption.col ? caption.col : 'none'}`),
+          m('span', `col: ${caption.column ? caption.column : 'none'}`),
           m('span', `text-preview: ${caption.text}`),
         ])
       })
