@@ -167,5 +167,13 @@ module.exports = {
 }
 
 function getScenePreview(scene) {
-  return m('span.scene-preview', scene.start ? 'Start: ' + scene.start : 'Start: -')
+  return m('div.scene-preview', [
+    m('div', scene.start ? 'Start: ' + scene.start : 'Start: -'),
+    m('div', 'Captions:'),
+    m('ul', [
+      scene.captions.map(caption => {
+        return m('li', caption.text)
+      })
+    ])
+  ])
 }
