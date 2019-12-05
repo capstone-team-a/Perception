@@ -130,7 +130,13 @@ module.exports = {
               m(m.route.Link, {
                 href: `/scenes/scene-${scene.id}`,
               }, scene.name ? scene.name : `Scene ${scene.id}`),
-              getScenePreview(scene),
+              m('span.left-1', scene.start ? 'Start: ' + scene.start : 'Start: -'),
+              m('span.left-1', `number of captions: ${scene.captions.length}`),
+              m('button.btn.btn-outline-primary.left-1', {
+                'data-target': `#collapse-${scene.id}`,
+                'data-toggle': 'collapse',
+              }, 'show/hide captions'),
+              getSceneCaptionsPreview(scene),
               // when maping the scenes the delete button is included.
                 m('button.duplicate-scene-button.btn.btn-success', {
                 onclick: function() {
@@ -166,9 +172,8 @@ module.exports = {
   }
 }
 
-function getScenePreview(scene) {
-  return m('div.scene-preview', [
-    m('div', scene.start ? 'Start: ' + scene.start : 'Start: -'),
+function getSceneCaptionsPreview(scene) {
+  return m(`div.scene-preview.collapse#collapse-${scene.id}`, [
     m('div', 'Captions:'),
     m('ul', [
       scene.captions.map(caption => {
