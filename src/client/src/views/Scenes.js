@@ -172,7 +172,16 @@ function getScenePreview(scene) {
     m('div', 'Captions:'),
     m('ul', [
       scene.captions.map(caption => {
-        return m('li', caption.text)
+        return m('li', [
+          m(m.route.Link, {
+            href: `/scenes/scene-${scene.id}/caption-${caption.id}`,
+            style: 'margin-right: 1em',
+          }, caption.name ? caption.name : 'caption ' + caption.id),
+          m('span', `id: ${caption.id}`),
+          m('span', `row: ${caption.row ? caption.row : 'none'}`),
+          m('span', `col: ${caption.col ? caption.col : 'none'}`),
+          m('span', `text-preview: ${caption.text}`),
+        ])
       })
     ])
   ])
