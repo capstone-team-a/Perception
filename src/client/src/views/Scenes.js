@@ -4,10 +4,14 @@
 const m = require('mithril')
 
 const Scene = require('../models/Scene')
+const getCaptionPreview = require('../utils/captionPreview')
+
+let showStylizedPreview = false
 
 module.exports = {
   oninit: function(vnode) {
     Scene.setFileName()
+    showStylizedPreview = false
   },
   view: function() {
     return m('.scenes', [
@@ -52,13 +56,7 @@ module.exports = {
       
       m('.container-fluid.scene-utility', [
         m('.row', [
-          m('.col-sm-4', [
-            m('h3', 'Create a new scene'),
-            m('button.add-scene.btn.btn-success', {
-              onclick: Scene.addScene
-            }, 'New Scene'),
-          ]),
-          m('.col-sm-4', [
+          m('.col-sm', [
 	        m('form.save-changes-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -79,7 +77,7 @@ module.exports = {
               m("button.save-file-name-button.btn.btn-success[type=submit]", 'Save')
             ]),
           ]),
-          m('.col-sm-4', [
+          m('.col-sm', [
             m('form.append-file-form', {
               onsubmit: function(e) {
                 e.preventDefault()
@@ -122,9 +120,26 @@ module.exports = {
         ]),
       ]),
 
-
-        m('h2.m-4', 'List of scenes'),
-        m('.scene-list', Scene.getScenes()
+      m('h2.m-4', 'Scene List'),
+      m('.container', [
+        m('.row', [
+          m('.col-sm-4', [
+            m('button.add-scene.btn.btn-success', {
+              onclick: Scene.addScene
+            }, 'Add New Scene'),
+          ]),
+          m('.col-sm.show-stylized-preview', [
+            m('input#showStylizedPreview-input.form-check-input[type=checkbox]', {
+              oninput: e => {
+                showStylizedPreview = !showStylizedPreview
+              },
+              checked: showStylizedPreview
+            }),
+            m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
+          ]),
+        ]),
+      ]),
+        m('.scene-list.mt-4', Scene.getScenes()
           .map(function(scene) {
             return m('div.scene-list-item', {key: scene.id}, [
               m(m.route.Link, {
@@ -185,7 +200,8 @@ function getSceneCaptionsPreview(scene) {
           m('span', `id: ${caption.id}`),
           m('span', `row: ${caption.row ? caption.row : 'none'}`),
           m('span', `col: ${caption.column ? caption.column : 'none'}`),
-          m('span', `text-preview: ${caption.text}`),
+          m('span', `text-preview:`),
+          getCaptionPreview(caption, showStylizedPreview),
         ])
       })
     ])
