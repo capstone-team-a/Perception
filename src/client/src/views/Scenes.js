@@ -140,13 +140,11 @@ module.exports = {
             m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
           ]),
           m('.col-sm.expand-all', [
-            m('input#expand-all-input.form-check-input[type=checkbox]', {
-              oninput: e => {
+            m('button.btn.btn-primary', {
+              onclick: e => {
                 expandAll = !expandAll
               },
-              checked: expandAll
-            }),
-            m('label.expand-all.form-check-label', {for: `expand-all-input`}, 'Expand All'),
+            }, 'Expand/Collapse All'),
           ]),
         ]),
       ]),
