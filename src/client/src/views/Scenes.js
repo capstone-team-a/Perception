@@ -7,11 +7,13 @@ const Scene = require('../models/Scene')
 const getCaptionPreview = require('../utils/captionPreview')
 
 let showStylizedPreview = false
+let expandAll = false
 
 module.exports = {
   oninit: function(vnode) {
     Scene.setFileName()
     showStylizedPreview = false
+    expandAll = false
   },
   view: function() {
     return m('.scenes', [
@@ -137,6 +139,15 @@ module.exports = {
             }),
             m('label.show-stylized-preview.form-check-label', {for: `showStylizedPreview-input`}, 'Show Stylized Preview'),
           ]),
+          m('.col-sm.expand-all', [
+            m('input#expand-all-input.form-check-input[type=checkbox]', {
+              oninput: e => {
+                expandAll = !expandAll
+              },
+              checked: expandAll
+            }),
+            m('label.expand-all.form-check-label', {for: `expand-all-input`}, 'Expand All'),
+          ]),
         ]),
       ]),
         m('.scene-list.mt-4', Scene.getScenes()
@@ -188,7 +199,7 @@ module.exports = {
 }
 
 function getSceneCaptionsPreview(scene) {
-  return m(`div.scene-preview.collapse#collapse-${scene.id}`, [
+  return m(`div.scene-preview.collapse${expandAll ? '.show' : ''}#collapse-${scene.id}`, [
     m('div', 'Captions:'),
     m('ul', [
       scene.captions.map(caption => {
