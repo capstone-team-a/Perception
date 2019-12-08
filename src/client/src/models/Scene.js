@@ -426,7 +426,7 @@ const Scene = {
   if (!(loadedScene['scene_id'])){
     throw "Each scene must have a Scene ID."
   }
-  if (loadedScene['scene_id'] < 0 || loadedScene['scene_id'] > Number.MAX_SAFE_INTEGER){
+  if (loadedScene['scene_id'] === parseInt(loadedScene['scene_id'], 10) && (loadedScene['scene_id'] < 0 || loadedScene['scene_id'] > Number.MAX_SAFE_INTEGER)){
     throw "A Scene ID was out of the supported range."
   }
 
@@ -468,7 +468,7 @@ const Scene = {
   if (!(loadedCaption['caption_id'])){
     throw "All captions must have a Caption ID."
   }
-  if (loadedCaption['caption_id'] < 0 || loadedCaption['caption_id'] > Number.MAX_SAFE_INTEGER){
+  if (loadedCaption['caption_id'] === parseInt(loadedCaption['caption_id'], 10) && (loadedCaption['caption_id'] < 0 || loadedCaption['caption_id'] > Number.MAX_SAFE_INTEGER)){
     throw "A Caption ID was out of the supported range."
   }
 
