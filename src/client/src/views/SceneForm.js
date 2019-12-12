@@ -133,7 +133,7 @@ module.exports = {
           m(m.route.Link, {
             href: `/scenes/scene-${vnode.attrs.sceneId}/caption-${caption.id}`
           }, caption.name ? caption.name : `Caption ${caption.id}`),
-          getCaptionPreview(caption, showStylizedPreview),
+          getSceneCaptionPreview(caption, showStylizedPreview),
           m('button.duplicate-caption-button.btn.btn-primary', {
           onclick: function() {
             Scene.duplicateCaption(caption.id)
@@ -179,7 +179,7 @@ function isDownArrowEnabled(captions, caption, index) {
   return captionBelow ? captionBelow.row === caption.row : false
 }
 
-function getCaptionPreview(caption) {
+function getSceneCaptionPreview(caption) {
   const foreground = caption.foreground_color
         ? caption.foreground_color === 'Italic White'
         ? 'white' : caption.foreground_color.toLowerCase()
