@@ -321,9 +321,5 @@ def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = Fa
     return byte_pairs, errors
 
 
-def create_byte_pairs_for_text_alignment(alignment):
-    pass
-
-
 def get_single_null_byte_with_parity():
     return 0x80

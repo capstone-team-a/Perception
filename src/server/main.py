@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+from datetime import datetime
 
 from src.server.cea_608_encoder.byte_pair_generator import consume
 
@@ -19,9 +20,11 @@ def main():
     args = parser.parse_args()
 
     try:
+        now = datetime.now()
+        time_stamp = now.strftime("%m.%d.%Y_%H-%M-%S")
         with open(args.file_path, 'r') as file:
             caption_data = json.load(file)
-            optional_errors = consume(caption_data)
+            optional_errors = consume(caption_data,time_stamp)
 
             if optional_errors is not None:
                 print(optional_errors)

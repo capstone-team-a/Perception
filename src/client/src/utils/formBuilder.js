@@ -24,39 +24,54 @@ function formBuilder(schema) {
       id: `${item.attr}-input`,
       oninput: e => {
         Scene.currentCaption[item.attr] = item.type === 'checkbox' ? e.target.checked : e.target.value
+		Scene.Dirty = true
       },
       value: Scene.currentCaption[item.attr] ? Scene.currentCaption[item.attr] : '',
       checked: Scene.currentCaption[item.attr]
     }
     
     return [
-      m('label', {for: `${item.attr}-input`}, item.label),
-      item.type === 'text' || item.type === 'checkbox'
-        ? m(`input.${item.attr}-input[type=${item.type}]`, inputOptions)
+      item.type === 'text'
+        ? m('.form-group', [
+            m(`label`, {for: `${item.attr}-input`}, item.label),
+            m(`input.${item.attr}-input.form-control[type=${item.type}]`, inputOptions),
+          ])
+        : item.type === 'checkbox'
+        ? m('.form-group', [
+            m(`input.${item.attr}-input.form-check-input[type=${item.type}]`, inputOptions),
+            m(`label.form-check-label`, {for: `${item.attr}-input`}, item.label),
+          ])
         : item.type === 'dropdown'
-        ? m('select', inputOptions, item.options.map(option => m('option', option)))
+        ? m('.form-group', [
+            m('label', {for: `${item.attr}-input`}, item.label),
+            m('select.custom-select', inputOptions, item.options.map(option => m('option', option))),
+          ])
         : null
     ]
   })
 
+
   // flatten the array-of-arrays into just 1 array
   const formItems = Array.prototype.concat.apply([], labelsAndInputs)
 
-  return m('form.save-changes-form', {
-    onsubmit: e => {
-      e.preventDefault()
-      // call the save function for each attribute
-      attributeAndOptions.forEach(item => {
-        if (item.customSaveFn) {
-          item.customSaveFn()
-        } else {
-          Scene.saveCaptionAttr(item.attr) 
-        }
-      })
-    }
-  }, [
-    ...formItems,
-    m("button.save-changes-button[type=submit]", 'Save all changes'),
+  return m('.container', [
+    m('form.save-changes-form', {
+      onsubmit: e => {
+        e.preventDefault()
+        // call the save function for each attribute
+        attributeAndOptions.forEach(item => {
+          if (item.customSaveFn) {
+            item.customSaveFn()
+          } else {
+            Scene.saveCaptionAttr(item.attr) 
+          }
+        })
+		Scene.Dirty = false
+      }
+    }, [
+      ...formItems,
+      m("button.save-changes-button.btn.btn-success[type=submit]", 'Save all changes'),
+    ]),
   ])
 }
 

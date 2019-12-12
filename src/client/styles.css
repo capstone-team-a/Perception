@@ -7,6 +7,10 @@
   overflow: scroll;
 }
 
+.jumbotron {
+  margin-top: 2rem;
+}
+
 .caption-list {
   margin: 0 0 10px;
   padding: 0;
@@ -39,8 +43,12 @@ a:hover {
   cursor: pointer;
 }
 
-.delete-scene-button {
+.duplicate-scene-button {
   margin-left: 2em;
+}
+
+.delete-scene-button {
+  margin-left: 1em;
 }
 
 .save-name-form {
@@ -48,8 +56,10 @@ a:hover {
 }
 
 .language-input {
-  display: block;
+  /* display: block; */
   margin-bottom: 2em;
+  margin-right: 2em;
+  margin-left: 1em;
 }
 
 form.save-changes-form {
@@ -64,33 +74,23 @@ form.save-changes-form > label, .start > label {
 }
 
 form.save-changes-form > input {
-  margin-bottom: 1rem;
+  margin-bottom: 5px;
 }
 
 .save-changes-button {
-}
-
-
-.download-link {
-  margin-left: 1em;
 }
 
 .caption-preview {
   margin-left: 1em;
 }
 
+.duplicate-caption-button {
+  margin-left: 1em;
+}
+
 .delete-caption-button {
   margin-left: 1em;
 }
-
-.new-start-input {
-  display: block;
-}
-
-.show-stylized-preview {
-  margin-left: 1em;
-}
-
 
 .scene-preview {
   margin-left: 1em;
@@ -124,4 +124,38 @@ i {
 
 .arrow-enabled:hover {
   border-color: chartreuse;
+  cursor: pointer;
+}
+
+.clear-cache-section {
+  margin-top: 3em;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
+}
+
+.save-file-name-button {
+  margin-left: 5px;
+  margin-bottom: 4px;
+}
+
+.file-name-input {
+  display: inline-block;
+}
+
+.scene-utility {
+  margin-left: 0.7rem;
+}
+
+.delete-all-scenes {
+  margin-left: 1.5rem;
+}
+
+.scene-preview li span {
+  margin-right: 1em;
+}
+
+.left-1 {
+  margin-left: 1em;
 }
