@@ -96,30 +96,35 @@ def bytes_to_byte_pairs(byte_list: list) -> list:
     return byte_pairs
 
 
-def get_char_set(caption_char: str) -> str:
+def get_char_set(caption_char: str) -> tuple:
     """Finds which character set the letter is in
 
     :param caption_char:
     :return: the name of the char set the caption_char is in
     """
+    errors = []
+	
     for char_set_name, list_of_characters in char_sets.items():
         if caption_char in list_of_characters:
-            return char_set_name
+            return char_set_name, None
 
-    raise ValueError(f'The character {caption_char} is not in any of the valid character sets')
+    errors.extend(f'        The character {caption_char} is not in any of the valid character sets')
+    return None, errors
 
 
-def get_special_characters_first_byte(char_set: str) -> hex:
+def get_special_characters_first_byte(char_set: str) -> tuple:
     """Provides the correct first byte to a letter depending on the channel toggle
 
     :param char_set:
     :return: The first byte
     """
+    errors = []
     if char_set in valid_special_character_sets_and_static_first_bytes:
-        return valid_special_character_sets_and_static_first_bytes[char_set]
+        return valid_special_character_sets_and_static_first_bytes[char_set], None
     else:
-        raise ValueError(f'The character set: {char_set} does not belong to a '
-                         f'supported special character set')
+        errors.append(ValueError(f'        The character set: {char_set} does not '
+                         f'belong to a supported special character set'))
+        return None, errors
 
 
 def create_byte_pairs_for_caption_string(caption_string: str) -> list:
@@ -129,12 +134,14 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     :return: list of byte pairs
     """
     byte_list = []
+    errors = []
     # for determining whether or not a 0x80 needs to be appended before the end
     # of the string or before an extended character set. if it is odd, we need
     # to append before putting the extended char header.
     null_byte_is_needed = False
     for letter in caption_string:
-        character_set = get_char_set(letter)
+        character_set, char_error = get_char_set(letter)
+        errors.append(char_error)
 
         if character_set is BASIC_NORTH_AMERICAN_CHARACTER_SET:
             character_hex_value = char_sets[BASIC_NORTH_AMERICAN_CHARACTER_SET][letter]
@@ -149,7 +156,9 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
                 byte_list.append(hex(get_single_null_byte_with_parity()))
                 null_byte_is_needed = False
 
-            first_byte = get_special_characters_first_byte(character_set)
+            first_byte, special_errors = get_special_characters_first_byte(character_set)
+            errors.append(special_errors)
+
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
             byte_list.append(hex(first_byte))
@@ -174,7 +183,7 @@ def create_byte_pairs_for_backspace() -> list:
     return [0x94, 0xa1] # parity bits included
 
 
-def create_bytes_for_scene_background_color(color: str, transparency: bool = False):
+def create_bytes_for_scene_background_color(color: str, transparency: bool = False) -> tuple:
     """Creates byte pairs for a valid background color and transparency flag
 
     :param color:
@@ -182,6 +191,7 @@ def create_bytes_for_scene_background_color(color: str, transparency: bool = Fal
     :return: a list of byte pairs to set background color and transparency
     """
     byte_list = []
+    errors = []
 
     # Default: no background
     first_byte = 0x17
@@ -194,6 +204,8 @@ def create_bytes_for_scene_background_color(color: str, transparency: bool = Fal
         second_byte = 0x20 + background_colors[color]
         if transparency:
             second_byte += 0x1
+    else:
+        errors.append(f'        Could not change background color: \'{color}\' is not supported by CEA-608')
 
     if check_parity(first_byte) == 0:
         first_byte = add_parity_to_byte(first_byte)
@@ -205,10 +217,10 @@ def create_bytes_for_scene_background_color(color: str, transparency: bool = Fal
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    return byte_pairs
+    return byte_pairs, errors
 
 
-def create_byte_pairs_for_midrow_style(color: str, underline: bool = False):
+def create_byte_pairs_for_midrow_style(color: str, underline: bool = False) -> tuple:
     """Creates byte pairs for a foreground color and underlines text
 
     :param color:
@@ -216,6 +228,7 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False):
     :return: a list of byte pairs for changing text color and underlining text
     """
     byte_list = []
+    errors = []
     
     # Default: Do nothing, no change in style
     first_byte = 0x00
@@ -230,7 +243,7 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False):
         first_byte = 0x11 
         second_byte = 0x20 + text_colors[color]
     else:
-        logging.error(f'Could not change midrow style: \'{color}\' is not supported by CEA-608')
+        errors.append(f'        Could not change midrow style: \'{color}\' is not supported by CEA-608')
 
     if underline == True and second_byte != 0x00: 
         second_byte += 0x1  
@@ -250,11 +263,12 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False):
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    return byte_pairs
+    return byte_pairs, erros
 
-def create_byte_pairs_for_tab_offset(offset: int):
+def create_byte_pairs_for_tab_offset(offset: int) -> tuple:
+    errors = []
     if offset < 1 or offset > 3:
-        raise ValueError(f'Cannot create byte pairs for tab offset. \'{offset}\' is not in the range of [1, 3]')
+        errors.append(f'        Cannot create byte pairs for tab offset. \'{offset}\' is not in the range of [1, 3]')
     byte_list = []
     first_byte = 0x17
     second_byte = 0x20 + offset
@@ -265,7 +279,7 @@ def create_byte_pairs_for_tab_offset(offset: int):
     if check_parity(second_byte) == 0:
         second_byte = add_parity_to_byte(second_byte)
     byte_list.append(hex(second_byte))
-    return byte_list
+    return byte_list, errors
 
 def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = False):
     errors = []
@@ -297,7 +311,8 @@ def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = Fa
     byte_list.append(hex(second_byte))
 
     if tab_offset > 0:
-        offset_bytes = create_byte_pairs_for_tab_offset(tab_offset)
+        offset_bytes, offset_errors = create_byte_pairs_for_tab_offset(tab_offset)
+        errors.append(offset_errors)
         byte_list.append(offset_bytes[0])
         byte_list.append(offset_bytes[1])
 

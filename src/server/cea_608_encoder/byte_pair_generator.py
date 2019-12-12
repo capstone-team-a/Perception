@@ -32,7 +32,7 @@ def write_caption_data_to_file(caption_data: dict):
         logging.error(f'Could not write JSON to file: {err}')
 
 
-def consume(caption_data: dict):
+def consume(caption_data: dict) -> list:
     """Perform error handling around caption format and ensure
     there are scenes to create byte pairs for.
 
@@ -50,19 +50,23 @@ def consume(caption_data: dict):
     if 'scene_list' not in caption_data:
         errors.extend('Cannot encode byte pairs with an empty scene list.')
 
+    if errors:
+        return errors
+
     scene_data = caption_data['scene_list']
     caption_format = caption_data['caption_format']
 
-    scene_bytes, errors = consume_scenes(scene_data)
+    scene_bytes, scene_errors = consume_scenes(scene_data)
     caption_data = {
         'type': caption_format,
         'scenes': scene_bytes
     }
 
-    if errors:
-        return errors
+    if scene_errors:
+        return scene_errors
 
     write_caption_data_to_file(caption_data)
+    return None
 
 
 def consume_scenes(scene_list: list) -> tuple:
@@ -86,7 +90,7 @@ def consume_scenes(scene_list: list) -> tuple:
             errors.append('Every scene must have a scene ID')
 
         if 'start' not in scene: 
-            errors.append(f'Scene with ID: {scene["scene_id"]} does not have a start time')
+            errors.append(f'    does not have a start time')
         else:
             start = scene['start']
             current_scene_data['start'] = start
@@ -102,8 +106,9 @@ def consume_scenes(scene_list: list) -> tuple:
                         ))
 
         # append the Char Bytepairs.
-        caption_list = scene['caption_list']
-        current_scene_data['data'].extend(consume_captions(caption_list)), errors
+        caption_list, caption_errors = consume_captions(scene['caption_list'])
+        current_scene_data['data'].extend(caption_list)
+        errors.extend(caption_errors)
 
         # append EOC.
         current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
@@ -113,6 +118,10 @@ def consume_scenes(scene_list: list) -> tuple:
         scene_data.append(current_scene_data)
 
     errors.append(validate_scene_ids(scene_list))
+
+
+    if errors:
+        errors.insert(0, f'Errors encountered while consuming scene with ID: {scene["scene_id"]}')
 
     return scene_data, errors
 
@@ -144,19 +153,23 @@ def consume_captions(caption_list: list) -> tuple:
 
         if 'position' in caption:
             text_position = caption['position']
+
             if 'row' in text_position and not (text_position['row'] == ""):
                 text_row_position = text_position['row']
             else:
                 text_row_position = 11 #Default row position
+
             if 'column' in text_position and not (text_position['column'] == ""):
                 text_column_position = text_position['column']
             else:
                 text_column_position = 0 #Default row position
+
             if 'underline' in foreground_color_and_underline_style_changes \
             and foreground_color_and_underline_style_changes['underline'] == "true":
                 text_underlined = True
             else:
                 text_underlined = False
+
             caption_position_bytes, preamble_errors = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
@@ -165,8 +178,10 @@ def consume_captions(caption_list: list) -> tuple:
             caption_bytes += caption_position_bytes
 
         if foreground_color_and_underline_style_changes:
-            caption_bytes.extend(utils.create_byte_pairs_for_midrow_style(
-                **foreground_color_and_underline_style_changes))
+            midrow_bytes, midrow_errors = utils.create_byte_pairs_for_midrow_style(
+                                              **foreground_color_and_underline_style_changes)
+            caption_bytes.extend(midrow_bytes)
+            errors.append(midrow_errors)
 
         background_color_and_transparency_style_changes = {}
 
@@ -179,17 +194,23 @@ def consume_captions(caption_list: list) -> tuple:
             background_color_and_transparency_style_changes['transparency'] = transparency
 
         if background_color_and_transparency_style_changes:
-            caption_bytes.extend(utils.create_bytes_for_scene_background_color(
-                **background_color_and_transparency_style_changes))
+            background_bytes, background_errors = utils.create_bytes_for_scene_background_color(
+                                                      **background_color_and_transparency_style_changes)
+            caption_bytes.extend(background_bytes)
+            errors.append(background_errors)
 
         if 'caption_string' in caption and caption['caption_string']:
-            string = caption['caption_string']
-            caption_bytes.extend(utils.create_byte_pairs_for_caption_string(string))
+            string, string_errors = utils.create_byte_pairs_for_caption_string(caption['caption_string'])
+            caption_bytes.extend(string)
+            errors.append(string_errors)
         else:
-            errors.append(f'Caption with ID: {caption["caption_id"]} must specify a caption string')
+            errors.append(f'        You must specify a caption string')
 
     errors.append(validate_caption_ids(caption_list))
 
+    if errors:
+        errors.insert(0, f'    Errors encountered while consuming caption with ID: {caption["caption_id"]}')
+	
     return caption_bytes, errors
 
 

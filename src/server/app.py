@@ -33,10 +33,16 @@ def submit():
 
         with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
-        consume(caption_data)
-        return Response(json.dumps({'Success': 'ok'}),
-                        status=200,
-                        mimetype='application/json')
+        errors = consume(caption_data)
+        if errors:
+            app.logger.error(errors)
+            return Response(json.dumps(errors),
+                            status=500,
+                            mimetype='application/json')
+        else:
+            return Response(json.dumps({'Success': 'ok'}),
+                            status=200,
+                            mimetype='application/json')
     except IOError as err:
         error_message = {'Error': f'Writing JSON to file failed: {err}'}
         app.logger.error(error_message)
