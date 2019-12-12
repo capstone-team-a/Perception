@@ -27,8 +27,10 @@ def main():
             optional_errors = consume(caption_data,time_stamp)
 
             if optional_errors is not None:
-                print(optional_errors)
-       
+                print('\n')
+                for err in errors:
+                    print(err + '\n')
+					
     except IOError as err:
         logging.error('Error trying to read in the file.', exc_info=err)
     except json.decoder.JSONDecodeError as err:

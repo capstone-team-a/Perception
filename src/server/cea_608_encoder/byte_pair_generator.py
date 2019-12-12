@@ -36,14 +36,14 @@ def consume(caption_data: dict, time_stamp: str) -> list:
     errors = []
 
     if 'caption_format' not in caption_data:
-        errors.extend('You must specify a caption format')
+        errors.append(f'You must specify a caption format')
 
     if caption_data['caption_format'] not in supported_caption_formats:
         caption_format = caption_data['caption_format']
-        errors.extend(f'The supplied caption format {caption_format} is not supported.')
+        errors.append(f'The supplied caption format {caption_format} is not supported.')
 
     if 'scene_list' not in caption_data:
-        errors.extend('Cannot encode byte pairs with an empty scene list.')
+        errors.append(f'Cannot encode byte pairs with an empty scene list.')
 
     if errors:
         return errors
@@ -82,7 +82,7 @@ def consume_scenes(scene_list: list) -> tuple:
         }
 
         if 'scene_id' not in scene:
-            errors.append('Every scene must have a scene ID')
+            errors.append(f'Every scene must have a scene ID')
 
         if 'start' not in scene: 
             errors.append(f'    does not have a start time')
@@ -112,8 +112,8 @@ def consume_scenes(scene_list: list) -> tuple:
 
         scene_data.append(current_scene_data)
 
-    errors.append(validate_scene_ids(scene_list))
-    validate_start_times(scene_list)
+    errors.extend(validate_scene_ids(scene_list))
+    errors.extend(validate_start_times(scene_list))
 
 
     if errors:
@@ -135,7 +135,7 @@ def consume_captions(caption_list: list) -> tuple:
 
     for caption in caption_list:
         if 'caption_id' not in caption:
-            errors.append('Every caption must have a caption ID')
+            errors.append(f'Every caption must have a caption ID')
 
         foreground_color_and_underline_style_changes = {}
 
@@ -169,14 +169,14 @@ def consume_captions(caption_list: list) -> tuple:
             caption_position_bytes, preamble_errors = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
-            errors.append(preamble_errors)
+            errors.extend(preamble_errors)
             caption_bytes.extend(caption_position_bytes)
 
         if foreground_color_and_underline_style_changes:
             midrow_bytes, midrow_errors = utils.create_byte_pairs_for_midrow_style(
                                               **foreground_color_and_underline_style_changes)
             caption_bytes.extend(midrow_bytes)
-            errors.append(midrow_errors)
+            errors.extend(midrow_errors)
 
         background_color_and_transparency_style_changes = {}
 
@@ -192,16 +192,16 @@ def consume_captions(caption_list: list) -> tuple:
             background_bytes, background_errors = utils.create_bytes_for_scene_background_color(
                                                       **background_color_and_transparency_style_changes)
             caption_bytes.extend(background_bytes)
-            errors.append(background_errors)
+            errors.extend(background_errors)
 
         if 'caption_string' in caption and caption['caption_string']:
             string, string_errors = utils.create_byte_pairs_for_caption_string(caption['caption_string'])
             caption_bytes.extend(string)
-            errors.append(string_errors)
+            errors.extend(string_errors)
         else:
             errors.append(f'        You must specify a caption string')
 
-    errors.append(validate_caption_ids(caption_list))
+    errors.extend(validate_caption_ids(caption_list))
 
     if errors:
         errors.insert(0, f'    Errors encountered while consuming caption with ID: {caption["caption_id"]}')
@@ -253,23 +253,25 @@ def validate_caption_ids(caption_list: list):
     return conflicting_id_errors
 
 
-def validate_start_times(scene_list: list):
+def validate_start_times(scene_list: list) -> list:
     """Checks if multiple scenes have the same start time
 
     :param scene_list:
     """
+    errors = []
     start_times = {}
     for scene in scene_list:
         for key, value in scene.items():
             if key == "start":
                 scene_time = value["time"]
                 if scene_time not in start_times:
-                    start_times[scene_time] = [1,[scene["scene_id"]]]
+                    start_times[scene_time] = [1, [scene["scene_id"]]]
                 else:
-                    start_times[scene_time] = start_times.get(scene_time)[0] + 1
-                    start_times[scene_time] = start_times[scene_time][1].append(scene["scene_id"])
+                    start_times[scene_time][0] = start_times[scene_time][0] + 1
+                    start_times[scene_time][1].append(scene["scene_id"])
 
     for time, number_and_ids in start_times.items():
         if number_and_ids[0] > 1:
-            raise ValueError(f'Scenes with the IDs {number_and_ids[1]} are starting at the same time of {time}.')
+            errors.append(f'Scenes with the IDs {number_and_ids[1]} are starting at the same time of {time}.')
+    return errors
 

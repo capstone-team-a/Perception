@@ -1,4 +1,4 @@
-import json
+import json, sys, os
 from datetime import datetime
 
 from flask import Flask, request, Response, send_from_directory
@@ -33,10 +33,15 @@ def submit():
 
         with open(path_to_schema_folder + file_name, 'w', encoding='utf-8') as file:
             json.dump(caption_data, file, ensure_ascii=False, indent=4)
-        consume(caption_data,time_stamp)
+        errors = consume(caption_data,time_stamp)
         if errors:
+            error_string = '\n'
+            for err in errors:
+                error_string = error_string + err + '\n'
+
+            error_message = {'Error': f'{error_string}'}
             app.logger.error(errors)
-            return Response(json.dumps(errors),
+            return Response(json.dumps(error_message),
                             status=500,
                             mimetype='application/json')
         else:
@@ -44,24 +49,41 @@ def submit():
                             status=200,
                             mimetype='application/json')
     except KeyError as err:
+        if config.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            app.logger.error(exc_type, fname, exc_tb.tb_lineno)
         error_message = {'Error': f'No filename provided: {err}'}
         app.logger.error(error_message)
         return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
     except IOError as err:
+        if config.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            app.logger.error(exc_type, fname, exc_tb.tb_lineno)
         error_message = {'Error': f'Writing JSON to file failed: {err}'}
         app.logger.error(error_message)
         return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
     except ValueError as err:
+        if config.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            app.logger.error(exc_type, fname, exc_tb.tb_lineno)
         error_message = {'Error': f'Received bad input for one or more values: {err}'}
         app.logger.error(error_message)
         return Response(json.dumps(error_message),
                         status=500,
                         mimetype='application/json')
     except Exception as err:
+        if config.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            app.logger.error(exc_type, fname, exc_tb.tb_lineno)
+        error_message = {'Error': f'Writing JSON to file failed: {err}'}
         error_message = {'Error': 'Could not create byte pairs for the specified caption data, try again'}
         app.logger.error(f'Failed to encode byte pairs: {err}')
         return Response(json.dumps(error_message),

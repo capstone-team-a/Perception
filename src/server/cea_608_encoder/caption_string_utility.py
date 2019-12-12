@@ -106,9 +106,9 @@ def get_char_set(caption_char: str) -> tuple:
 	
     for char_set_name, list_of_characters in char_sets.items():
         if caption_char in list_of_characters:
-            return char_set_name, None
+            return char_set_name, []
 
-    errors.extend(f'        The character {caption_char} is not in any of the valid character sets')
+    errors.append(f'        The character {caption_char} is not in any of the valid character sets')
     return None, errors
 
 
@@ -120,10 +120,10 @@ def get_special_characters_first_byte(char_set: str) -> tuple:
     """
     errors = []
     if char_set in valid_special_character_sets_and_static_first_bytes:
-        return valid_special_character_sets_and_static_first_bytes[char_set], None
+        return valid_special_character_sets_and_static_first_bytes[char_set], []
     else:
-        errors.append(ValueError(f'        The character set: {char_set} does not '
-                         f'belong to a supported special character set'))
+        errors.append(f'        The character set: {char_set} does not '
+                         f'belong to a supported special character set')
         return None, errors
 
 
@@ -141,7 +141,7 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
     null_byte_is_needed = False
     for letter in caption_string:
         character_set, char_error = get_char_set(letter)
-        errors.append(char_error)
+        errors.extend(char_error)
 
         if character_set is BASIC_NORTH_AMERICAN_CHARACTER_SET:
             character_hex_value = char_sets[BASIC_NORTH_AMERICAN_CHARACTER_SET][letter]
@@ -157,7 +157,7 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
                 null_byte_is_needed = False
 
             first_byte, special_errors = get_special_characters_first_byte(character_set)
-            errors.append(special_errors)
+            errors.extend(special_errors)
 
             if check_parity(first_byte) == 0:
                 first_byte = add_parity_to_byte(first_byte)
@@ -173,7 +173,7 @@ def create_byte_pairs_for_caption_string(caption_string: str) -> list:
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    return byte_pairs
+    return byte_pairs, errors
 
 
 def create_byte_pairs_for_backspace() -> list:
@@ -263,7 +263,7 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False) -> t
 
     raw_hex_values = parse_raw_hex_values(byte_list)
     byte_pairs = bytes_to_byte_pairs(raw_hex_values)
-    return byte_pairs, erros
+    return byte_pairs, errors
 
 def create_byte_pairs_for_tab_offset(offset: int) -> tuple:
     errors = []
@@ -285,9 +285,9 @@ def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = Fa
     errors = []
 
     if row < 1 or row > 15:
-        errors.extend(f'Cannot create byte pairs for preamble address. \'{row}\' is not in the range of [1, 15]')
+        errors.append(f'Cannot create byte pairs for preamble address. \'{row}\' is not in the range of [1, 15]')
     if cursor < 0 or cursor > 31:
-        errors.extend(f'Cannot create byte pairs for preamble address. \'{cursor}\' is not in the range of [0, 31]')
+        errors.append(f'Cannot create byte pairs for preamble address. \'{cursor}\' is not in the range of [0, 31]')
 
     byte_list = []
     first_byte = 0x10
@@ -312,7 +312,7 @@ def create_byte_pairs_for_preamble_address(row: int, cursor: int, underline = Fa
 
     if tab_offset > 0:
         offset_bytes, offset_errors = create_byte_pairs_for_tab_offset(tab_offset)
-        errors.append(offset_errors)
+        errors.extend(offset_errors)
         byte_list.append(offset_bytes[0])
         byte_list.append(offset_bytes[1])
 
