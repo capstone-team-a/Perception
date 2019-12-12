@@ -26,11 +26,7 @@ def write_caption_data_to_file(caption_data: dict, file_name: str):
         logging.error(f'Could not write JSON to file: {err}')
 
 
-<<<<<<< HEAD
-def consume(caption_data: dict) -> list:
-=======
-def consume(caption_data: dict, time_stamp: str):
->>>>>>> develop
+def consume(caption_data: dict, time_stamp: str) -> list:
     """Perform error handling around caption format and ensure
     there are scenes to create byte pairs for.
 
@@ -62,15 +58,11 @@ def consume(caption_data: dict, time_stamp: str):
         'scenes': scene_bytes
     }
 
-<<<<<<< HEAD
     if scene_errors:
         return scene_errors
 
-    write_caption_data_to_file(caption_data)
-    return None
-=======
     write_caption_data_to_file(caption_data, file_name)
->>>>>>> develop
+    return None
 
 
 def consume_scenes(scene_list: list) -> tuple:
@@ -86,10 +78,6 @@ def consume_scenes(scene_list: list) -> tuple:
 
     for scene in scene_list:
         current_scene_data = {
-<<<<<<< HEAD
-            'start': 0,
-=======
->>>>>>> develop
             'data': []
         }
 
@@ -124,12 +112,8 @@ def consume_scenes(scene_list: list) -> tuple:
 
         scene_data.append(current_scene_data)
 
-<<<<<<< HEAD
     errors.append(validate_scene_ids(scene_list))
-=======
-    validate_scene_ids(scene_list)
     validate_start_times(scene_list)
->>>>>>> develop
 
 
     if errors:
@@ -185,13 +169,8 @@ def consume_captions(caption_list: list) -> tuple:
             caption_position_bytes, preamble_errors = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
-<<<<<<< HEAD
             errors.append(preamble_errors)
-
-            caption_bytes += caption_position_bytes
-=======
             caption_bytes.extend(caption_position_bytes)
->>>>>>> develop
 
         if foreground_color_and_underline_style_changes:
             midrow_bytes, midrow_errors = utils.create_byte_pairs_for_midrow_style(
@@ -222,18 +201,12 @@ def consume_captions(caption_list: list) -> tuple:
         else:
             errors.append(f'        You must specify a caption string')
 
-<<<<<<< HEAD
     errors.append(validate_caption_ids(caption_list))
 
     if errors:
         errors.insert(0, f'    Errors encountered while consuming caption with ID: {caption["caption_id"]}')
 	
     return caption_bytes, errors
-=======
-    validate_caption_ids(caption_list)
-
-    return caption_bytes
->>>>>>> develop
 
 
 def validate_scene_ids(scene_list: list):
