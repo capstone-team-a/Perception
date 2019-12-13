@@ -11,10 +11,14 @@ module.exports = {
     Scene.setCurrentScene(vnode.attrs.sceneId)
 
     if (Scene.currentScene) {
-      Scene.setCurrentCaption(vnode.attrs.captionId)      
+      Scene.setCurrentCaption(vnode.attrs.captionId)
     }
   },
   view: function(vnode) {
+    if (Scene.reloadCaption) {
+      document.location.reload()
+    }
+
     if(!Scene.currentCaption) {
       return m('', [
         m(m.route.Link, {
@@ -24,10 +28,27 @@ module.exports = {
       ])
     }
     return m('', [
-      m(m.route.Link, {
-        href: `/scenes/scene-${Scene.currentScene.id}`,
-      }, 'Back To Scene'),
-      m('h1', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
+
+      m('nav.navbar.navbar-expand.navbar-dark.bg-dark.fixed-top', [
+        m('ul.navbar-nav.mr-auto', [
+          m('li.nav-item', [
+            m(m.route.Link, {
+              href: `/scenes/scene-${Scene.currentScene.id}`,
+              class: 'nav-link',
+            }, 'Back to Scene'),
+          ]),
+
+          m('li.nav-item', [
+              m('button.btn.my-2.my-sm-0.btn-outline-primary', {
+                onclick: function() {
+                  Scene.duplicateCaption(Scene.currentCaption.id)
+                }
+              }, 'Duplicate'),
+            ]),
+        ]),
+      ]),
+
+      m('h1.jumbotron', Scene.currentCaption.name ? Scene.currentCaption.name : `Caption ${Scene.currentCaption.id}`),
       formBuilder(schema),
     ])
   }

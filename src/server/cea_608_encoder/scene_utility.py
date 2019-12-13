@@ -1,11 +1,5 @@
 import src.server.cea_608_encoder.caption_string_utility as utils
 
-def create_bytes_for_scene_position(position):
-    pass
-
-
-def validate_time_formatting(time):
-    pass
 
 def get_default_preamble_style_bytes() -> list:
     return [0x10, 0x40]

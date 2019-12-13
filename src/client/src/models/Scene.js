@@ -4,6 +4,8 @@ const m = require('mithril')
 // Basically, this is our key "JSON object"
 // We use localStorage for persistence
 const Scene = {
+  Dirty: false,
+  CurrentArea: null,
   initialize: function() {
     // before initializing, make sure there isn't already data
     if (!localStorage.getItem('scene-list')) {
@@ -16,9 +18,8 @@ const Scene = {
     }
 
     if(!localStorage.getItem('file-name')) {
-      localStorage.setItem('file-name', JSON.stringify({
-        'file-name': ''
-      }))
+      localStorage.setItem('file-name', JSON.stringify('Scenes'))
+	  Scene.fileName = 'Scenes'
     }
   },
 
@@ -82,6 +83,26 @@ const Scene = {
       scene_list.splice(scene_index,1)
       // saves the current list
       Scene.setScenes(scene_list)
+    }
+  },
+
+  reloadScene: false,
+
+  duplicateScene: function(sceneid) {
+    const scene_list = Scene.getScenes()
+    const scene_index = Scene.findSceneIndex(sceneid)
+    if (scene_index == -1) {
+      alert("Scene Does not Exist")
+    } else {
+      // Using JSON to Deep Copy Object
+      const new_scene = JSON.parse(JSON.stringify(scene_list[scene_index]))
+      new_scene.id = Scene.uniqueSceneId()
+      new_scene.start = null
+      scene_list.push(new_scene)
+      // saves the current list
+      Scene.setScenes(scene_list)
+      Scene.reloadScene = true
+  	m.route.set('/scenes/scene-' + new_scene.id)
     }
   },
 
@@ -210,6 +231,40 @@ const Scene = {
 
   },
 
+  reloadCaption: false,
+
+  duplicateCaption: function(captionId) {
+    const indexToCopy = Scene.currentScene.captions.findIndex(function(caption) {
+      return caption.id === captionId
+    })
+
+    if (captionId === -1) {
+      console.log('Cannot find the caption you are trying to duplicate.')
+      return
+    }
+
+    const list = Scene.getScenes()
+    const sceneId = Scene.findSceneIndex(Scene.currentScene.id)
+    const captionFound = list[sceneId].captions[indexToCopy]
+    const captionToCopy = JSON.parse(JSON.stringify(captionFound))
+
+    var caption_max_id = 0
+    // Finds the max caption id in the list
+    for (var i = 0; i < Scene.currentScene.captions.length; i++) {
+      if (caption_max_id < Scene.currentScene.captions[i].id) {
+        caption_max_id = Scene.currentScene.captions[i].id
+      }
+    }
+    captionToCopy.id = caption_max_id + 1
+    // Adds a new caption
+    Scene.currentScene.captions.push(captionToCopy)
+    list[sceneId].captions.push(captionToCopy)
+    // saves the current list
+    Scene.setScenes(list)
+    Scene.reloadCaption = true
+  m.route.set('/scenes/scene-' + Scene.currentScene.id + '/caption-' + captionToCopy.id)
+  },
+
   setInputFormat: function(format) {
     localStorage.setItem('input-format', JSON.stringify(format))
   },
@@ -241,6 +296,25 @@ const Scene = {
         return obj
     }
   },
+  isCleanCheck: function() {
+    if(Scene.Dirty && confirm('You have unsaved data that will be lost, would you like to save before continuing?')) {
+	    switch (Scene.CurrentArea) {
+		    case 'scene':
+	        Scene.saveName()
+	        Scene.saveStart()
+		      break
+		    case 'caption':
+	        Scene.saveCaptions()
+		      break
+		    case 'scenes':
+	        Scene.saveFileName()
+		      break
+		    default:
+		      break
+	  }
+	}
+	Scene.Dirty = false
+  },
   isSceneDatainUse: function() {
     if (Number(Scene.getScenes().length) !== 0) {
       alert("Going to start page could result in loss of data")
@@ -255,8 +329,18 @@ const Scene = {
     return true
   },
 
+  fileName: null,
+
   getFileName: function() {
     return JSON.parse(localStorage.getItem('file-name'))
+  },
+
+  setFileName: function() {
+    Scene.fileName = JSON.parse(localStorage.getItem('file-name'))
+  },
+
+  saveFileName: function() {
+    localStorage.setItem('file-name', JSON.stringify(Scene.fileName))
   },
 
   exportToServer: function() {
@@ -296,20 +380,27 @@ const Scene = {
 			  column: caption.column ? caption.column: ''
 			},
             underline: caption.underline,
-            opacity: caption.opacity,
+            transparency: caption.transparency,
           }
         })
       }
     })
 
     return {
-      file_name: 'test_file',
+      file_name: Scene.getFileName(),
       caption_format: caption_format,
       scene_list: scenes
     }
   },
 
-  checkExisitingSceneData: function(inputFile) {
+  checkIfThereAreScenes: function () {
+    if(Number(Scene.getScenes().length) === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+  checkExistingSceneData: function(inputFile) {
     if (Number(Scene.getScenes().length) === 0) {
       if (inputFile === null) {
         m.route.set(`/scenes`)
@@ -318,8 +409,8 @@ const Scene = {
       }
     } else {
       if (confirm("Overwrite exisiting Scene List Data?")) {
-        localStorage.setItem('scene-list', JSON.stringify([]))
         if (inputFile === null) {
+          localStorage.setItem('scene-list', JSON.stringify([]))
           m.route.set(`/scenes`)
         } else {
           Scene.loadFromFile(inputFile)
@@ -335,15 +426,18 @@ const Scene = {
       alert("File type to load from must be .json")
       return false
     }
+	  current_local = localStorage
     try {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
-		try {
-          if(Scene.loadSceneListFromFile(JSON.parse(e.target.result))) {
-	        m.route.set('/scenes')
-		  }
+        try {
+          jsonObject = JSON.parse(e.target.result)
+          if(Scene.loadSceneListFromFile(jsonObject)) {
+	          m.route.set('/scenes')
+		      }
         } catch (error) {
+          localStorage = current_local
           alert("JSON file was malformed.\n" + error)
         }
       }
@@ -357,22 +451,37 @@ const Scene = {
   },
 
   loadSceneListFromFile: function(loadedData) {
-	localStorage.setItem('file-name', JSON.stringify({
-      'file-name': loadedData['file_name']
-    }))
-    if (loadedData['caption_format'] === "CEA-608") {
+    if (loadedData['file_name']) {
+	    localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
+    }
+    Scene.setFileName()
+    var isValidCaptionFormat = Scene.checkCaptionFormatOfLoadedFile(loadedData)
+    if(isValidCaptionFormat === true) {
       var sceneList = []
       for (var i = 0; i < loadedData['scene_list'].length; i++) {
         newScene = Scene.load608SceneFromFile(loadedData['scene_list'][i])
         sceneList.push(newScene)
       }
       Scene.setScenes(sceneList)
-	  Scene.setInputFormat(loadedData['caption_format'])
+	    Scene.setInputFormat(loadedData['caption_format'])
       return true
     } else {
-      alert("The loaded Caption Format is not supported.")
       return false
-	}
+	  }
+  },
+  checkCaptionFormatOfLoadedFile: function(loadedData) {
+    if(loadedData['caption_format'] === "CEA-608") {
+      return true
+    } else if (!loadedData.hasOwnProperty('caption_format')) {
+      alert("The file doesn't have a Caption Format field. Please specify a caption format in your file before proceeding.")
+      return false
+    } else if(loadedData['caption_format'] === "" || loadedData['caption_format'] === null) {
+      alert("Caption format is not specified. Please specify a caption format in your file before proceeding.")
+      return false
+    } else {
+      alert("The file contains unsupported caption format.")
+      return false
+    }
   },
 
   load608SceneFromFile: function(loadedScene, format) {
@@ -380,6 +489,13 @@ const Scene = {
 	var scene_name = ''
 	var start = ''
     var captionList = []
+
+  if (!(loadedScene['scene_id'])){
+    throw "Each scene must have a Scene ID."
+  }
+  if (loadedScene['scene_id'] === parseInt(loadedScene['scene_id'], 10) && (loadedScene['scene_id'] < 0 || loadedScene['scene_id'] > Number.MAX_SAFE_INTEGER)){
+    throw "A Scene ID was out of the supported range."
+  }
 
 	// initializing each caption by iterating throught the caption list
     for (var i = 0; i < loadedScene['caption_list'].length; i++) {
@@ -394,6 +510,7 @@ const Scene = {
 	if (loadedScene['start']) {
       start = loadedScene['start'].time.toString()
 	}
+
     return {
       id: loadedScene['scene_id'],
       name: scene_name,
@@ -411,9 +528,17 @@ const Scene = {
 	var row = ''
 	var column = ''
 	var underline = false
-	var opacity = ''
+	var transparency = ''
 
 	// checking if each attribute needed was passed in.
+    
+  if (!(loadedCaption['caption_id'])){
+    throw "All captions must have a Caption ID."
+  }
+  if (loadedCaption['caption_id'] === parseInt(loadedCaption['caption_id'], 10) && (loadedCaption['caption_id'] < 0 || loadedCaption['caption_id'] > Number.MAX_SAFE_INTEGER)){
+    throw "A Caption ID was out of the supported range."
+  }
+
 	if (loadedCaption['caption_name']) {
       caption_name = loadedCaption['caption_name']
 	}
@@ -436,8 +561,8 @@ const Scene = {
       row = loadedCaption['position'].row
 	  column = loadedCaption['position'].column
 	}
-	if (loadedCaption['opacity']) {
-      opacity = loadedCaption['opacity']
+	if (loadedCaption['transparency']) {
+      transparency = loadedCaption['transparency']
 	}
 
     return {
@@ -449,7 +574,7 @@ const Scene = {
       row: row,
       column: column,
       underline: underline,
-      opacity: opacity,
+      transparency: transparency,
     }
   },
 
