@@ -426,7 +426,7 @@ const Scene = {
       alert("File type to load from must be .json")
       return false
     }
-	current_local = localStorage
+	  current_local = localStorage
     try {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
@@ -451,8 +451,8 @@ const Scene = {
   },
 
   loadSceneListFromFile: function(loadedData) {
-	if (loadedData[file-name]) {
-	  localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
+    if (loadedData['file_name']) {
+	    localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
     }
     Scene.setFileName()
     var isValidCaptionFormat = Scene.checkCaptionFormatOfLoadedFile(loadedData)
