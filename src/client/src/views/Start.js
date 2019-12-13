@@ -40,7 +40,7 @@ module.exports = {
             ]),
             m('button.new-scene-list.btn.btn-primary', {
               onclick: function() {
-                Scene.checkExisitingSceneData(null)
+                Scene.checkExistingSceneData(null)
               }
             }, 'New Scene List'),
           ]),
@@ -53,7 +53,8 @@ module.exports = {
                   alert("Must select file to load from")
                 } 
                 else {
-                  Scene.checkExisitingSceneData(inputFile)
+                  Scene.checkExistingSceneData(inputFile)
+				  inputFile = null
                 }
               }
             }, [
