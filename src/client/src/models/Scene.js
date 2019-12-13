@@ -421,16 +421,6 @@ const Scene = {
     }
   },
 
-  isValidJson: function(inputFile) {
-    try {
-      JSON.parse(inputFile)
-      return true
-    } catch (error) {
-      alert("JSON file was malformed.\n" + error)
-      return false
-    }
-  },
-
   loadFromFile: function(inputFile) {
     if(!Scene.jsonExtensionCheck(inputFile.name)) {
       alert("File type to load from must be .json")
