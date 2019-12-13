@@ -54,7 +54,7 @@ module.exports = {
                 } 
                 else {
                   Scene.checkExistingSceneData(inputFile)
-				  inputFile = null
+				          inputFile = null
                 }
               }
             }, [
