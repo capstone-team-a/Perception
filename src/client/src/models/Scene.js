@@ -426,6 +426,7 @@ const Scene = {
       alert("File type to load from must be .json")
       return false
     }
+	current_local = localStorage
     try {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
@@ -436,12 +437,8 @@ const Scene = {
 	          m.route.set('/scenes')
 		      }
         } catch (error) {
+          localStorage = current_local
           alert("JSON file was malformed.\n" + error)
-          if(Scene.checkIfThereAreScenes() === true) {
-            m.route.set('/scenes')
-          } else {
-            m.route.set('/start')
-          }
         }
       }
       reader.onerror = function(e) {
@@ -454,7 +451,9 @@ const Scene = {
   },
 
   loadSceneListFromFile: function(loadedData) {
+	if (loadedData[file-name]) {
 	  localStorage.setItem('file-name', JSON.stringify(loadedData['file_name']))
+    }
     Scene.setFileName()
     var isValidCaptionFormat = Scene.checkCaptionFormatOfLoadedFile(loadedData)
     if(isValidCaptionFormat === true) {
