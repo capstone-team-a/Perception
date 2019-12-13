@@ -299,18 +299,18 @@ const Scene = {
   isCleanCheck: function() {
     if(Scene.Dirty && confirm('You have unsaved data that will be lost, would you like to save before continuing?')) {
 	    switch (Scene.CurrentArea) {
-		  case 'scene':
+		    case 'scene':
 	        Scene.saveName()
 	        Scene.saveStart()
-		  break
-		  case 'caption':
+		      break
+		    case 'caption':
 	        Scene.saveCaptions()
-		  break
-		  case 'scenes':
+		      break
+		    case 'scenes':
 	        Scene.saveFileName()
-		  break
-		  default:
-		  break
+		      break
+		    default:
+		      break
 	  }
 	}
 	Scene.Dirty = false
@@ -393,7 +393,14 @@ const Scene = {
     }
   },
 
-  checkExisitingSceneData: function(inputFile) {
+  checkIfThereAreScenes: function () {
+    if(Number(Scene.getScenes().length) === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+  checkExistingSceneData: function(inputFile) {
     if (Number(Scene.getScenes().length) === 0) {
       if (inputFile === null) {
         m.route.set(`/scenes`)
@@ -402,8 +409,8 @@ const Scene = {
       }
     } else {
       if (confirm("Overwrite exisiting Scene List Data?")) {
-        localStorage.setItem('scene-list', JSON.stringify([]))
         if (inputFile === null) {
+          localStorage.setItem('scene-list', JSON.stringify([]))
           m.route.set(`/scenes`)
         } else {
           Scene.loadFromFile(inputFile)
@@ -411,6 +418,16 @@ const Scene = {
       } else {
         m.route.set(`/scenes`)
       }
+    }
+  },
+
+  isValidJson: function(inputFile) {
+    try {
+      JSON.parse(inputFile)
+      return true
+    } catch (error) {
+      alert("JSON file was malformed.\n" + error)
+      return false
     }
   },
 
@@ -423,12 +440,18 @@ const Scene = {
       var reader = new FileReader()
       var blob = inputFile.slice(0, inputFile.size)
       reader.onload = function(e) {
-		    try {
-          if(Scene.loadSceneListFromFile(JSON.parse(e.target.result))) {
+        try {
+          jsonObject = JSON.parse(e.target.result)
+          if(Scene.loadSceneListFromFile(jsonObject)) {
 	          m.route.set('/scenes')
 		      }
         } catch (error) {
           alert("JSON file was malformed.\n" + error)
+          if(Scene.checkIfThereAreScenes() === true) {
+            m.route.set('/scenes')
+          } else {
+            m.route.set('/start')
+          }
         }
       }
       reader.onerror = function(e) {
