@@ -77,15 +77,16 @@ def consume_scenes(scene_list: list) -> tuple:
     errors = []
 
     for scene in scene_list:
+        scene_errors = []
         current_scene_data = {
             'data': []
         }
 
         if 'scene_id' not in scene:
-            errors.append(f'Every scene must have a scene ID')
+            scene_errors.append(f'Every scene must have a scene ID')
 
         if 'start' not in scene: 
-            errors.append(f'    does not have a start time')
+            scene_errors.append(f'\tdoes not have a start time')
         else:
             start = scene['start']
             current_scene_data['start'] = start
@@ -103,7 +104,7 @@ def consume_scenes(scene_list: list) -> tuple:
         # append the Char Bytepairs.
         caption_list, caption_errors = consume_captions(scene['caption_list'])
         current_scene_data['data'].extend(caption_list)
-        errors.extend(caption_errors)
+        scene_errors.extend(caption_errors)
 
         # append EOC.
         current_scene_data['data'].extend(scene_utils.create_byte_pairs_for_control_command(
@@ -111,13 +112,14 @@ def consume_scenes(scene_list: list) -> tuple:
                               ))
 
         scene_data.append(current_scene_data)
+        if scene_errors:
+            scene_errors.insert(0, f'Errors encountered while consuming scene with ID: {scene["scene_id"]}')
+            errors.extend(scene_errors)
 
     errors.extend(validate_scene_ids(scene_list))
     errors.extend(validate_start_times(scene_list))
 
 
-    if errors:
-        errors.insert(0, f'Errors encountered while consuming scene with ID: {scene["scene_id"]}')
 
     return scene_data, errors
 
@@ -134,8 +136,9 @@ def consume_captions(caption_list: list) -> tuple:
     errors = []
 
     for caption in caption_list:
+        caption_errors = []
         if 'caption_id' not in caption:
-            errors.append(f'Every caption must have a caption ID')
+            caption_errors.append(f'Every caption must have a caption ID')
 
         foreground_color_and_underline_style_changes = {}
 
@@ -169,14 +172,14 @@ def consume_captions(caption_list: list) -> tuple:
             caption_position_bytes, preamble_errors = utils.create_byte_pairs_for_preamble_address(int(text_row_position),
                                                                                   int(text_column_position),
                                                                                   text_underlined)
-            errors.extend(preamble_errors)
+            caption_errors.extend(preamble_errors)
             caption_bytes.extend(caption_position_bytes)
 
         if foreground_color_and_underline_style_changes:
             midrow_bytes, midrow_errors = utils.create_byte_pairs_for_midrow_style(
                                               **foreground_color_and_underline_style_changes)
             caption_bytes.extend(midrow_bytes)
-            errors.extend(midrow_errors)
+            caption_errors.extend(midrow_errors)
 
         background_color_and_transparency_style_changes = {}
 
@@ -192,19 +195,21 @@ def consume_captions(caption_list: list) -> tuple:
             background_bytes, background_errors = utils.create_bytes_for_scene_background_color(
                                                       **background_color_and_transparency_style_changes)
             caption_bytes.extend(background_bytes)
-            errors.extend(background_errors)
+            caption_errors.extend(background_errors)
 
         if 'caption_string' in caption and caption['caption_string']:
             string, string_errors = utils.create_byte_pairs_for_caption_string(caption['caption_string'])
             caption_bytes.extend(string)
-            errors.extend(string_errors)
+            caption_errors.extend(string_errors)
         else:
-            errors.append(f'        You must specify a caption string')
+            caption_errors.append(f'\t\tYou must specify a caption string')
+
+        if caption_errors:
+            caption_errors.insert(0, f'\tErrors encountered while consuming caption with ID: {caption["caption_id"]}')
+            errors.extend(caption_errors)
 
     errors.extend(validate_caption_ids(caption_list))
 
-    if errors:
-        errors.insert(0, f'    Errors encountered while consuming caption with ID: {caption["caption_id"]}')
 	
     return caption_bytes, errors
 

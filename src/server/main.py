@@ -28,7 +28,7 @@ def main():
 
             if optional_errors is not None:
                 print('\n')
-                for err in errors:
+                for err in optional_errors:
                     print(err + '\n')
 					
     except IOError as err:

@@ -108,7 +108,7 @@ def get_char_set(caption_char: str) -> tuple:
         if caption_char in list_of_characters:
             return char_set_name, []
 
-    errors.append(f'        The character {caption_char} is not in any of the valid character sets')
+    errors.append(f'\t\tThe character {caption_char} is not in any of the valid character sets')
     return None, errors
 
 
@@ -122,7 +122,7 @@ def get_special_characters_first_byte(char_set: str) -> tuple:
     if char_set in valid_special_character_sets_and_static_first_bytes:
         return valid_special_character_sets_and_static_first_bytes[char_set], []
     else:
-        errors.append(f'        The character set: {char_set} does not '
+        errors.append(f'\t\tThe character set: {char_set} does not '
                          f'belong to a supported special character set')
         return None, errors
 
@@ -205,7 +205,7 @@ def create_bytes_for_scene_background_color(color: str, transparency: bool = Fal
         if transparency:
             second_byte += 0x1
     else:
-        errors.append(f'        Could not change background color: \'{color}\' is not supported by CEA-608')
+        errors.append(f'\t\tCould not change background color: \'{color}\' is not supported by CEA-608')
 
     if check_parity(first_byte) == 0:
         first_byte = add_parity_to_byte(first_byte)
@@ -243,7 +243,7 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False) -> t
         first_byte = 0x11 
         second_byte = 0x20 + text_colors[color]
     else:
-        errors.append(f'        Could not change midrow style: \'{color}\' is not supported by CEA-608')
+        errors.append(f'\t\tCould not change midrow style: \'{color}\' is not supported by CEA-608')
 
     if underline == True and second_byte != 0x00: 
         second_byte += 0x1  
@@ -268,7 +268,7 @@ def create_byte_pairs_for_midrow_style(color: str, underline: bool = False) -> t
 def create_byte_pairs_for_tab_offset(offset: int) -> tuple:
     errors = []
     if offset < 1 or offset > 3:
-        errors.append(f'        Cannot create byte pairs for tab offset. \'{offset}\' is not in the range of [1, 3]')
+        errors.append(f'\t\tCannot create byte pairs for tab offset. \'{offset}\' is not in the range of [1, 3]')
     byte_list = []
     first_byte = 0x17
     second_byte = 0x20 + offset
